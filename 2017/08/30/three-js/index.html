@@ -3,21 +3,28 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hexo</title>
+  <title>初始Three.js | Hexo</title>
 
   
   <meta name="author" content="John Doe">
   
 
   
+  <meta name="description" content="小明是一名程序员，小红是小明的女朋友。
+一天晚上，他们在床上重温《海贼王》的“顶上战争”。突然，小红说，我不想艾斯死。小明心头一震，“我也不想艾斯死！！！”。小明默默地把这件事情记在心里。为了完成他们两个人共同的愿望，小明苦思冥想，日夜奔波，时间也一点点地过去。
+一天晚上，小明把小红叫到身边，然后打">
+  
 
+  
+  
+  <meta name="keywords" content="">
   
 
   <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-  
+  <meta property="og:title" content="初始Three.js"/>
 
   <meta property="og:site_name" content="Hexo"/>
 
@@ -54,12 +61,11 @@
 </header>
 
     <main class="site-main posts-loop">
-    
-  <article>
+    <article>
 
   
     
-    <h3 class="article-title"><a href="/2017/08/30/three-js/"><span>初始Three.js</span></a></h3>
+    <h3 class="article-title"><span>初始Three.js</span></h3>
     
   
 
@@ -133,125 +139,6 @@
 </article>
 
 
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2017/08/30/矿池分配模式-矿池如何赚钱/"><span>矿池分配模式-矿池如何赚钱</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2017/08/30/矿池分配模式-矿池如何赚钱/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-08-30T05:39:27.000Z">
-          2017-08-30
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <h3 id="矿池分配模式-矿池如何赚钱的？"><a href="#矿池分配模式-矿池如何赚钱的？" class="headerlink" title="矿池分配模式/矿池如何赚钱的？"></a>矿池分配模式/矿池如何赚钱的？</h3><p>在刚开始挖矿的时候，矿工都是SOLO单独挖矿，但是这种挖矿凡是的效率不高，常常会出现一段时间挖不到区块的情况，于是就有人发明了”矿池”这个东西。矿池从本质来讲是把所有矿工的算理结合在一起，在挖到矿之后根据矿工提供的算理进行平均分配。</p>
-<p>目前矿池的分配方式主要有：”PPLNS、PPS、PROP”三种。</p>
-<p>PPLNS模式：（最纯正的组队挖矿）全称Pay-Per-Last-N-Shares，意思是说”根据过去的N个股份来支付收益”，这意味着，所有的矿工一旦发现了一个区块，大家将根据每个人自己贡献的股份数量占比来分配区块中的货币。</p>
-<h3 id="在坑里的都是矿工"><a href="#在坑里的都是矿工" class="headerlink" title="在坑里的都是矿工"></a>在坑里的都是矿工</h3><h4 id="（share就是股份的意思）"><a href="#（share就是股份的意思）" class="headerlink" title="（share就是股份的意思）"></a>（share就是股份的意思）</h4><p>举个例子：假设，张三、李四、王五，这三个人在同一个PPLNS矿池中挖矿，在过去的一段时间里，张三贡献了10个股份，李四贡献了3个，王五贡献了12个，加起来是25个股份。这时矿池发现了一个区块，区块中含有25个比特币。那么，张三就会分到10/25个区块的奖励，也就是10个比特币，而李四获得3个，王五获得12个。</p>
-<p>在PPLNS模式下，运气成分你非常重要。如果矿池一天能够发现很多区块，那么大家的分红时间会非常快。如果矿池一天下来都没有发现区块，那么大家当天也就没有任何收益，收益要等到你参加的区块被完全挖掘出来才能得到分配。</p>
-<p>同时，由于PPLNS下，具有一定的滞后惯性，你的挖矿收益会有一定的延迟。比如说，你加入到一个新的PPLNS矿池，这个时候你会发现前面几个小时的收益比较低。那是因为别人在这个矿池里已经贡献了很多个share了，你是新来的，你的贡献还很少，所以分红时你的收益都是比较低的。随着时间的推移，该结算的也结算了，大家又开始进行了新一轮的运算时，你就回到和别人一样的水平了。同样道理，若你离开了PPLNS矿池不再挖矿，你贡献的share还在，在此后的一段时间里，你依然会得到分红收益，直到你的share被结算完毕。</p>
-<p>PPS模式：Pay-Per-Share方式————该方式为立即为每一个share支付报酬。该支出来源于矿池现有的比特币资金。因此可以立即体现，而不用等待区块生成完毕或者确认。这样可以避免矿池运营者幕后操纵。这种方法减少了矿工的风险，但将风险转移给了矿池的运营者。运营者可以收取手续费来弥补这些风险可能造成的损失。为了解决PPNLS那种有时候收益高，有时候没有收益的情况，PPS采用了新的算法。PPS根据你的算力在矿池中的占比，并估算了矿池每天可以获得的矿产，给你每天基本固定的收益。</p>
-<p>这么举例就很好理解：假设你的算力是100M，而整个矿池的算力是10000M，那么你就占据了矿池算力的1%。然后，假设矿池根据当前的难度和全球总算力，估算出矿池一天大约能够挖到4个区块，假定数量为100个。那么，矿池会为你每天支付全矿池1%，也就是1个币的报酬。这样，即使矿池今天只挖到1个区块，你也是获得1个币（矿池亏本）。如果矿池超额发挥，挖到了10个区块，你还是只有1个比特币的收益（矿池大赚）。</p>
-<p>PROP模式：比特币区块的产生是：由矿池发现区块后向全网络广播，经过120次确认后，才会产生区块。PPS模式是：矿工每贡献一点速度，矿池就向矿工支付相应的比特币，矿池的币还是要来自真正的区块产生，只不过在真正的区块产生之前，矿池就提前支付给了矿工。PROP模式是：矿池经过120次确认产生真正区块后，会把比特币按每个矿工的贡献分配给矿工，这种模式更符合比特币区块的产生。</p>
-<p>为什么矿工在PROP模式的矿池每天挖出的比特币数量不一样？PPS模式是由矿池提前支付的，所以只要矿工的速度稳定，每天得到的比特币数量就稳定。PROP模式是要经过120次确认，矿池才向矿工支付，由于矿池产生真正区块是由概率决定，所以矿工每天得到的比特币数量会不一样。矿工挖矿不是只挖一天两天，所以讨论着两种模式每天挖出的比特币数量是没有意义的。</p>
-<p>在PROP模式，即使暂时没有产生真正的区块，以后产生出来了真正的区块，还是会根据这个区块的贡献，分配给每个矿工。矿工挖矿至少都是挖几个月，甚至几年，所以从长远来看，这两种模式挖出比的数量是一样。</p>
-<p>以上的三种分配方式综合来看，PPS和PROP分配方式最适合矿工挖矿。另外笔者要提一下，任何矿池都存在偷算力的情况，只不过有的矿池偷得多有些矿池偷得少。如果矿池只靠那点手续费的话，恐怕早就关门大吉了！</p>
-<h3 id="矿池偷算力十分常见"><a href="#矿池偷算力十分常见" class="headerlink" title="矿池偷算力十分常见"></a>矿池偷算力十分常见</h3><p>假如你一天可以挖100个莱特币，矿池从你手里偷1个莱特币，这么小的数量一般人是不会察觉的。其实矿池的支付是根据你连接到的矿池的速度决定的，但是在这个速度方面却是可以大做文章。假如你本地的挖矿运算速度是20M，但是接入到矿池之后只显示18M，那么剩下的2M算力去哪里了？有人说这是矿池显示不正常或者网络连接不稳定的原因，其实我觉得那些都是扯淡的说法！真实的情况就是矿池偷走了你2M的算力！</p>
-<p>要知道一个矿池里面有上千个矿工，矿池从每个人的手里偷一点算力，这样积少成多，要比那0.1%手续费多几百倍！假如矿池内有1000个矿工，矿池从每个人手里偷0.5个币（这样的数量一般人察觉不到），这样算的话矿池一天就可以获得500个币！你说矿池不偷算力这可能吗？</p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2017/05/12/hello-world/"><span>Hello World</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2017/05/12/hello-world/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-05-12T04:58:17.000Z">
-          2017-05-12
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-
-<nav class="pagination">
-  
-  
-</nav>
     </main>
 
     <footer class="site-footer">
