@@ -1,5 +1,6 @@
 ---
 title: 初始Three.js
+tags: [Three.js, 3D]
 ---
 小明是一名程序员，小红是小明的女朋友。
 
