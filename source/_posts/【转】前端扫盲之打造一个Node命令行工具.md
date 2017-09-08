@@ -388,3 +388,70 @@ npm publish
 [https://www.npmjs.com/package/autogo](https://www.npmjs.com/package/autogo)
 
 从包的路径规则来看，是没有包含用户名的，由此可知，同名的包是不会被允许的，所以大家在跟着做的时候要给项目取一个不同的名字。
+
+然后我们来测试一下刚刚发布的包
+
+首先删除本地开发做的autogo链接
+```bash
+sudo npm unlink
+```
+
+然后
+```bash
+npm install autogo -g
+```
+
+注意这里需要带上`-g`参数，因为命令行是应该安装在全局环境中。安装成功后，我们切换到另外一个目录下，执行：
+```bash
+autogo demo
+```
+
+然后结果并非我们想象的那样：
+```bash
+Unhandled rejection Error: ENOENT, lstat 'structure'
+    at Error (native)
+```
+意思是找不到`structure`，这是怎么回事呢？
+
+实际上当我们执行`npm install autogo -g`的时候，实际上是将命令包安装在了`/usr/local/lib/node_modules/autogo`下面，所以在执行命令的目录下是找不到`structure`文件夹的。
+
+那该怎么办呢？我们能想到的就是，得在程序中去获取这个包安装的实际路径。
+
+幸运的是Node给我们提供了`__dirname`这个变量用于获取当前执行文件的路径。我们在`lib/generateStructure.js`下`console.log(__dirname)`会输出`/usr/local/lib/node_modules/autogo/lib`，然后我们把后面的`lib`去掉就是根目录了：
+```js
+var root = __dirname.replace(/autogo\/lib/, 'autogo/');
+
+function generateStructure(project, outs) {
+  return fs.copyAsync(root + 'structure', project)
+    .then(function(err) {
+      return err ? console.error(err) : console.log('generate project');
+    });
+}
+```
+
+修改后，我们按照下面的方式更新，重新安装，然后
+```bash
+autogo demo
+cd demo
+npm install
+gulp watch
+```
+
+OK，一个新的项目诞生了，准备开发吧...
+
+## 更新
+首先修改`package.json`配置文件中的`version`字段，比如这里我从`0.1.0`改成`0.1.1`（只能大于当前版本），然后再次
+```bash
+npm publish
+```
+
+即可成功发布新版本。
+
+想将该项目从`npm`中移除吗？执行：
+```bash
+npm unpublish autogo --force
+```
+附：[项目代码](https://github.com/bimohxh/autogo)
+
+> 原文出处：https://www.awesomes.cn/source/12
+> 代码源自：[autogo.js](https://github.com/bimohxh/autogo/blob/master/bin/autogo.js#L1)
