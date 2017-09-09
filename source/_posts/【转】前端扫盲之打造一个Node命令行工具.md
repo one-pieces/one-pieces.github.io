@@ -1,7 +1,8 @@
 ---
-title: 前端扫盲之打造一个Node命令行工具
+title: 【转】前端扫盲之打造一个Node命令行工具
 tags: [Node, 前端, 命令行工具]
 ---
+[原文链接](http://www.imooc.com/article/3384)
 
 Node 给前端开发带来了很大的改变，促进了前端开发的自动化，我们可以简化开发工作，然后利用各种工具包生成生产环境。如运行 `sass src/sass/main.scss dist/css/main.css` 即可编译Sass文件。在实际的开发过程中，我们可能会有自己的特定需求，那么我们得学会如何创建一个Node命令行工具。
 
