@@ -4,6 +4,8 @@ date: 2018-03-08 19:23:55
 tags: [javascript]
 ---
 
+【转自】https://www.cnblogs.com/Tacklingpioneer/p/6433959.html
+
 在JavaScript的学习中，我们经常会遇到JavaScript的事件机制，例如，事件绑定、事件监听、事件委托（事件代理）等。这些名词是什么意思呢，有什么作用？
 
 ## 事件绑定
