@@ -1,5 +1,6 @@
 ---
 title: 【转】前端扫盲之打造一个Node命令行工具
+date: 2017-09-06 14:30:28
 tags: [Node, 前端, 命令行工具]
 ---
 [原文链接](http://www.imooc.com/article/3384)
@@ -71,7 +72,7 @@ sudo apt-get install dos2unix
 ```
 然后
 ```bash
-sudo dos2unix bin.autogo.js 
+sudo dos2unix bin.autogo.js
 ```
 问题就解决了。
 

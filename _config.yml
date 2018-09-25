@@ -70,5 +70,6 @@ theme: hacker
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: git@github.com:one-pieces/one-pieces.github.io.git
+#  repo: git@github.com:one-pieces/one-pieces.github.io.git
+  repo: https://github.com/one-pieces/one-pieces.github.io.git
   branch: master

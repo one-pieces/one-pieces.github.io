@@ -1,5 +1,6 @@
 ---
 title: 初始Three.js
+date: 2017-8-30 14:30:28
 tags: [Three.js, 3D]
 ---
 小明是一名程序员，小红是小明的女朋友。
@@ -9,11 +10,11 @@ tags: [Three.js, 3D]
 
 一天晚上，小明把小红叫到身边，然后打开了电脑，在浏览器地址栏上敲下下面的地址：
 [one-pieces](http://one-pieces.me/threejs-practice/one-piece-top-war/index.html)
-    
+
 神奇的事情发生了！！！
 雾草！艾斯出现！！！
 滑一滑鼠标，还有七武海！！！
-    
+
 好叼！小红激动了，抓着小明的手，小明脸上洋溢着自豪和感动！！！
 激动之余，小红问：“这是怎么做到的？”
 
@@ -55,21 +56,21 @@ WebGL门槛相对较高，需要相对较多的数学知识。虽然WebGL提供�
 
 #### Camera
 Camera相机，这个很好理解。“所见即所得”。虽然我是一个唯物主义者，不过只有被看到才能被感知。相机就相当于我们的眼睛，为了观察这个世界，我们需要描述某个物体的位置。描述物体位置需要用到坐标系。常用的坐标系有左手坐标系和右手坐标系。
-    
+
 Three.js采用的是右手坐标系。
 
 Three.js中一共有四种相机，分别为CubeCamera、OrthographicCamera、PerspectiveCamera、StereoCamera，它们都继承自Camera类。我们常用的有两种，正投影相机THREE.OrthographicCamera和透视投影相机THREE.PerspectiveCamera。
-    
+
 #### 三维投影
 正投影相机THREE.OrthographicCamera和透视投影相机THREE.PerspectiveCamera，相信学过绘画的人一下子就能明白，它们对应三维投影中的正交投影和透视投影。
-    
+
 上面左图是正交投影，物体反射的光平行投射到屏幕上，其大小始终不变，所以远近的物体大小一样。在渲染一些2D效果和UI元素的时候会用到。右图是透视投影，符合我们平时看东西的感觉，近大远小，经常用在3D场景中。
 
 ### 视景体
 视景体是一个比较重要的概念。它是指成像景物所在空间的集合。简单点说，视景体是一个几何体，只有在视景体内的物体才会被我们看到，视景体之外的物体将被裁剪掉（所见即所得）。这是为了去除不必要的计算。通过变换视景体，我们就得到不同的相机。
 
 正交投影相机OrthographicCamera的视景体是一个长方体，其构造函数为OrthographicCamera( left, right, top, bottom, near, far )。把Camera看作一个点，left则表示视景体左平面在左右方向上与Camera的距离，另外几个参数同理。于是六个参数分别定义了视景体六个面的位置。我们可以近似地认为，视景体里的物体平行投影到近平面上，然后近平面上的图像被渲染到屏幕上。
-  
+
 透视投影相机PerspectiveCamera的视景体是一个四棱台，其构造函数为PerspectiveCamera( fov, aspect, near, far )。fov即field of view，即视野，对应着图中的视角，是上下两面的夹角。aspect是近平面的宽高比。再加上近平面距离near，远平面距离far，就可以唯一确定这个视景体了。
 
 #### Objects
@@ -94,7 +95,7 @@ Three中有很多种形状geometry，立方体、平面、球体、圆形、圆�
 Three提供了多种材质可供选择，能够自由地选择漫反射/镜面反射等材质。
 
 #### Light
-神说：要有光！    
+神说：要有光！
 光影效果是让画面丰富的重要因素。
 Three提供了包括环境光AmbientLight、点光源PointLight、聚光灯SpotLight、方向光DirectionalLight、半球光HemisphereLight等多种光源。
 只要在场景中添加需要的光源就好了。
@@ -103,4 +104,3 @@ Three提供了包括环境光AmbientLight、点光源PointLight、聚光灯SpotL
 好了，前面说了这么多，总该写代码了~~
 
 根据上面说的，我们首先需要创建一个场景（Scene）、相机（Camera）、渲染器（Renderer）。
-    

@@ -1,5 +1,6 @@
 ---
 title: JavaScript in One Pic
+date: 2017-10-12 19:23:28
 tags: [javascript]
 ---
 

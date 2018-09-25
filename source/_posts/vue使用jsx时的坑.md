@@ -1,6 +1,7 @@
 ---
 title: vue使用jsx时的坑
-tags: [vue, jsx, 坑] 
+date: 2017-12-05 20:30:04
+tags: [vue, jsx, 坑]
 ---
 
 1. v-model
