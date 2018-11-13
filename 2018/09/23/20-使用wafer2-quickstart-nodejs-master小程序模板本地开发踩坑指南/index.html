@@ -1,0 +1,145 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>20.使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南一、本地调试获取用户失败在使用微信官方提供的 wafer2-quickstart-nodejs-master 模板开发小程序时，除了可以连接腾讯云提供的开发环境，还可以直接在本地起服务进行调试。具体操作可参考">
+  
+
+  
+  
+  <meta name="keywords" content="微信小程序">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="20.使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>20.使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/09/23/20-使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-09-23T14:31:07.000Z">
+          2018-09-23
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南"><a href="#使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南" class="headerlink" title="使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南"></a>使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南</h2><h4 id="一、本地调试获取用户失败"><a href="#一、本地调试获取用户失败" class="headerlink" title="一、本地调试获取用户失败"></a>一、本地调试获取用户失败</h4><p>在使用微信官方提供的 <a href="https://github.com/tencentyun/wafer2-quickstart-nodejs" target="_blank" rel="noopener">wafer2-quickstart-nodejs-master</a> 模板开发小程序时，除了可以连接腾讯云提供的开发环境，还可以直接在本地起服务进行调试。具体操作可参考<a href="https://github.com/tencentyun/wafer2-startup/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98#%E6%9C%AC%E5%9C%B0%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83" target="_blank" rel="noopener">本地如何搭建开发环境</a>。</p>
+<p>但按照文档上的步骤操作，会报“ERR_REQUEST_PARAM”的错误。报这个错误的原因是，代码默认使用了腾讯云代理登录小程序。</p>
+<p>打开<code>server/config.js</code>，将<code>useQcloudLogin</code>选项修改为false，同时还需要填上小程序的<code>appSecret</code>。因为<code>useQcloudLogin</code>为<code>true</code>时，<code>SDK</code>会通过与小程序关联的腾讯云账号获取到<code>appSecret</code>，授权通过后，再获取用户信息。否则为<code>false</code>时，则需要填写<code>appSecret</code>。</p>
+<p>这样修改后，再次请求，就能获取到用户信息了。</p>
+<h4 id="二、第一次获取用户信息"><a href="#二、第一次获取用户信息" class="headerlink" title="二、第一次获取用户信息"></a>二、第一次获取用户信息</h4><p>在模板中，<code>wafer2-client-sdk</code>封装了一下方法让我们使用。比如我们可以使用<code>request</code>发送请求。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> qcloud = <span class="built_in">require</span>(<span class="string">'../vendor/wafer2-client-sdk/index'</span>)</span><br><span class="line">...</span><br><span class="line"><span class="comment">// 请求A</span></span><br><span class="line">qcloud.request(&#123;</span><br><span class="line">    url,</span><br><span class="line">   	data,</span><br><span class="line">    method,</span><br><span class="line">    login: <span class="literal">false</span>,</span><br><span class="line">    success(result) &#123;</span><br><span class="line">    &#125;,</span><br><span class="line">    fail(error) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>通过参数<code>login</code>可以控制发送该请求<code>A</code>之前，是否先发送登录请求。如果请求<code>A</code>需要用户信息，则<code>login</code>需为<code>true</code>，否则后端的ctx.state.$wxInfo是没有用户信息的。但是在用户第一次登录之前（<code>cSessioninfo</code>表里没有该用户数据），<code>qcloud.request({ login: true })</code>会报错，返回<code>Cannot read property &#39;user_info&#39; of undefined</code>错误。</p>
+<p>这是因为<code>qcloud.request</code>只使用了<code>loginWithCode</code>来登录。这个方法会在<code>Header</code>加上<code>X-WX-Code</code>（其实就是<code>cSessioninfo</code>表里的<code>skey</code>）。后端通过这个code去获取对应用户的信息。但因为表里根本没有这个用户的记录，所以报了上面的错误。</p>
+<p>要怎么解决这个问题？其实模板中有类似的调用。打开<code>client/page/pages/index/index.js</code>，答案就在<code>bindGetUserInfo</code>里。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="comment">// 先获取session</span></span><br><span class="line"><span class="keyword">const</span> session = qcloud.Session.get()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. 如果session不为空，则说明用户已经登录过，即数据库里有该用户记录，则使用qcloud.loginWithCode</span></span><br><span class="line"><span class="comment">// 2. 如果session为空，则说明用户第一次登录，则调用qcloud.login，将用户信息写入数据库</span></span><br><span class="line"><span class="keyword">if</span> (session) &#123;</span><br><span class="line">    <span class="comment">// 第二次登录</span></span><br><span class="line">    <span class="comment">// 或者本地已经有登录态</span></span><br><span class="line">    <span class="comment">// 可使用本函数更新登录态</span></span><br><span class="line">    qcloud.loginWithCode(&#123;</span><br><span class="line">        success: <span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;,</span><br><span class="line">        fail: <span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 首次登录</span></span><br><span class="line">    qcloud.login(&#123;</span><br><span class="line">        success: <span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;,</span><br><span class="line">        fail: <span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>qcloud.login</code>会在<code>Header</code>增加三个字段，<code>X-WX-Code</code>、<code>X-WX-Encrypted-Data</code>、<code>X-WX-IV</code>，然后后端会在表里插入该用户的信息。</p>
+<p>所以我们需要将这段逻辑加到<code>qcloud.request</code>里。<code>qcloud.request</code>里有个<code>doRequestWithLogin</code>方法，是发送登录逻辑的。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 登录后再请求</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doRequestWithLogin</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    loginLib.loginWithCode(&#123; <span class="attr">success</span>: doRequest, <span class="attr">fail</span>: callFail &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将其修改为</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 登录后再请求</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doRequestWithLogin</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> session = Session.get()</span><br><span class="line">    <span class="keyword">if</span> (session) &#123;</span><br><span class="line">        loginLib.loginWithCode(&#123; <span class="attr">success</span>: doRequest, <span class="attr">fail</span>: callFail &#125;);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        loginLib.login(&#123; <span class="attr">success</span>: doRequest, <span class="attr">fail</span>: callFail &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Done！大功告成，再次发送请求成功！</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/微信小程序/">微信小程序</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

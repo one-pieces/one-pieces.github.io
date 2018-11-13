@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>vue使用jsx时的坑 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="v-model在jsx中无法直接使用v-model，需要借助一个插件babel-plugin-jsx-v-model
+
+在jsx中使用动态组件标签会报无法找到component组件的错解决方法：直接使用判断语句控制该使用哪个组件
+
+v-ifv-if在jsx中是没有作用的解决办法：跟一样，直接使用判断">
+  
+
+  
+  
+  <meta name="keywords" content="vue,jsx,坑">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="vue使用jsx时的坑"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>vue使用jsx时的坑</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/12/05/vue使用jsx时的坑/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-12-05T12:30:04.000Z">
+          2017-12-05
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ol>
+<li><p>v-model<br>在jsx中无法直接使用v-model，需要借助一个插件babel-plugin-jsx-v-model</p>
+</li>
+<li><p><component><br>在jsx中使用动态组件标签<component>会报无法找到component组件的错<br>解决方法：<br>直接使用判断语句控制该使用哪个组件</component></component></p>
+</li>
+<li><p>v-if<br>v-if在jsx中是没有作用的<br>解决办法：<br>跟<compnent>一样，直接使用判断语句</compnent></p>
+</li>
+<li><p>使用on<br>在jsx中我们要监听一个事件，可以使用on-{eventName}或者on{EventName}的形式，如</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;button on-click=&#123;<span class="keyword">this</span>.myClickListener&#125;&gt;<span class="xml"><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;button onClick=&#123;<span class="keyword">this</span>.myClickListener&#125;&gt;<span class="xml"><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p>同时，我们也可以使用on来让组件获得事件监听的能力，如<br><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;button &#123;...&#123; <span class="attr">on</span>: &#123; <span class="attr">click</span>: <span class="keyword">this</span>.myClickListener &#125;&#125;&#125;&gt;<span class="xml"><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<p>当使用on时，只能像上面一样，用解构的写法才有效，如果像下面这样写是没有效果的。<br><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;button on=&#123;&#123; <span class="attr">click</span>: <span class="keyword">this</span>.myClickListener &#125;&#125;&gt;<span class="xml"><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<p>注意！on-{eventName}或on{EventName}跟on一起写时，on会无效。比如<br><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;input onClick=&#123;<span class="keyword">this</span>.myClickListener&#125; &#123;...&#123; <span class="attr">on</span>: &#123; <span class="attr">input</span>: <span class="keyword">this</span>.myInputListener &#125; &#125;&#125; /&gt;</span><br></pre></td></tr></table></figure></p>
+<p>当触发input事件时会报错。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/vue/">vue</a><a href="/tags/jsx/">jsx</a><a href="/tags/坑/">坑</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

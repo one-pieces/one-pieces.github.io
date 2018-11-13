@@ -1,0 +1,738 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/11/09/23-客户端JavaScript执行的时间线/"><span>23.浏览器JavaScript执行的时间线</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/11/09/23-客户端JavaScript执行的时间线/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-11-09T07:29:40.000Z">
+          2018-11-09
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我们知道浏览器的渲染线程和脚本线程是互斥的，JavaScript会阻塞浏览器HTML解析器，这也是为什么长时间的脚本运行可能会导致页面失去响应。因此，我们通常会把<code>&lt;script&gt;</code>放在<code>&lt;/body&gt;</code>之前，来保证非脚本的其他一切元素能尽快地得到加载和解析。<br>然而，我们可以通过设置<code>&lt;scirpt&gt;</code>的<code>async</code>和<code>defer</code>来改变<code>&lt;script&gt;</code>的加载和执行顺序。在说这具体是怎样之前,我们先介绍一下浏览器JavaScript执行的时间线。</p>
+<h2 id="JavaScript的执行"><a href="#JavaScript的执行" class="headerlink" title="JavaScript的执行"></a>JavaScript的执行</h2><ol>
+<li><p>浏览器创建<code>Document</code>对象，并且开始解析Web页面，解析HTML元素和它们的文本内容后，会添加Element对象和Text节点到文档中。在这个阶段document.readystate属性的值是<code>loading</code>。</p>
+</li>
+<li><p>当HTML解析器遇到没有<code>async</code>和<code>defer</code>属性的<code>&lt;script&gt;</code>元素时，它把这些元素添加到文档中，然后执行行内或者外部脚步。这些脚本会同步执行，并且在脚本下载（如果需要）和执行时，HTML解析器会暂停。这样脚本就可以用<code>document.write()</code>来把文本插入到输入流中。解析器恢复时这些文本会成为文档的一部分。同步脚本经常简单定义函数和注册后面使用的注册事件处理程序，但它们可以遍历和操作文档树，因为在它们执行时已经存在了。这样，同步脚本可以看到它自己的<code>&lt;script&gt;</code>元素和它们之前的文档内容。</p>
+</li>
+<li><p>当解析器遇到设置了<code>async</code>属性的<code>&lt;script&gt;</code>元素时，它开始下载脚本文本，并继续解析文档。脚本会在它下载完成后尽快执行，但是解析器没有停下来等它下载。异步脚本禁止使用<code>document.write()</code>方法。它们可以看到自己的<code>&lt;script&gt;</code>元素和它之前的所有文档元素，并且可能或干脆不访问其他的文档内容。</p>
+</li>
+<li><p>当文档完成解析，<code>document.readyState</code>属性变成<code>interactive</code>。</p>
+</li>
+<li><p>所有有<code>defer</code>属性的脚本，会按它们在文档里的出现顺序执行。异步脚本可能也会在这个时间执行。延迟脚本能访问完整的文档树，禁止使用<code>document.write()</code>方法。</p>
+</li>
+<li><p>浏览器在<code>Document</code>对象上触发<code>DOMContentLoaded</code>事件。这标志着程序执行从同步脚本执行阶段转换到了异步事件驱动阶段。但要注意，这时可能还有异步脚本没有执行完成。</p>
+</li>
+<li><p>这时，文档已经完全解析完成，但是浏览器可能还在等待其他内容载入，比如图片。当所有这些内容完成载入时，并且所有异步脚本完成载入和执行，<code>document.readyState</code>属性改变为<code>complete</code>，浏览器触发<code>Window</code>对象上的<code>load</code>事件。</p>
+</li>
+<li><p>从此刻起，会调用异步事件，以异步响应用户输入事件、网络事件、计时器过期等。</p>
+</li>
+</ol>
+<p>需要注意的是，这是一条理想的时间线，每种浏览器的具体细节实现可能不一样。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>经过上面的分析，我们可以总结一下。当浏览器遇到<code>&lt;script&gt;</code>脚本时：</p>
+<ol>
+<li><p>同步脚本<code>&lt;script src=&quot;script.js&quot;&gt;&lt;/script&gt;</code><br> 没有<code>defer</code>或<code>async</code>，浏览器会立即加载并执行指定的脚本，<code>立即</code>指的是在渲染该<code>&lt;script&gt;</code>标签之下的文档元素之前，也就是说文档解析器会暂停，浏览器读到就加载并执行。</p>
+</li>
+<li><p>异步脚本<code>&lt;script async src=&quot;script.js&quot;&gt;&lt;/script&gt;</code><br> 有<code>async</code>，加载和渲染后续文档元素的过程和<code>script.js</code>的加载与执行并行进行（异步）。</p>
+</li>
+<li><p>延迟脚本<code>&lt;script defer src=&quot;script.js&quot;&gt;&lt;/script&gt;</code><br> 有<code>defer</code>，加载后续文档元素的过程和<code>script.js</code>的加载并行进行（异步），但是<code>script.js</code>的执行要在所有元素解析完成（<code>document.readyState</code>属性变成<code>interactive</code>）之后，<code>DOMContentLoaded</code>事件触发之前完成。</p>
+</li>
+</ol>
+<p>最后用一张图来总结：<br><img src="../images/23/1.png" alt="image"></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/JavaScript/">JavaScript</a><a href="/tags/浏览器/">浏览器</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/11/08/23-使用原生JS实现dialog组件/"><span>(WIP)23.使用原生JS实现dialog组件</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/11/08/23-使用原生JS实现dialog组件/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-11-08T08:51:45.000Z">
+          2018-11-08
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>当时觉得这个蛮简单的，只要写好html、样式，然后append进document.body就行了。但真正写起来时才发现没那么简单。比如原生的appendChild需要参数为Node，而你现在是需要把HTML的字符串转化为Node。这要怎么做呢？</p>
+<h2 id="String转化为DOM"><a href="#String转化为DOM" class="headerlink" title="String转化为DOM"></a>String转化为DOM</h2>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/JavaScript/">JavaScript</a><a href="/tags/WIP/">WIP</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/11/08/22-Webpack提示Invalid-Host-Header/"><span>22-Webpack提示Invalid Host Header</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/11/08/22-Webpack提示Invalid-Host-Header/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-11-08T07:49:09.000Z">
+          2018-11-08
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>用<a href="https://cli.vuejs.org/zh/" target="_blank" rel="noopener"><code>vue-cli 3</code></a>新建项目，将自定义域名映射到localhost，这时用自定义域名访问项目，webpack-dev-server返回了Invalid Host Header，而使用localhost或127.0.0.1则没报错。</p>
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>网上查了一些资料，发现这是因为webpack-dev-server在<a href="https://github.com/webpack/webpack-dev-server/releases/tag/v2.4.3" target="_blank" rel="noopener"><code>2.4.3</code></a>和<a href="https://github.com/webpack/webpack-dev-server/releases/tag/v1.16.4" target="_blank" rel="noopener"><code>1.16.4</code></a>这两个版本增加了security fix。这个fix增加了对<code>Host</code> header 的检验，来防止恶意网站访问你的<code>assets</code>。同时<code>webpack-dev-middleware</code>的<code>1.10.2</code>也增加了这个修改。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>考虑到这个fix可能会break项目启动，webpack-dev-server提供了几个解决方案</p>
+<ul>
+<li>新增<code>disableHostCheck</code>参数，为<code>true</code>时host check失效</li>
+<li>执行webpack-dev-server时手动添加<code>--public</code>参数，值为授权的host</li>
+</ul>
+<p>在后续的版本里，webpack-dev-server也增加了相关的一些参数，比如<code>allowedHosts</code>(<a href="https://github.com/webpack/webpack-dev-server/releases/tag/v2.5.0" target="_blank" rel="noopener"><code>2.5.0</code></a>)。</p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://tonghuashuo.github.io/blog/webpack-dev-server-invalid-host-header.html" target="_blank" rel="noopener">解决 Webpack “Invalid Host Header”</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/webpack/">webpack</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/09/25/21-docker-jenkins自动部署/"><span>21.docker+jenkins自动部署前端代码</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/09/25/21-docker-jenkins自动部署/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-09-25T15:12:50.000Z">
+          2018-09-25
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p>服务器为腾讯云Ubuntu</p>
+</blockquote>
+<h3 id="一、安装Docker"><a href="#一、安装Docker" class="headerlink" title="一、安装Docker"></a>一、安装Docker</h3><ol>
+<li><p>更新<code>apt</code>包</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt update</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装最新版本的Docker</p>
+<p> 中文版教程： <a href="https://cloud.tencent.com/developer/article/1167995" target="_blank" rel="noopener">如何在Ubuntu上安装使用Docker</a></p>
+<p> 不过最好还是看英文版：<a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository" target="_blank" rel="noopener">install-using-the-repository</a></p>
+<p> 或者使用官方Ubuntu存储库中提供的Docker安装包，但是可能不是最新的版本。</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用内置安装</span></span><br><span class="line">$ sudo apt-get install docker.io</span><br><span class="line"><span class="comment"># 卸载</span></span><br><span class="line">$ sudo apt-get purge docker.io</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="二、安装Jenkins"><a href="#二、安装Jenkins" class="headerlink" title="二、安装Jenkins"></a>二、安装Jenkins</h3><p>使用docker安装Jenkins非常方便，只需要执行下面命令即可。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name devops-jenkins --user=root -p 8080:8080 -p 50000:50000 -v /opt/data/jenkins_home:/var/jenkins_home -d jenkins/jenkins:lts</span><br></pre></td></tr></table></figure></p>
+<p>更多定制参数可以参考 <a href="https://github.com/jenkinsci/docker" target="_blank" rel="noopener">https://github.com/jenkinsci/docker</a></p>
+<h3 id="三、配置Jenkins"><a href="#三、配置Jenkins" class="headerlink" title="三、配置Jenkins"></a>三、配置Jenkins</h3><p>启动Jenkins之后，在浏览器输入http://部署jenkins主机IP:端口 (8080)<br><img src="../images/21/1.png" alt="image"></p>
+<p>根据提示，从输入administrator password 或者可以通过启动日志<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker logs devops-jenkins</span><br></pre></td></tr></table></figure></p>
+<p>查看这个password<br><img src="../images/21/2.png" alt="image"></p>
+<p>选择安装插件方式，这里默认第一个。<br><!-- ![image](../images/21/3.png) --></p>
+<p>进入插件安装界面，连网等待插件安装。</p>
+<p>安装完插件后，进入创建管理员界面。<br><img src="../images/21/5.png" alt="image"></p>
+<p>输入管理员信息后，点击Continue as admin。</p>
+<p><img src="../images/21/6.png" alt="image"><br>保存Jenkins URL后Jenkins就安装完毕了。</p>
+<h3 id="四、自动化流程"><a href="#四、自动化流程" class="headerlink" title="四、自动化流程"></a>四、自动化流程</h3><p>在正式使用Jenkins前，我们先来看一下自动部署的流程，具体如下：</p>
+<ul>
+<li>编写修改代码，并提交代码到代码仓库（git）</li>
+<li>Jenkins自动检测到仓库代码更新了，从仓库拉去最新代码</li>
+<li>Jenkins自动编译</li>
+<li></li>
+</ul>
+<p>Jenkins之所以流行，是因为它的高灵活性和高易用性。这得益于它的插件机制，只需安装对应功能的插件，即可使它适应各种业务场景。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/09/23/20-使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南/"><span>20.使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/09/23/20-使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-09-23T14:31:07.000Z">
+          2018-09-23
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南"><a href="#使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南" class="headerlink" title="使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南"></a>使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南</h2><h4 id="一、本地调试获取用户失败"><a href="#一、本地调试获取用户失败" class="headerlink" title="一、本地调试获取用户失败"></a>一、本地调试获取用户失败</h4><p>在使用微信官方提供的 <a href="https://github.com/tencentyun/wafer2-quickstart-nodejs" target="_blank" rel="noopener">wafer2-quickstart-nodejs-master</a> 模板开发小程序时，除了可以连接腾讯云提供的开发环境，还可以直接在本地起服务进行调试。具体操作可参考<a href="https://github.com/tencentyun/wafer2-startup/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98#%E6%9C%AC%E5%9C%B0%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83" target="_blank" rel="noopener">本地如何搭建开发环境</a>。</p>
+<p>但按照文档上的步骤操作，会报“ERR_REQUEST_PARAM”的错误。报这个错误的原因是，代码默认使用了腾讯云代理登录小程序。</p>
+<p>打开<code>server/config.js</code>，将<code>useQcloudLogin</code>选项修改为false，同时还需要填上小程序的<code>appSecret</code>。因为<code>useQcloudLogin</code>为<code>true</code>时，<code>SDK</code>会通过与小程序关联的腾讯云账号获取到<code>appSecret</code>，授权通过后，再获取用户信息。否则为<code>false</code>时，则需要填写<code>appSecret</code>。</p>
+<p>这样修改后，再次请求，就能获取到用户信息了。</p>
+<h4 id="二、第一次获取用户信息"><a href="#二、第一次获取用户信息" class="headerlink" title="二、第一次获取用户信息"></a>二、第一次获取用户信息</h4><p>在模板中，<code>wafer2-client-sdk</code>封装了一下方法让我们使用。比如我们可以使用<code>request</code>发送请求。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> qcloud = <span class="built_in">require</span>(<span class="string">'../vendor/wafer2-client-sdk/index'</span>)</span><br><span class="line">...</span><br><span class="line"><span class="comment">// 请求A</span></span><br><span class="line">qcloud.request(&#123;</span><br><span class="line">    url,</span><br><span class="line">   	data,</span><br><span class="line">    method,</span><br><span class="line">    login: <span class="literal">false</span>,</span><br><span class="line">    success(result) &#123;</span><br><span class="line">    &#125;,</span><br><span class="line">    fail(error) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>通过参数<code>login</code>可以控制发送该请求<code>A</code>之前，是否先发送登录请求。如果请求<code>A</code>需要用户信息，则<code>login</code>需为<code>true</code>，否则后端的ctx.state.$wxInfo是没有用户信息的。但是在用户第一次登录之前（<code>cSessioninfo</code>表里没有该用户数据），<code>qcloud.request({ login: true })</code>会报错，返回<code>Cannot read property &#39;user_info&#39; of undefined</code>错误。</p>
+<p>这是因为<code>qcloud.request</code>只使用了<code>loginWithCode</code>来登录。这个方法会在<code>Header</code>加上<code>X-WX-Code</code>（其实就是<code>cSessioninfo</code>表里的<code>skey</code>）。后端通过这个code去获取对应用户的信息。但因为表里根本没有这个用户的记录，所以报了上面的错误。</p>
+<p>要怎么解决这个问题？其实模板中有类似的调用。打开<code>client/page/pages/index/index.js</code>，答案就在<code>bindGetUserInfo</code>里。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="comment">// 先获取session</span></span><br><span class="line"><span class="keyword">const</span> session = qcloud.Session.get()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. 如果session不为空，则说明用户已经登录过，即数据库里有该用户记录，则使用qcloud.loginWithCode</span></span><br><span class="line"><span class="comment">// 2. 如果session为空，则说明用户第一次登录，则调用qcloud.login，将用户信息写入数据库</span></span><br><span class="line"><span class="keyword">if</span> (session) &#123;</span><br><span class="line">    <span class="comment">// 第二次登录</span></span><br><span class="line">    <span class="comment">// 或者本地已经有登录态</span></span><br><span class="line">    <span class="comment">// 可使用本函数更新登录态</span></span><br><span class="line">    qcloud.loginWithCode(&#123;</span><br><span class="line">        success: <span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;,</span><br><span class="line">        fail: <span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 首次登录</span></span><br><span class="line">    qcloud.login(&#123;</span><br><span class="line">        success: <span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;,</span><br><span class="line">        fail: <span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>qcloud.login</code>会在<code>Header</code>增加三个字段，<code>X-WX-Code</code>、<code>X-WX-Encrypted-Data</code>、<code>X-WX-IV</code>，然后后端会在表里插入该用户的信息。</p>
+<p>所以我们需要将这段逻辑加到<code>qcloud.request</code>里。<code>qcloud.request</code>里有个<code>doRequestWithLogin</code>方法，是发送登录逻辑的。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 登录后再请求</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doRequestWithLogin</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    loginLib.loginWithCode(&#123; <span class="attr">success</span>: doRequest, <span class="attr">fail</span>: callFail &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将其修改为</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 登录后再请求</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doRequestWithLogin</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> session = Session.get()</span><br><span class="line">    <span class="keyword">if</span> (session) &#123;</span><br><span class="line">        loginLib.loginWithCode(&#123; <span class="attr">success</span>: doRequest, <span class="attr">fail</span>: callFail &#125;);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        loginLib.login(&#123; <span class="attr">success</span>: doRequest, <span class="attr">fail</span>: callFail &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Done！大功告成，再次发送请求成功！</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/微信小程序/">微信小程序</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/09/21/22-CommonJS模块规范/"><span>(WIP)22.CommonJS模块规范</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/09/21/22-CommonJS模块规范/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-09-21T11:35:17.000Z">
+          2018-09-21
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>对于JavaScript自身而言，它的规范是薄弱的。</p>
+<ul>
+<li>没有模块系统。</li>
+<li>标准库较少。</li>
+<li>没有标准接口。</li>
+<li>缺乏包管理系统。</li>
+</ul>
+<p>这使得JavaScript难以达到像Python、Ruby和Java一样，具备开发大型应用的基础能力。CommonJS规范的提出，主要是为了弥补JavaScript没有标准的缺陷。</p>
+<h3 id="CommonJS的模块规范"><a href="#CommonJS的模块规范" class="headerlink" title="CommonJS的模块规范"></a>CommonJS的模块规范</h3><p>CommonJS对模块的定义很简单，主要分为模块引用、模块定义和模块标识3个部分。</p>
+<ol>
+<li>模块引用</li>
+</ol>
+<p>我们可以通过<code>require()</code>方法，接受模块标识，来引入一个模块的API到当前上下文中。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> math = <span class="built_in">require</span>(<span class="string">'math'</span>);</span><br></pre></td></tr></table></figure></p>
+<ol start="2">
+<li>模块定义</li>
+</ol>
+<p>在Node中，一个文件就是一个模块。在模块中，上下文提供了exports对象用于到处当前模块的方法或变量，而且它是唯一导出的出口。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/WIP/">WIP</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/08/09/21-贝塞尔曲线原理简介/"><span>(WIP)21-贝塞尔曲线原理简介</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/08/09/21-贝塞尔曲线原理简介/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-08-09T06:08:04.000Z">
+          2018-08-09
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>在CSS动画中，我们会经常听到贝塞尔曲线。</p>
+<p>贝塞尔曲线，是应用于二维图形应用程序的数学曲线，一般的矢量图形软件通过它来精确地画出曲线。<br>最初由法国工程师皮埃尔·贝济埃（Pierre Bézier）于1962年所广泛发表，他运用贝塞尔曲线来为汽车的主体进行设计，因此以他的名字命名。</p>
+<p>我们先来看看下面一条曲线。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/WIP/">WIP</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/03/27/19-http2简介/"><span>19.http2简介</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/03/27/19-http2简介/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-03-27T06:17:48.000Z">
+          2018-03-27
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>转自 <a href="https://developers.google.com/web/fundamentals/performance/http2/" target="_blank" rel="noopener">https://developers.google.com/web/fundamentals/performance/http2/</a></p>
+<p><img src="../images/19/http2.png" alt="image"></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/http/">http</a><a href="/tags/网络/">网络</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/03/27/18-http头部如何对缓存控制/"><span>18.http头部如何对缓存控制</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/03/27/18-http头部如何对缓存控制/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-03-27T05:27:23.000Z">
+          2018-03-27
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>使用缓存的目的就是在于减少计算、IO、网络等时间，可以快速的返回，特别是流量比较大的时候，可以节约很多服务器带宽和压力。</p>
+<p>一个请求从缓存的方面来说，有三个过程。</p>
+<h3 id="本地检查缓存是否过期"><a href="#本地检查缓存是否过期" class="headerlink" title="本地检查缓存是否过期"></a>本地检查缓存是否过期</h3><p><code>Expires</code>，http1.0版本定义的response头部，定义过期时间，如果本地时间发现超过过期时间，就会向服务器请求，进行文件新鲜度检测。<strong>但是会有一个问题，就是本地的操作系统时间可能偏差比较大，导致缓存时间过长或者永远都缓存不了。</strong></p>
+<p><code>Cache-control: max-age=xxx</code>，http1.1版本定义的response头部，就是为了解决操作系统时间与服务器时间相差太大的问题。文件缓存存活时间，请求完毕的时候，会记录本地的时间。再次请求的时候，此时时间减去最初记录时间，如果时间大于max-age，就会进行文件新鲜度检测。</p>
+<ul>
+<li><p>如果浏览器使用本地缓存，通过chrome调试工具，可以看到，状态是200，size是<code>from cache</code>。这个时候是没有http请求的。</p>
+</li>
+<li><p>如果缓存不存在或者没有定义这两个头部，直接进行下一步新鲜度检测。</p>
+</li>
+<li><p>如果两个都定义的话，<code>Expires</code>无效。</p>
+</li>
+<li><p>防止浏览器缓存，我们需要把两个头部都设置为0。</p>
+</li>
+</ul>
+<h3 id="服务器检测文件新鲜度"><a href="#服务器检测文件新鲜度" class="headerlink" title="服务器检测文件新鲜度"></a>服务器检测文件新鲜度</h3><p>本地缓存过期，缓存和服务器文件可能一样，也有可能不一样。如果一样的话，就没有必要返回内容。如果不一样，就返回内容，就相当于一次新的请求。</p>
+<p>怎么判断文件是否一致呢？现在的做法是通过文件生成时间或者文件进行MD5值计算。</p>
+<p><code>Last-Modified</code>，文件生成时间或者最后修改时间。下一次请求的头部，添加<code>If-Modified-Since</code>，值是上次response头部的<code>Last-Modified</code>值，和服务器进行对比，如果一样的话，直接返回304，数据内容为空。<strong>【这里也会存在一个问题，如果文件定期更新，但是文件内容不更新，岂不是白白耗费流量】</strong></p>
+<p><code>Etag</code>，服务器端对文件计算出来的一个值。下一次请求的头部，添加<code>If-None-Match</code>，和服务器进行对比，如果一样的话，直接返回304，数据内容为空。</p>
+<h3 id="服务器返回数字内容"><a href="#服务器返回数字内容" class="headerlink" title="服务器返回数字内容"></a>服务器返回数字内容</h3><p>相当于一次新的请求，状态是200.</p>
+<p>通过输出4个头部，来控制缓存，减少压力，不仅可以节省服务器和宽带资源，对用户的体验提升也是非常有帮助的。</p>
+<p>整体上可以看到可能出现的情况。200（<code>from cache</code>，无请求），304（仅仅是头部交换，没有response body返回），200（一次完整的请求，包含response body）。</p>
+<p><img src="../images/18/flow.png" alt="image"></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/http/">http</a><a href="/tags/缓存/">缓存</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/03/23/17-腾讯云前端面试题/"><span>17.腾讯云前端面试题</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/03/23/17-腾讯云前端面试题/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-03-23T03:30:52.000Z">
+          2018-03-23
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ol>
+<li>概念题</li>
+</ol>
+<ul>
+<li>跨域方法</li>
+<li>浏览器渲染机制  </li>
+<li>CSRF防范  </li>
+<li>https加密过程  </li>
+<li>双向绑定机制  </li>
+<li>nodejs的好处  </li>
+<li>OAuth机制</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/前端/">前端</a><a href="/tags/面试/">面试</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+
+<nav class="pagination">
+  
+  
+  <a href="/page/2/" class="pagination-next">Next</a>
+  
+</nav>
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

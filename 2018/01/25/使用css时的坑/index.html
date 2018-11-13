@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>使用css时的坑 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="height：100%的问题有时我们为了让元素高度占满整屏，会把元素的height设置为100%，这样貌似没问题。
+
+但只是这样会有一个问题。但元素内的内容高度大于元素高度时，超过的部分的背景色就不为元素的背景色。
+这是因为元素的overflow为visible(默认值)，这时元素的高度为可视部分的">
+  
+
+  
+  
+  <meta name="keywords" content="坑,css,样式">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="使用css时的坑"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>使用css时的坑</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/01/25/使用css时的坑/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-01-25T06:30:28.000Z">
+          2018-01-25
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ol>
+<li>height：100%的问题<br>有时我们为了让元素高度占满整屏，会把元素的height设置为100%，这样貌似没问题。<br><img src="../images/shi-yong-css-shi-de-keng/height100.png" alt="image"></li>
+</ol>
+<p>但只是这样会有一个问题。但元素内的内容高度大于元素高度时，超过的部分的背景色就不为元素的背景色。<br><img src="../images/shi-yong-css-shi-de-keng/height100-bug.png" alt="image"></p>
+<p>这是因为元素的overflow为visible(默认值)，这时元素的高度为可视部分的高度。</p>
+<p>我们把overflow设置为auto，即可修复这个问题。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/坑/">坑</a><a href="/tags/css/">css</a><a href="/tags/样式/">样式</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

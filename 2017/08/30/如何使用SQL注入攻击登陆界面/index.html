@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>如何用SQL注入攻击登陆界面 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="适用范围：
+如果一个系统是通过
+
+1SELECT * FROM accounts WHERE username=&#39;admin&#39; and password = &#39;password&#39;
+这种显式的SQL来进行登陆校验，也就是执行这个SQL语句，如果数据库中存在用户名为admin，password的用户，就">
+  
+
+  
+  
+  <meta name="keywords" content="安全,SQL攻击">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="如何用SQL注入攻击登陆界面"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>如何用SQL注入攻击登陆界面</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/08/30/如何使用SQL注入攻击登陆界面/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-08-30T09:37:08.000Z">
+          2017-08-30
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="适用范围："><a href="#适用范围：" class="headerlink" title="适用范围："></a>适用范围：</h3><ol>
+<li>如果一个系统是通过</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM accounts WHERE username=<span class="string">'admin'</span> and password = <span class="string">'password'</span></span><br></pre></td></tr></table></figure>
+<p>这种显式的SQL来进行登陆校验，也就是执行这个SQL语句，如果数据库中存在用户名为admin，password的用户，就登陆成功，否则就登陆失败。</p>
+<ol start="2">
+<li><p>系统没有对用户输入进行全面的过滤。</p>
+</li>
+<li><p>系统后台使用的是MYSQL数据库。</p>
+</li>
+<li><p>系统存在一个username为admin的用户</p>
+</li>
+</ol>
+<h3 id="攻击原理"><a href="#攻击原理" class="headerlink" title="攻击原理"></a>攻击原理</h3><p>利用MYSQL的注释功能，也就是”/*“，MYSQL执行SQL脚本时，如果遇到/*标示符，就会把之后的SQL当做注释而不会执行。</p>
+<p>正常情况下用户在用户名框内输入”admin”，在password框内输入”password”，后台执行SQL语句为<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM accounts WHERE username=<span class="string">'admin'</span> and password = <span class="string">'password'</span></span><br></pre></td></tr></table></figure></p>
+<p>但是如果用户名框内输入<code>admin&#39; AND 1=1 /\*</code>，在密码框内输入任意字符串，那么后台执行的SQL就为<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM accounts WHERE username=<span class="string">'admin'</span> AND 1=1 /* and password=<span class="string">'aa'</span></span><br></pre></td></tr></table></figure></p>
+<p>可以看到数据库实际执行的SQL为<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM accounts WHERE username=<span class="string">'admin'</span> AND 1=1</span><br></pre></td></tr></table></figure></p>
+<p>而/*后面的SQL就被当做注释而忽略掉了，登陆成功！</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/安全/">安全</a><a href="/tags/SQL攻击/">SQL攻击</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>18.http头部如何对缓存控制 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="使用缓存的目的就是在于减少计算、IO、网络等时间，可以快速的返回，特别是流量比较大的时候，可以节约很多服务器带宽和压力。
+一个请求从缓存的方面来说，有三个过程。
+本地检查缓存是否过期Expires，http1.0版本定义的response头部，定义过期时间，如果本地时间发现超过过期时间，就会向服务器">
+  
+
+  
+  
+  <meta name="keywords" content="http,缓存">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="18.http头部如何对缓存控制"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>18.http头部如何对缓存控制</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/03/27/18-http头部如何对缓存控制/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-03-27T05:27:23.000Z">
+          2018-03-27
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>使用缓存的目的就是在于减少计算、IO、网络等时间，可以快速的返回，特别是流量比较大的时候，可以节约很多服务器带宽和压力。</p>
+<p>一个请求从缓存的方面来说，有三个过程。</p>
+<h3 id="本地检查缓存是否过期"><a href="#本地检查缓存是否过期" class="headerlink" title="本地检查缓存是否过期"></a>本地检查缓存是否过期</h3><p><code>Expires</code>，http1.0版本定义的response头部，定义过期时间，如果本地时间发现超过过期时间，就会向服务器请求，进行文件新鲜度检测。<strong>但是会有一个问题，就是本地的操作系统时间可能偏差比较大，导致缓存时间过长或者永远都缓存不了。</strong></p>
+<p><code>Cache-control: max-age=xxx</code>，http1.1版本定义的response头部，就是为了解决操作系统时间与服务器时间相差太大的问题。文件缓存存活时间，请求完毕的时候，会记录本地的时间。再次请求的时候，此时时间减去最初记录时间，如果时间大于max-age，就会进行文件新鲜度检测。</p>
+<ul>
+<li><p>如果浏览器使用本地缓存，通过chrome调试工具，可以看到，状态是200，size是<code>from cache</code>。这个时候是没有http请求的。</p>
+</li>
+<li><p>如果缓存不存在或者没有定义这两个头部，直接进行下一步新鲜度检测。</p>
+</li>
+<li><p>如果两个都定义的话，<code>Expires</code>无效。</p>
+</li>
+<li><p>防止浏览器缓存，我们需要把两个头部都设置为0。</p>
+</li>
+</ul>
+<h3 id="服务器检测文件新鲜度"><a href="#服务器检测文件新鲜度" class="headerlink" title="服务器检测文件新鲜度"></a>服务器检测文件新鲜度</h3><p>本地缓存过期，缓存和服务器文件可能一样，也有可能不一样。如果一样的话，就没有必要返回内容。如果不一样，就返回内容，就相当于一次新的请求。</p>
+<p>怎么判断文件是否一致呢？现在的做法是通过文件生成时间或者文件进行MD5值计算。</p>
+<p><code>Last-Modified</code>，文件生成时间或者最后修改时间。下一次请求的头部，添加<code>If-Modified-Since</code>，值是上次response头部的<code>Last-Modified</code>值，和服务器进行对比，如果一样的话，直接返回304，数据内容为空。<strong>【这里也会存在一个问题，如果文件定期更新，但是文件内容不更新，岂不是白白耗费流量】</strong></p>
+<p><code>Etag</code>，服务器端对文件计算出来的一个值。下一次请求的头部，添加<code>If-None-Match</code>，和服务器进行对比，如果一样的话，直接返回304，数据内容为空。</p>
+<h3 id="服务器返回数字内容"><a href="#服务器返回数字内容" class="headerlink" title="服务器返回数字内容"></a>服务器返回数字内容</h3><p>相当于一次新的请求，状态是200.</p>
+<p>通过输出4个头部，来控制缓存，减少压力，不仅可以节省服务器和宽带资源，对用户的体验提升也是非常有帮助的。</p>
+<p>整体上可以看到可能出现的情况。200（<code>from cache</code>，无请求），304（仅仅是头部交换，没有response body返回），200（一次完整的请求，包含response body）。</p>
+<p><img src="../images/18/flow.png" alt="image"></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/http/">http</a><a href="/tags/缓存/">缓存</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

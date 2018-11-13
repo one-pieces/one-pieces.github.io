@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>(WIP)22.CommonJS模块规范 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="对于JavaScript自身而言，它的规范是薄弱的。
+
+没有模块系统。
+标准库较少。
+没有标准接口。
+缺乏包管理系统。
+
+这使得JavaScript难以达到像Python、Ruby和Java一样，具备开发大型应用的基础能力。CommonJS规范的提出，主要是为了弥补JavaScript没有标准的缺陷">
+  
+
+  
+  
+  <meta name="keywords" content="WIP">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="(WIP)22.CommonJS模块规范"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>(WIP)22.CommonJS模块规范</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/09/21/22-CommonJS模块规范/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-09-21T11:35:17.000Z">
+          2018-09-21
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>对于JavaScript自身而言，它的规范是薄弱的。</p>
+<ul>
+<li>没有模块系统。</li>
+<li>标准库较少。</li>
+<li>没有标准接口。</li>
+<li>缺乏包管理系统。</li>
+</ul>
+<p>这使得JavaScript难以达到像Python、Ruby和Java一样，具备开发大型应用的基础能力。CommonJS规范的提出，主要是为了弥补JavaScript没有标准的缺陷。</p>
+<h3 id="CommonJS的模块规范"><a href="#CommonJS的模块规范" class="headerlink" title="CommonJS的模块规范"></a>CommonJS的模块规范</h3><p>CommonJS对模块的定义很简单，主要分为模块引用、模块定义和模块标识3个部分。</p>
+<ol>
+<li>模块引用</li>
+</ol>
+<p>我们可以通过<code>require()</code>方法，接受模块标识，来引入一个模块的API到当前上下文中。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> math = <span class="built_in">require</span>(<span class="string">'math'</span>);</span><br></pre></td></tr></table></figure></p>
+<ol start="2">
+<li>模块定义</li>
+</ol>
+<p>在Node中，一个文件就是一个模块。在模块中，上下文提供了exports对象用于到处当前模块的方法或变量，而且它是唯一导出的出口。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/WIP/">WIP</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

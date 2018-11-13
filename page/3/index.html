@@ -1,0 +1,480 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Page 3 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2017/09/01/DNS查找过程/"><span>【转】DNS查找过程</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/09/01/DNS查找过程/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-09-01T09:30:28.000Z">
+          2017-09-01
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>当我们在浏览器的地址栏输入网址（譬如：<a href="http://www.google.com），然后回车，回车这一瞬间到看到页面到底发生了什么呢？" target="_blank" rel="noopener">www.google.com），然后回车，回车这一瞬间到看到页面到底发生了什么呢？</a></p>
+<blockquote>
+<p>域名解析 –&gt; 发起TCP的3次握手 –&gt; 建立TCP连接后发起http请求 –&gt; 服务器响应http请求，浏览器得到html代码 –&gt; 浏览器解析html代码，并请求html代码中的资源（如js、css、图片等） –&gt; 浏览器对页面进行渲染呈现给用户</p>
+</blockquote>
+<p>域名解析是页面加载的第一步，那么域名是如何解析的呢？以Chrome为例：</p>
+<ol>
+<li><p>Chrome浏览器会首先搜索浏览器自身的DNS缓存（缓存时间比较短，大概只有1分钟，且只能容纳1000条缓存），看自身的缓存中是否有<a href="http://www.google.com对应的条目，而且没有过期，如果有且没有过期则解析到此结束。" target="_blank" rel="noopener">www.google.com对应的条目，而且没有过期，如果有且没有过期则解析到此结束。</a></p>
+</li>
+<li><p>如果浏览器自身的缓存里面没有找到对应的条目，那么Chrome会搜索操作系统自身的DNS缓存，如果找到且没有过期则停止搜索解析到此结束。<br>注：怎么查看操作系统自身的DNS缓存，以Windows系统为例，可以在命令行下使用<code>ipconfig/displaydns</code>来进行查看。</p>
+</li>
+<li><p>如果在Windows系统的DNS缓存也没有找到，那么尝试读取hosts文件（位于<code>C:\\Windows\System32\drivers\etc</code>），看看这里面有没有该域名对应的IP地址，如果有则解析成功。</p>
+</li>
+<li><p>如果在hosts文件中也没有找到对应的条目，浏览器就会发起一个DNS的系统调用，就会想本地配置的首选DNS服务器（一般是电信运营商提供的，也可以使用像Google提供的DNS服务器）发起域名解析请求（通过的是UDP协议向DNS的53端口发起请求，这个请求是递归的请求，也就是运营商的DNS服务器必须得提供给我们该域名的IP地址），运营商的DNS服务器首先查找自身的缓存，找到对应的条目，且没有过期，则解析成功。如果没有找到对应的条目，则由运营商的DNS服务器带我们的浏览器发起迭代DNS解析请求，它首先是会找根域的DNS的IP地址（这个DNS服务器都内置13台根域的DNS的IP地址），找到根域的DNS地址，就会向其发起请求（请问<a href="http://www.google.com这个域名的IP地址是多少？），根域发现这是一个顶级域com域的一个域名，于是就告诉运营商的DNS，我不知道这个域名的IP地址，但是我知道com域的IP地址，你去找它问吧，于是运营商的DNS就得到了com域的IP地址，又向com域的IP地址发起了请求（请问www.google.com这个域名的IP地址是多少？），com域这台服务器告诉运营商的DNS我不知道www.google.com这个域名的IP地址，但是我知道google.com这个域的DNS地址，你找它去吧，于是运营商的DNS又向google.com这个域名的DNS地址(这个一般就是由域名注册商提供的，像万网，新网等)发起请求（请问www.google.com这个域名的IP地址是多少？），这个时候google.com域的DNS服务器一查，咦，果真在我这里，于是就把找到的结果发送给运营商的DNS服务器，这个时候运营商的DNS服务器就拿到了www.google.com这个域名对应的IP地址，并返回给Windows系统内核，内核又把结果返回给浏览器，终于浏览器拿到了www.google.com对应的IP地址，该进行下一步的动作了。" target="_blank" rel="noopener">www.google.com这个域名的IP地址是多少？），根域发现这是一个顶级域com域的一个域名，于是就告诉运营商的DNS，我不知道这个域名的IP地址，但是我知道com域的IP地址，你去找它问吧，于是运营商的DNS就得到了com域的IP地址，又向com域的IP地址发起了请求（请问www.google.com这个域名的IP地址是多少？），com域这台服务器告诉运营商的DNS我不知道www.google.com这个域名的IP地址，但是我知道google.com这个域的DNS地址，你找它去吧，于是运营商的DNS又向google.com这个域名的DNS地址(这个一般就是由域名注册商提供的，像万网，新网等)发起请求（请问www.google.com这个域名的IP地址是多少？），这个时候google.com域的DNS服务器一查，咦，果真在我这里，于是就把找到的结果发送给运营商的DNS服务器，这个时候运营商的DNS服务器就拿到了www.google.com这个域名对应的IP地址，并返回给Windows系统内核，内核又把结果返回给浏览器，终于浏览器拿到了www.google.com对应的IP地址，该进行下一步的动作了。</a><br>注：一般情况下是不会进行以下步骤的，如果经过以上的4个步骤，还没有解析成功，那么会进行如下步骤。</p>
+</li>
+<li><p>操作系统就会查找NetBIOS name Cache（NetBIOS名称缓存，就存在客户端电脑中），那这个缓存有什么东西呢？凡是最近一段时间内和我成功通讯的计算机的计算机名和IP地址，就都会存在这个缓存里面。什么情况下该步能解析成功呢？就是该名称正好是几分钟前和我成功通信过，那么这一步就可以成功解析。</p>
+</li>
+<li><p>如果第5步也没有成功，那会查询WINS服务器（是NetBIOS名称和IP地址对应的服务器）</p>
+</li>
+<li><p>如果第6步也没有查询成功，那么客户端就要进行广播查找</p>
+</li>
+<li><p>如果第7步也没有成功，那么客户端就读取LMHOSTS文件（和HOSTS文件同一个目录下，写法也一样）</p>
+</li>
+</ol>
+<p>如果第8步还没有解析成功，那么就宣告这次解析失败，那就无法跟目标计算机进行通信。只要这八步中有一步可以解析成功，那就可以成功和目标计算机进行通信。</p>
+<p>DNS也是开销，通常浏览器查找一个给定域名的IP地址要花费20~120毫秒，在完成域名解析之前，浏览器不能从服务器加载到任何东西。那么如何减少域名解析时间，加快页面加载速度呢？</p>
+<p>当客户端DNS缓存（浏览器和操作系统）缓存为空时，DNS查找的数量与要加载的Web页面中唯一主机名的数量相同，包括页面URL、脚本、样式表、图片、Flash对象等的主机名。减少主机名的数量就可以减少DNS查找的数量。</p>
+<p>减少唯一主机名的数量会潜在减少页面中并行下载的数量（HTTP1.1 规范建议从每个主机名并行下载两个组件，但实际上可以多个），这样减少主机名和并行下载的方案会产生矛盾，需要大家自己权衡。建议将组件放到至少两个但不多于4和主机名下，减少DNS查找的同时也允许高度并行下载。</p>
+<p> 转自：<a href="http://www.cnblogs.com/MarcoHan/p/5295398.html" target="_blank" rel="noopener">http://www.cnblogs.com/MarcoHan/p/5295398.html</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/性能优化/">性能优化</a><a href="/tags/网络请求/">网络请求</a><a href="/tags/DNS/">DNS</a><a href="/tags/转载/">转载</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2017/09/01/请求头缓存机制/"><span>【转】请求头缓存机制</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/09/01/请求头缓存机制/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-09-01T06:30:28.000Z">
+          2017-09-01
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="Expires"><a href="#Expires" class="headerlink" title="Expires"></a>Expires</h3><blockquote>
+<p>页面的初次访问者会进行很多HTTP请求，但是通过使用一个长久的Expires头，可以使这些组件被缓存，下次访问的时候，就可以减少不必要的HTTP请求，从而提高加载速度。</p>
+</blockquote>
+<p>Web服务器通过Expires头告诉客户端可以使用一个组件的当前副本，直到指定的时间为止。例如：<br>Expires: Fri, 18 Mar 2016 07:41:53 GMT</p>
+<p>Expires缺点：它要求服务器和客户端时钟严格同步；过期日期需要经常检查。</p>
+<p>HTTP1.1中引入Cache-Control来克服Expires头的限制，使用max-age指定组件被缓存多久。<br>Cache-Control: max-age=12345600</p>
+<p>若同时制定了Cache-Control和Expires，则max-age将覆盖Expires头。</p>
+<h3 id="ETag"><a href="#ETag" class="headerlink" title="ETag"></a>ETag</h3><h4 id="什么是ETag？"><a href="#什么是ETag？" class="headerlink" title="什么是ETag？"></a>什么是ETag？</h4><blockquote>
+<p>实体标签（EntityTag）是唯一标识了一个组件的一个特定版本的字符串，是web服务器用于确认缓存组件的有效性的一种机制，通常可以使用组件的某些属性来构造它。</p>
+</blockquote>
+<h4 id="条件GET请求"><a href="#条件GET请求" class="headerlink" title="条件GET请求"></a>条件GET请求</h4><p>如果组件过期了，浏览器在重用它之前必须首先检查它是否有效。浏览器将发送一个条件GET请求到服务器，服务器判断缓存还有效，则发送一个304响应，告诉浏览器可以重用缓存组件。</p>
+<p>那么服务器是根据什么判断缓存是否还有效呢？有两种方式：<br>ETag（实体标签）；<br>最新修改日期；</p>
+<h5 id="最新修改日期"><a href="#最新修改日期" class="headerlink" title="最新修改日期"></a>最新修改日期</h5><p>原始服务器通过Last-Modified响应头来返回组件的最新修改日期。</p>
+<p>举个例子：<br>当我们不带缓存访问的时候，我们需要下载google的logo，这时会发送这样一个HTTP请求：</p>
+<p>Request:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET googlelogo_color_272x92dp.png HTTP 1.1</span><br><span class="line">Host: www.google.com.hk</span><br></pre></td></tr></table></figure></p>
+<p>Response:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">HTTP 1.1 200 OK</span><br><span class="line">Last-Modified: Fri, 04 Sep 2017 22:33:08 GMT</span><br></pre></td></tr></table></figure></p>
+<p>请求网址：<a href="https://www.google.com.hk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" target="_blank" rel="noopener">https://www.google.com.hk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png</a><br>请求方法：GET<br>状态码：200 OK</p>
+<p>当需要再次访问相同组件的时候，同时缓存已经过期，浏览器会发送如下条件GET请求：</p>
+<p>Request：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GET googlelogo_color_272x92dp.png HTTP 1.1</span><br><span class="line">If-Modified-Since: Fri, 04 Sep 2017 22:33:08 GMT</span><br><span class="line">Host: www.google.com.hk</span><br></pre></td></tr></table></figure></p>
+<p>Response:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HTTP 1.1 304 Not Modified</span><br></pre></td></tr></table></figure></p>
+<p>请求网址：<a href="https://www.google.com.hk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" target="_blank" rel="noopener">https://www.google.com.hk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png</a><br>请求方法：GET<br>远程地址：127.0.0.1:1080<br>状态码：304 Not Modified<br>版本：HTTP/2.0</p>
+<h5 id="实体标签"><a href="#实体标签" class="headerlink" title="实体标签"></a>实体标签</h5><p>ETag提供了另外一种方式，用于检测浏览器缓存中的组件与原始服务器上组件是否匹配。摘抄自书上的例子：</p>
+<p>不带缓存的请求：</p>
+<p>Request：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /i/yahoo/gif HTTP 1.1</span><br><span class="line">Host us.yimg.com</span><br></pre></td></tr></table></figure></p>
+<p>Response：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HTTP 1.1 200 OK</span><br><span class="line">Last-Modified: Tue, 12 Dec 2006 03:03:59 GMT</span><br><span class="line">ETag: <span class="string">"10c24bc-4ab-457elc1f"</span></span><br></pre></td></tr></table></figure></p>
+<p>再次请求相同组件：</p>
+<p>Requset：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">GET /i/yahoo/gif http 1.1</span><br><span class="line">Host: us.yimg.com</span><br><span class="line">If-Modified-Since: Tue, 12 Dec 2006 03:03:59 GMT</span><br><span class="line">If-None-Match: <span class="string">"10c24bc-4ab-457elc1f"</span></span><br></pre></td></tr></table></figure></p>
+<p>Response：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HTTP 1.1 304 Not Modified</span><br></pre></td></tr></table></figure></p>
+<h4 id="为什么要引入ETag"><a href="#为什么要引入ETag" class="headerlink" title="为什么要引入ETag?"></a>为什么要引入ETag?</h4><p>ETag主要是为了解决Last-Modified无法解决的一些问题：</p>
+<ol>
+<li><p>一些文件也许会周期性的更改，但是它的内容并不改变（仅仅改变修改时间），这个时候我们并不希望客户端认为这个文件被修改了，而重新GET；</p>
+</li>
+<li><p>某些文件修改非常频繁，比如在秒以下的时间内进行修改，（比方说1s内修改了N次），If-Modified-Since能检查到粒度是s级的，这种修改无法判断（或者说UNIX记录MTIME只能精确到秒）；</p>
+</li>
+<li><p>某些服务器不能精确的得到文件的最后修改时间。</p>
+</li>
+</ol>
+<h4 id="ETag带来的问题"><a href="#ETag带来的问题" class="headerlink" title="ETag带来的问题"></a>ETag带来的问题</h4><p>ETag的问题在于通常使用某些属性来构造它，有些属性对于特定的部署了网站的服务器来说是唯一的。当使用集群服务器的时候，浏览器从一台服务器上获取了原始组件，之后又向另外一台不同的服务器发起条件GET请求，ETag就会出现不匹配的状况。例如：使用inode-size-timestamp来生成ETag，文件系统使用inode存储文件类型、所有者、组和访问模式等信息，在多台服务器上，就算文件大小、权限、时间戳等都相同，inode也是不同的。</p>
+<h4 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h4><ol>
+<li><p>如果使用Last-Modified不会出现任何问题，可以直接移除ETag，google的搜索首页则没有使用ETag。</p>
+</li>
+<li><p>确定要使用ETag，在配置ETag的值的时候，移除可能影响到组件集群服务器验证的属性，例如使用size-timestamp来生成时间戳。</p>
+</li>
+</ol>
+<p>转自：<a href="http://www.cnblogs.com/MarcoHan/p/5295398.html" target="_blank" rel="noopener">http://www.cnblogs.com/MarcoHan/p/5295398.html</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/性能优化/">性能优化</a><a href="/tags/网络请求/">网络请求</a><a href="/tags/转载/">转载</a><a href="/tags/缓存机制/">缓存机制</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2017/08/30/如何使用SQL注入攻击登陆界面/"><span>如何用SQL注入攻击登陆界面</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/08/30/如何使用SQL注入攻击登陆界面/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-08-30T09:37:08.000Z">
+          2017-08-30
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="适用范围："><a href="#适用范围：" class="headerlink" title="适用范围："></a>适用范围：</h3><ol>
+<li>如果一个系统是通过</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM accounts WHERE username=<span class="string">'admin'</span> and password = <span class="string">'password'</span></span><br></pre></td></tr></table></figure>
+<p>这种显式的SQL来进行登陆校验，也就是执行这个SQL语句，如果数据库中存在用户名为admin，password的用户，就登陆成功，否则就登陆失败。</p>
+<ol start="2">
+<li><p>系统没有对用户输入进行全面的过滤。</p>
+</li>
+<li><p>系统后台使用的是MYSQL数据库。</p>
+</li>
+<li><p>系统存在一个username为admin的用户</p>
+</li>
+</ol>
+<h3 id="攻击原理"><a href="#攻击原理" class="headerlink" title="攻击原理"></a>攻击原理</h3><p>利用MYSQL的注释功能，也就是”/*“，MYSQL执行SQL脚本时，如果遇到/*标示符，就会把之后的SQL当做注释而不会执行。</p>
+<p>正常情况下用户在用户名框内输入”admin”，在password框内输入”password”，后台执行SQL语句为<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM accounts WHERE username=<span class="string">'admin'</span> and password = <span class="string">'password'</span></span><br></pre></td></tr></table></figure></p>
+<p>但是如果用户名框内输入<code>admin&#39; AND 1=1 /\*</code>，在密码框内输入任意字符串，那么后台执行的SQL就为<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM accounts WHERE username=<span class="string">'admin'</span> AND 1=1 /* and password=<span class="string">'aa'</span></span><br></pre></td></tr></table></figure></p>
+<p>可以看到数据库实际执行的SQL为<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM accounts WHERE username=<span class="string">'admin'</span> AND 1=1</span><br></pre></td></tr></table></figure></p>
+<p>而/*后面的SQL就被当做注释而忽略掉了，登陆成功！</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/安全/">安全</a><a href="/tags/SQL攻击/">SQL攻击</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2017/08/30/矿池分配模式-矿池如何赚钱/"><span>矿池分配模式-矿池如何赚钱</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/08/30/矿池分配模式-矿池如何赚钱/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-08-30T06:30:28.000Z">
+          2017-08-30
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="矿池分配模式-矿池如何赚钱的？"><a href="#矿池分配模式-矿池如何赚钱的？" class="headerlink" title="矿池分配模式/矿池如何赚钱的？"></a>矿池分配模式/矿池如何赚钱的？</h3><p>在刚开始挖矿的时候，矿工都是SOLO单独挖矿，但是这种挖矿凡是的效率不高，常常会出现一段时间挖不到区块的情况，于是就有人发明了”矿池”这个东西。矿池从本质来讲是把所有矿工的算理结合在一起，在挖到矿之后根据矿工提供的算理进行平均分配。</p>
+<p>目前矿池的分配方式主要有：”PPLNS、PPS、PROP”三种。</p>
+<p>PPLNS模式：（最纯正的组队挖矿）全称Pay-Per-Last-N-Shares，意思是说”根据过去的N个股份来支付收益”，这意味着，所有的矿工一旦发现了一个区块，大家将根据每个人自己贡献的股份数量占比来分配区块中的货币。</p>
+<h3 id="在坑里的都是矿工"><a href="#在坑里的都是矿工" class="headerlink" title="在坑里的都是矿工"></a>在坑里的都是矿工</h3><h4 id="（share就是股份的意思）"><a href="#（share就是股份的意思）" class="headerlink" title="（share就是股份的意思）"></a>（share就是股份的意思）</h4><p>举个例子：假设，张三、李四、王五，这三个人在同一个PPLNS矿池中挖矿，在过去的一段时间里，张三贡献了10个股份，李四贡献了3个，王五贡献了12个，加起来是25个股份。这时矿池发现了一个区块，区块中含有25个比特币。那么，张三就会分到10/25个区块的奖励，也就是10个比特币，而李四获得3个，王五获得12个。</p>
+<p>在PPLNS模式下，运气成分你非常重要。如果矿池一天能够发现很多区块，那么大家的分红时间会非常快。如果矿池一天下来都没有发现区块，那么大家当天也就没有任何收益，收益要等到你参加的区块被完全挖掘出来才能得到分配。</p>
+<p>同时，由于PPLNS下，具有一定的滞后惯性，你的挖矿收益会有一定的延迟。比如说，你加入到一个新的PPLNS矿池，这个时候你会发现前面几个小时的收益比较低。那是因为别人在这个矿池里已经贡献了很多个share了，你是新来的，你的贡献还很少，所以分红时你的收益都是比较低的。随着时间的推移，该结算的也结算了，大家又开始进行了新一轮的运算时，你就回到和别人一样的水平了。同样道理，若你离开了PPLNS矿池不再挖矿，你贡献的share还在，在此后的一段时间里，你依然会得到分红收益，直到你的share被结算完毕。</p>
+<p>PPS模式：Pay-Per-Share方式————该方式为立即为每一个share支付报酬。该支出来源于矿池现有的比特币资金。因此可以立即体现，而不用等待区块生成完毕或者确认。这样可以避免矿池运营者幕后操纵。这种方法减少了矿工的风险，但将风险转移给了矿池的运营者。运营者可以收取手续费来弥补这些风险可能造成的损失。为了解决PPNLS那种有时候收益高，有时候没有收益的情况，PPS采用了新的算法。PPS根据你的算力在矿池中的占比，并估算了矿池每天可以获得的矿产，给你每天基本固定的收益。</p>
+<p>这么举例就很好理解：假设你的算力是100M，而整个矿池的算力是10000M，那么你就占据了矿池算力的1%。然后，假设矿池根据当前的难度和全球总算力，估算出矿池一天大约能够挖到4个区块，假定数量为100个。那么，矿池会为你每天支付全矿池1%，也就是1个币的报酬。这样，即使矿池今天只挖到1个区块，你也是获得1个币（矿池亏本）。如果矿池超额发挥，挖到了10个区块，你还是只有1个比特币的收益（矿池大赚）。</p>
+<p>PROP模式：比特币区块的产生是：由矿池发现区块后向全网络广播，经过120次确认后，才会产生区块。PPS模式是：矿工每贡献一点速度，矿池就向矿工支付相应的比特币，矿池的币还是要来自真正的区块产生，只不过在真正的区块产生之前，矿池就提前支付给了矿工。PROP模式是：矿池经过120次确认产生真正区块后，会把比特币按每个矿工的贡献分配给矿工，这种模式更符合比特币区块的产生。</p>
+<p>为什么矿工在PROP模式的矿池每天挖出的比特币数量不一样？PPS模式是由矿池提前支付的，所以只要矿工的速度稳定，每天得到的比特币数量就稳定。PROP模式是要经过120次确认，矿池才向矿工支付，由于矿池产生真正区块是由概率决定，所以矿工每天得到的比特币数量会不一样。矿工挖矿不是只挖一天两天，所以讨论着两种模式每天挖出的比特币数量是没有意义的。</p>
+<p>在PROP模式，即使暂时没有产生真正的区块，以后产生出来了真正的区块，还是会根据这个区块的贡献，分配给每个矿工。矿工挖矿至少都是挖几个月，甚至几年，所以从长远来看，这两种模式挖出比的数量是一样。</p>
+<p>以上的三种分配方式综合来看，PPS和PROP分配方式最适合矿工挖矿。另外笔者要提一下，任何矿池都存在偷算力的情况，只不过有的矿池偷得多有些矿池偷得少。如果矿池只靠那点手续费的话，恐怕早就关门大吉了！</p>
+<h3 id="矿池偷算力十分常见"><a href="#矿池偷算力十分常见" class="headerlink" title="矿池偷算力十分常见"></a>矿池偷算力十分常见</h3><p>假如你一天可以挖100个莱特币，矿池从你手里偷1个莱特币，这么小的数量一般人是不会察觉的。其实矿池的支付是根据你连接到的矿池的速度决定的，但是在这个速度方面却是可以大做文章。假如你本地的挖矿运算速度是20M，但是接入到矿池之后只显示18M，那么剩下的2M算力去哪里了？有人说这是矿池显示不正常或者网络连接不稳定的原因，其实我觉得那些都是扯淡的说法！真实的情况就是矿池偷走了你2M的算力！</p>
+<p>要知道一个矿池里面有上千个矿工，矿池从每个人的手里偷一点算力，这样积少成多，要比那0.1%手续费多几百倍！假如矿池内有1000个矿工，矿池从每个人手里偷0.5个币（这样的数量一般人察觉不到），这样算的话矿池一天就可以获得500个币！你说矿池不偷算力这可能吗？</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/挖矿/">挖矿</a><a href="/tags/比特币/">比特币</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2017/08/30/three-js/"><span>初始Three.js</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/08/30/three-js/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-08-30T06:30:28.000Z">
+          2017-08-30
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>小明是一名程序员，小红是小明的女朋友。</p>
+<p>一天晚上，他们在床上重温《海贼王》的“顶上战争”。<br>突然，小红说，我不想艾斯死。小明心头一震，“我也不想艾斯死！！！”。小明默默地把这件事情记在心里。为了完成他们两个人共同的愿望，小明苦思冥想，日夜奔波，时间也一点点地过去。</p>
+<p>一天晚上，小明把小红叫到身边，然后打开了电脑，在浏览器地址栏上敲下下面的地址：<br><a href="http://one-pieces.me/threejs-practice/one-piece-top-war/index.html" target="_blank" rel="noopener">one-pieces</a></p>
+<p>神奇的事情发生了！！！<br>雾草！艾斯出现！！！<br>滑一滑鼠标，还有七武海！！！</p>
+<p>好叼！小红激动了，抓着小明的手，小明脸上洋溢着自豪和感动！！！<br>激动之余，小红问：“这是怎么做到的？”</p>
+<p>这时小明略带诡异地笑了：“想知道吗？”<br>“想。”<br>“用Three.js啊。”小明自信地说道。<br>“Three.js?”身为程序员的女朋友，小红还是懂什么叫js，但何为Three.js（三.js ?），她不清楚。<br>“想知道吗？有点复杂哦。”<br>“不怕，我想听。”小红说道。<br>“好，那我就简单点说。”（灯光ok，摄像ok，音效ok，请开始你的表演，小明！）</p>
+<h3 id="Three-js-WebGL与OpenGL"><a href="#Three-js-WebGL与OpenGL" class="headerlink" title="Three.js, WebGL与OpenGL"></a>Three.js, WebGL与OpenGL</h3><p>提到Three.js，就必须说一下OpenGL和WebGL。<br>OpenGL大概许多人都有所听闻，它是最常用的跨平台图形处理开源库。<br>WebGL就是基于OpenGL设计的面向web的3D图形标准，它提供了一系列JavaScript API，通过这些API进行图形渲染，系统硬件会加速3D渲染，从而获得较高性能。<br>而Three.js是JavaScript编写的WebGL第三方库，通过对WebGL接口的封装与简化而形成的一个易用的图形库。</p>
+<h3 id="WebGL与Three-js对比"><a href="#WebGL与Three-js对比" class="headerlink" title="WebGL与Three.js对比"></a>WebGL与Three.js对比</h3><p>通过上面的简介，我们知道WebGL和Three.js都可以进行Web端的3D图形开发。那问题来了，既然我们有了WebGL，为什么还需要Three.js？<br>这是因为前端工程师想要短时间上手WebGL还是挺有难度的。<br>WebGL门槛相对较高，需要相对较多的数学知识。虽然WebGL提供的是面向前端的API，但本质上WebGL跟前端开发完成是两个不同的方向，知识的重叠很少。相关性只是他们都在web平台上，都是用JavaScript而已。一个前端程序员或许还熟悉解析几何，但是还熟悉线性代数的应该寥寥无几了（比如求个逆转置矩阵试试？），更何况使用中强调矩阵运算中的物理意义，这在教学中也是比较缺失的。<br>于是，Three.js对WebGL提供的接口进行了非常好的封装，简化了很多细节，大大降低了学习成本。并且，几乎没有损失WebGL的灵活性。<br>因此，从Three.js入手是值得推荐的，这可以让你在较短的学习后就能面对大部分需求场景。</p>
+<h3 id="Three-js中的一些概念"><a href="#Three-js中的一些概念" class="headerlink" title="Three.js中的一些概念"></a>Three.js中的一些概念</h3><p>想在屏幕上展示3D物体，大体上的思路是这样的：</p>
+<ol>
+<li>创建一个三维空间，Three.js称之为场景（Scene）</li>
+<li>确定一个观察点，并设置观察的方向和角度，Three.js称之为相机（Camera）</li>
+<li>在场景中添加供观察的物体，Three.js中有很多种物体，如Mesh、Group、Line等，他们都继承自Object3D类。</li>
+<li>最后我们需要把所有的东西渲染到屏幕上，这就是Three.js中的Renderer的作用。</li>
+</ol>
+<p>下面来仔细看看这些概念吧</p>
+<h4 id="Scene"><a href="#Scene" class="headerlink" title="Scene"></a>Scene</h4><p>放置所有物体的空间容器，对应现实的三维空间。创建一个场景也很简单，只需直接new一个Scene类即可。</p>
+<pre><code>var scene = new THREE.Scene();
+</code></pre><h4 id="Camera"><a href="#Camera" class="headerlink" title="Camera"></a>Camera</h4><p>Camera相机，这个很好理解。“所见即所得”。虽然我是一个唯物主义者，不过只有被看到才能被感知。相机就相当于我们的眼睛，为了观察这个世界，我们需要描述某个物体的位置。描述物体位置需要用到坐标系。常用的坐标系有左手坐标系和右手坐标系。</p>
+<p>Three.js采用的是右手坐标系。</p>
+<p>Three.js中一共有四种相机，分别为CubeCamera、OrthographicCamera、PerspectiveCamera、StereoCamera，它们都继承自Camera类。我们常用的有两种，正投影相机THREE.OrthographicCamera和透视投影相机THREE.PerspectiveCamera。</p>
+<h4 id="三维投影"><a href="#三维投影" class="headerlink" title="三维投影"></a>三维投影</h4><p>正投影相机THREE.OrthographicCamera和透视投影相机THREE.PerspectiveCamera，相信学过绘画的人一下子就能明白，它们对应三维投影中的正交投影和透视投影。</p>
+<p>上面左图是正交投影，物体反射的光平行投射到屏幕上，其大小始终不变，所以远近的物体大小一样。在渲染一些2D效果和UI元素的时候会用到。右图是透视投影，符合我们平时看东西的感觉，近大远小，经常用在3D场景中。</p>
+<h3 id="视景体"><a href="#视景体" class="headerlink" title="视景体"></a>视景体</h3><p>视景体是一个比较重要的概念。它是指成像景物所在空间的集合。简单点说，视景体是一个几何体，只有在视景体内的物体才会被我们看到，视景体之外的物体将被裁剪掉（所见即所得）。这是为了去除不必要的计算。通过变换视景体，我们就得到不同的相机。</p>
+<p>正交投影相机OrthographicCamera的视景体是一个长方体，其构造函数为OrthographicCamera( left, right, top, bottom, near, far )。把Camera看作一个点，left则表示视景体左平面在左右方向上与Camera的距离，另外几个参数同理。于是六个参数分别定义了视景体六个面的位置。我们可以近似地认为，视景体里的物体平行投影到近平面上，然后近平面上的图像被渲染到屏幕上。</p>
+<p>透视投影相机PerspectiveCamera的视景体是一个四棱台，其构造函数为PerspectiveCamera( fov, aspect, near, far )。fov即field of view，即视野，对应着图中的视角，是上下两面的夹角。aspect是近平面的宽高比。再加上近平面距离near，远平面距离far，就可以唯一确定这个视景体了。</p>
+<h4 id="Objects"><a href="#Objects" class="headerlink" title="Objects"></a>Objects</h4><p>Objects就是三维空间里的物体。Three.js中提供了很多类型的物体，它们都继承自Object3D类，这里我们只看Mesh。</p>
+<h4 id="Mesh"><a href="#Mesh" class="headerlink" title="Mesh"></a>Mesh</h4><p>有时当你察觉不到时，它就不在。这一点在计算机图形学中得到充分地体现。在计算机的世界里，一条弧线是由有限个点构成的有限条线段连接得到的。当线段数量越多，长度就越短，当达到你无法察觉这是线段时，一条平滑的弧线就出现了。<br>计算机的三维模型也是类似的。只不过线段变成了平面，普遍用三角形组成的网格来描述。我们把这种模型称之为Mesh模型。</p>
+<p>这就是在3D图形处理中，与图像处理领域的lena图齐名的斯坦福兔子。随着三角形数量的增加，它的表面将会越来越平滑。<br>在Three.js中，Mesh的构造函数为Mesh( geometry, material )。geometry是它的形状，material是它的材质。</p>
+<h4 id="Geometry"><a href="#Geometry" class="headerlink" title="Geometry"></a>Geometry</h4><p>Three中有很多种形状geometry，立方体、平面、球体、圆形、圆柱、圆台等许多基本形状。Geometry通过存储模型中的点集和点间关系（哪些点构成一个三角形）来描述物体形状。因此我们也可以通过自己定义每个点的位置来构造形状。我们还可以通过导入外部的模型文件来构造更加复杂的形状。</p>
+<h4 id="Material"><a href="#Material" class="headerlink" title="Material"></a>Material</h4><p>这里的材质不仅仅指物体纹理，而是物体表面除了形状以外所有可视属性的集合，例如色彩、纹理、光滑度、透明度、反射率、折射率、发光度。<br>这里讲一下材质（Material）、贴图（Map）、纹理（Texture）的关系。<br>材质上面已经提到了，它包括了贴图一级其它。<br>贴图其实是“贴”和“图”，它包括了图片和图片应当贴到什么位置。<br>纹理嘛，其实就是“图”了。<br>Three提供了多种材质可供选择，能够自由地选择漫反射/镜面反射等材质。</p>
+<h4 id="Light"><a href="#Light" class="headerlink" title="Light"></a>Light</h4><p>神说：要有光！<br>光影效果是让画面丰富的重要因素。<br>Three提供了包括环境光AmbientLight、点光源PointLight、聚光灯SpotLight、方向光DirectionalLight、半球光HemisphereLight等多种光源。<br>只要在场景中添加需要的光源就好了。</p>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p>好了，前面说了这么多，总该写代码了~~</p>
+<p>根据上面说的，我们首先需要创建一个场景（Scene）、相机（Camera）、渲染器（Renderer）。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Three-js/">Three.js</a><a href="/tags/3D/">3D</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+
+<nav class="pagination">
+  
+  <a href="/page/2/" class="pagination-prev">Prev</a>
+  
+  
+</nav>
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

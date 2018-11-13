@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>22-Webpack提示Invalid Host Header | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="问题用vue-cli 3新建项目，将自定义域名映射到localhost，这时用自定义域名访问项目，webpack-dev-server返回了Invalid Host Header，而使用localhost或127.0.0.1则没报错。
+原因网上查了一些资料，发现这是因为webpack-dev-ser">
+  
+
+  
+  
+  <meta name="keywords" content="webpack">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="22-Webpack提示Invalid Host Header"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>22-Webpack提示Invalid Host Header</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/11/08/22-Webpack提示Invalid-Host-Header/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-11-08T07:49:09.000Z">
+          2018-11-08
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>用<a href="https://cli.vuejs.org/zh/" target="_blank" rel="noopener"><code>vue-cli 3</code></a>新建项目，将自定义域名映射到localhost，这时用自定义域名访问项目，webpack-dev-server返回了Invalid Host Header，而使用localhost或127.0.0.1则没报错。</p>
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>网上查了一些资料，发现这是因为webpack-dev-server在<a href="https://github.com/webpack/webpack-dev-server/releases/tag/v2.4.3" target="_blank" rel="noopener"><code>2.4.3</code></a>和<a href="https://github.com/webpack/webpack-dev-server/releases/tag/v1.16.4" target="_blank" rel="noopener"><code>1.16.4</code></a>这两个版本增加了security fix。这个fix增加了对<code>Host</code> header 的检验，来防止恶意网站访问你的<code>assets</code>。同时<code>webpack-dev-middleware</code>的<code>1.10.2</code>也增加了这个修改。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>考虑到这个fix可能会break项目启动，webpack-dev-server提供了几个解决方案</p>
+<ul>
+<li>新增<code>disableHostCheck</code>参数，为<code>true</code>时host check失效</li>
+<li>执行webpack-dev-server时手动添加<code>--public</code>参数，值为授权的host</li>
+</ul>
+<p>在后续的版本里，webpack-dev-server也增加了相关的一些参数，比如<code>allowedHosts</code>(<a href="https://github.com/webpack/webpack-dev-server/releases/tag/v2.5.0" target="_blank" rel="noopener"><code>2.5.0</code></a>)。</p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://tonghuashuo.github.io/blog/webpack-dev-server-invalid-host-header.html" target="_blank" rel="noopener">解决 Webpack “Invalid Host Header”</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/webpack/">webpack</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>23.浏览器JavaScript执行的时间线 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="前言我们知道浏览器的渲染线程和脚本线程是互斥的，JavaScript会阻塞浏览器HTML解析器，这也是为什么长时间的脚本运行可能会导致页面失去响应。因此，我们通常会把&amp;lt;script&amp;gt;放在&amp;lt;/body&amp;gt;之前，来保证非脚本的其他一切元素能尽快地得到加载和解析。然而，我们可以通过设">
+  
+
+  
+  
+  <meta name="keywords" content="JavaScript,浏览器">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="23.浏览器JavaScript执行的时间线"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>23.浏览器JavaScript执行的时间线</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/11/09/23-客户端JavaScript执行的时间线/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-11-09T07:29:40.000Z">
+          2018-11-09
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我们知道浏览器的渲染线程和脚本线程是互斥的，JavaScript会阻塞浏览器HTML解析器，这也是为什么长时间的脚本运行可能会导致页面失去响应。因此，我们通常会把<code>&lt;script&gt;</code>放在<code>&lt;/body&gt;</code>之前，来保证非脚本的其他一切元素能尽快地得到加载和解析。<br>然而，我们可以通过设置<code>&lt;scirpt&gt;</code>的<code>async</code>和<code>defer</code>来改变<code>&lt;script&gt;</code>的加载和执行顺序。在说这具体是怎样之前,我们先介绍一下浏览器JavaScript执行的时间线。</p>
+<h2 id="JavaScript的执行"><a href="#JavaScript的执行" class="headerlink" title="JavaScript的执行"></a>JavaScript的执行</h2><ol>
+<li><p>浏览器创建<code>Document</code>对象，并且开始解析Web页面，解析HTML元素和它们的文本内容后，会添加Element对象和Text节点到文档中。在这个阶段document.readystate属性的值是<code>loading</code>。</p>
+</li>
+<li><p>当HTML解析器遇到没有<code>async</code>和<code>defer</code>属性的<code>&lt;script&gt;</code>元素时，它把这些元素添加到文档中，然后执行行内或者外部脚步。这些脚本会同步执行，并且在脚本下载（如果需要）和执行时，HTML解析器会暂停。这样脚本就可以用<code>document.write()</code>来把文本插入到输入流中。解析器恢复时这些文本会成为文档的一部分。同步脚本经常简单定义函数和注册后面使用的注册事件处理程序，但它们可以遍历和操作文档树，因为在它们执行时已经存在了。这样，同步脚本可以看到它自己的<code>&lt;script&gt;</code>元素和它们之前的文档内容。</p>
+</li>
+<li><p>当解析器遇到设置了<code>async</code>属性的<code>&lt;script&gt;</code>元素时，它开始下载脚本文本，并继续解析文档。脚本会在它下载完成后尽快执行，但是解析器没有停下来等它下载。异步脚本禁止使用<code>document.write()</code>方法。它们可以看到自己的<code>&lt;script&gt;</code>元素和它之前的所有文档元素，并且可能或干脆不访问其他的文档内容。</p>
+</li>
+<li><p>当文档完成解析，<code>document.readyState</code>属性变成<code>interactive</code>。</p>
+</li>
+<li><p>所有有<code>defer</code>属性的脚本，会按它们在文档里的出现顺序执行。异步脚本可能也会在这个时间执行。延迟脚本能访问完整的文档树，禁止使用<code>document.write()</code>方法。</p>
+</li>
+<li><p>浏览器在<code>Document</code>对象上触发<code>DOMContentLoaded</code>事件。这标志着程序执行从同步脚本执行阶段转换到了异步事件驱动阶段。但要注意，这时可能还有异步脚本没有执行完成。</p>
+</li>
+<li><p>这时，文档已经完全解析完成，但是浏览器可能还在等待其他内容载入，比如图片。当所有这些内容完成载入时，并且所有异步脚本完成载入和执行，<code>document.readyState</code>属性改变为<code>complete</code>，浏览器触发<code>Window</code>对象上的<code>load</code>事件。</p>
+</li>
+<li><p>从此刻起，会调用异步事件，以异步响应用户输入事件、网络事件、计时器过期等。</p>
+</li>
+</ol>
+<p>需要注意的是，这是一条理想的时间线，每种浏览器的具体细节实现可能不一样。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>经过上面的分析，我们可以总结一下。当浏览器遇到<code>&lt;script&gt;</code>脚本时：</p>
+<ol>
+<li><p>同步脚本<code>&lt;script src=&quot;script.js&quot;&gt;&lt;/script&gt;</code><br> 没有<code>defer</code>或<code>async</code>，浏览器会立即加载并执行指定的脚本，<code>立即</code>指的是在渲染该<code>&lt;script&gt;</code>标签之下的文档元素之前，也就是说文档解析器会暂停，浏览器读到就加载并执行。</p>
+</li>
+<li><p>异步脚本<code>&lt;script async src=&quot;script.js&quot;&gt;&lt;/script&gt;</code><br> 有<code>async</code>，加载和渲染后续文档元素的过程和<code>script.js</code>的加载与执行并行进行（异步）。</p>
+</li>
+<li><p>延迟脚本<code>&lt;script defer src=&quot;script.js&quot;&gt;&lt;/script&gt;</code><br> 有<code>defer</code>，加载后续文档元素的过程和<code>script.js</code>的加载并行进行（异步），但是<code>script.js</code>的执行要在所有元素解析完成（<code>document.readyState</code>属性变成<code>interactive</code>）之后，<code>DOMContentLoaded</code>事件触发之前完成。</p>
+</li>
+</ol>
+<p>最后用一张图来总结：<br><img src="../images/23/1.png" alt="image"></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/JavaScript/">JavaScript</a><a href="/tags/浏览器/">浏览器</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

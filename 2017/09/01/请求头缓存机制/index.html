@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>【转】请求头缓存机制 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="Expires
+页面的初次访问者会进行很多HTTP请求，但是通过使用一个长久的Expires头，可以使这些组件被缓存，下次访问的时候，就可以减少不必要的HTTP请求，从而提高加载速度。
+
+Web服务器通过Expires头告诉客户端可以使用一个组件的当前副本，直到指定的时间为止。例如：Expires:">
+  
+
+  
+  
+  <meta name="keywords" content="性能优化,网络请求,转载,缓存机制">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="【转】请求头缓存机制"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>【转】请求头缓存机制</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/09/01/请求头缓存机制/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-09-01T06:30:28.000Z">
+          2017-09-01
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="Expires"><a href="#Expires" class="headerlink" title="Expires"></a>Expires</h3><blockquote>
+<p>页面的初次访问者会进行很多HTTP请求，但是通过使用一个长久的Expires头，可以使这些组件被缓存，下次访问的时候，就可以减少不必要的HTTP请求，从而提高加载速度。</p>
+</blockquote>
+<p>Web服务器通过Expires头告诉客户端可以使用一个组件的当前副本，直到指定的时间为止。例如：<br>Expires: Fri, 18 Mar 2016 07:41:53 GMT</p>
+<p>Expires缺点：它要求服务器和客户端时钟严格同步；过期日期需要经常检查。</p>
+<p>HTTP1.1中引入Cache-Control来克服Expires头的限制，使用max-age指定组件被缓存多久。<br>Cache-Control: max-age=12345600</p>
+<p>若同时制定了Cache-Control和Expires，则max-age将覆盖Expires头。</p>
+<h3 id="ETag"><a href="#ETag" class="headerlink" title="ETag"></a>ETag</h3><h4 id="什么是ETag？"><a href="#什么是ETag？" class="headerlink" title="什么是ETag？"></a>什么是ETag？</h4><blockquote>
+<p>实体标签（EntityTag）是唯一标识了一个组件的一个特定版本的字符串，是web服务器用于确认缓存组件的有效性的一种机制，通常可以使用组件的某些属性来构造它。</p>
+</blockquote>
+<h4 id="条件GET请求"><a href="#条件GET请求" class="headerlink" title="条件GET请求"></a>条件GET请求</h4><p>如果组件过期了，浏览器在重用它之前必须首先检查它是否有效。浏览器将发送一个条件GET请求到服务器，服务器判断缓存还有效，则发送一个304响应，告诉浏览器可以重用缓存组件。</p>
+<p>那么服务器是根据什么判断缓存是否还有效呢？有两种方式：<br>ETag（实体标签）；<br>最新修改日期；</p>
+<h5 id="最新修改日期"><a href="#最新修改日期" class="headerlink" title="最新修改日期"></a>最新修改日期</h5><p>原始服务器通过Last-Modified响应头来返回组件的最新修改日期。</p>
+<p>举个例子：<br>当我们不带缓存访问的时候，我们需要下载google的logo，这时会发送这样一个HTTP请求：</p>
+<p>Request:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET googlelogo_color_272x92dp.png HTTP 1.1</span><br><span class="line">Host: www.google.com.hk</span><br></pre></td></tr></table></figure></p>
+<p>Response:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">HTTP 1.1 200 OK</span><br><span class="line">Last-Modified: Fri, 04 Sep 2017 22:33:08 GMT</span><br></pre></td></tr></table></figure></p>
+<p>请求网址：<a href="https://www.google.com.hk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" target="_blank" rel="noopener">https://www.google.com.hk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png</a><br>请求方法：GET<br>状态码：200 OK</p>
+<p>当需要再次访问相同组件的时候，同时缓存已经过期，浏览器会发送如下条件GET请求：</p>
+<p>Request：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GET googlelogo_color_272x92dp.png HTTP 1.1</span><br><span class="line">If-Modified-Since: Fri, 04 Sep 2017 22:33:08 GMT</span><br><span class="line">Host: www.google.com.hk</span><br></pre></td></tr></table></figure></p>
+<p>Response:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HTTP 1.1 304 Not Modified</span><br></pre></td></tr></table></figure></p>
+<p>请求网址：<a href="https://www.google.com.hk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" target="_blank" rel="noopener">https://www.google.com.hk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png</a><br>请求方法：GET<br>远程地址：127.0.0.1:1080<br>状态码：304 Not Modified<br>版本：HTTP/2.0</p>
+<h5 id="实体标签"><a href="#实体标签" class="headerlink" title="实体标签"></a>实体标签</h5><p>ETag提供了另外一种方式，用于检测浏览器缓存中的组件与原始服务器上组件是否匹配。摘抄自书上的例子：</p>
+<p>不带缓存的请求：</p>
+<p>Request：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /i/yahoo/gif HTTP 1.1</span><br><span class="line">Host us.yimg.com</span><br></pre></td></tr></table></figure></p>
+<p>Response：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HTTP 1.1 200 OK</span><br><span class="line">Last-Modified: Tue, 12 Dec 2006 03:03:59 GMT</span><br><span class="line">ETag: <span class="string">"10c24bc-4ab-457elc1f"</span></span><br></pre></td></tr></table></figure></p>
+<p>再次请求相同组件：</p>
+<p>Requset：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">GET /i/yahoo/gif http 1.1</span><br><span class="line">Host: us.yimg.com</span><br><span class="line">If-Modified-Since: Tue, 12 Dec 2006 03:03:59 GMT</span><br><span class="line">If-None-Match: <span class="string">"10c24bc-4ab-457elc1f"</span></span><br></pre></td></tr></table></figure></p>
+<p>Response：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HTTP 1.1 304 Not Modified</span><br></pre></td></tr></table></figure></p>
+<h4 id="为什么要引入ETag"><a href="#为什么要引入ETag" class="headerlink" title="为什么要引入ETag?"></a>为什么要引入ETag?</h4><p>ETag主要是为了解决Last-Modified无法解决的一些问题：</p>
+<ol>
+<li><p>一些文件也许会周期性的更改，但是它的内容并不改变（仅仅改变修改时间），这个时候我们并不希望客户端认为这个文件被修改了，而重新GET；</p>
+</li>
+<li><p>某些文件修改非常频繁，比如在秒以下的时间内进行修改，（比方说1s内修改了N次），If-Modified-Since能检查到粒度是s级的，这种修改无法判断（或者说UNIX记录MTIME只能精确到秒）；</p>
+</li>
+<li><p>某些服务器不能精确的得到文件的最后修改时间。</p>
+</li>
+</ol>
+<h4 id="ETag带来的问题"><a href="#ETag带来的问题" class="headerlink" title="ETag带来的问题"></a>ETag带来的问题</h4><p>ETag的问题在于通常使用某些属性来构造它，有些属性对于特定的部署了网站的服务器来说是唯一的。当使用集群服务器的时候，浏览器从一台服务器上获取了原始组件，之后又向另外一台不同的服务器发起条件GET请求，ETag就会出现不匹配的状况。例如：使用inode-size-timestamp来生成ETag，文件系统使用inode存储文件类型、所有者、组和访问模式等信息，在多台服务器上，就算文件大小、权限、时间戳等都相同，inode也是不同的。</p>
+<h4 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h4><ol>
+<li><p>如果使用Last-Modified不会出现任何问题，可以直接移除ETag，google的搜索首页则没有使用ETag。</p>
+</li>
+<li><p>确定要使用ETag，在配置ETag的值的时候，移除可能影响到组件集群服务器验证的属性，例如使用size-timestamp来生成时间戳。</p>
+</li>
+</ol>
+<p>转自：<a href="http://www.cnblogs.com/MarcoHan/p/5295398.html" target="_blank" rel="noopener">http://www.cnblogs.com/MarcoHan/p/5295398.html</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/性能优化/">性能优化</a><a href="/tags/网络请求/">网络请求</a><a href="/tags/转载/">转载</a><a href="/tags/缓存机制/">缓存机制</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

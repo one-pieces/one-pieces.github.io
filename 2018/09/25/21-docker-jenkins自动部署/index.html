@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>21.docker+jenkins自动部署前端代码 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="服务器为腾讯云Ubuntu
+
+一、安装Docker
+更新apt包
+ 1$ sudo apt update
+
+安装最新版本的Docker
+ 中文版教程： 如何在Ubuntu上安装使用Docker
+ 不过最好还是看英文版：install-using-the-repository
+ 或者使用官方Ubunt">
+  
+
+  
+  
+  <meta name="keywords" content="">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="21.docker+jenkins自动部署前端代码"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>21.docker+jenkins自动部署前端代码</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/09/25/21-docker-jenkins自动部署/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-09-25T15:12:50.000Z">
+          2018-09-25
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p>服务器为腾讯云Ubuntu</p>
+</blockquote>
+<h3 id="一、安装Docker"><a href="#一、安装Docker" class="headerlink" title="一、安装Docker"></a>一、安装Docker</h3><ol>
+<li><p>更新<code>apt</code>包</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt update</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装最新版本的Docker</p>
+<p> 中文版教程： <a href="https://cloud.tencent.com/developer/article/1167995" target="_blank" rel="noopener">如何在Ubuntu上安装使用Docker</a></p>
+<p> 不过最好还是看英文版：<a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository" target="_blank" rel="noopener">install-using-the-repository</a></p>
+<p> 或者使用官方Ubuntu存储库中提供的Docker安装包，但是可能不是最新的版本。</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用内置安装</span></span><br><span class="line">$ sudo apt-get install docker.io</span><br><span class="line"><span class="comment"># 卸载</span></span><br><span class="line">$ sudo apt-get purge docker.io</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="二、安装Jenkins"><a href="#二、安装Jenkins" class="headerlink" title="二、安装Jenkins"></a>二、安装Jenkins</h3><p>使用docker安装Jenkins非常方便，只需要执行下面命令即可。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name devops-jenkins --user=root -p 8080:8080 -p 50000:50000 -v /opt/data/jenkins_home:/var/jenkins_home -d jenkins/jenkins:lts</span><br></pre></td></tr></table></figure></p>
+<p>更多定制参数可以参考 <a href="https://github.com/jenkinsci/docker" target="_blank" rel="noopener">https://github.com/jenkinsci/docker</a></p>
+<h3 id="三、配置Jenkins"><a href="#三、配置Jenkins" class="headerlink" title="三、配置Jenkins"></a>三、配置Jenkins</h3><p>启动Jenkins之后，在浏览器输入http://部署jenkins主机IP:端口 (8080)<br><img src="../images/21/1.png" alt="image"></p>
+<p>根据提示，从输入administrator password 或者可以通过启动日志<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker logs devops-jenkins</span><br></pre></td></tr></table></figure></p>
+<p>查看这个password<br><img src="../images/21/2.png" alt="image"></p>
+<p>选择安装插件方式，这里默认第一个。<br><!-- ![image](../images/21/3.png) --></p>
+<p>进入插件安装界面，连网等待插件安装。</p>
+<p>安装完插件后，进入创建管理员界面。<br><img src="../images/21/5.png" alt="image"></p>
+<p>输入管理员信息后，点击Continue as admin。</p>
+<p><img src="../images/21/6.png" alt="image"><br>保存Jenkins URL后Jenkins就安装完毕了。</p>
+<h3 id="四、自动化流程"><a href="#四、自动化流程" class="headerlink" title="四、自动化流程"></a>四、自动化流程</h3><p>在正式使用Jenkins前，我们先来看一下自动部署的流程，具体如下：</p>
+<ul>
+<li>编写修改代码，并提交代码到代码仓库（git）</li>
+<li>Jenkins自动检测到仓库代码更新了，从仓库拉去最新代码</li>
+<li>Jenkins自动编译</li>
+<li></li>
+</ul>
+<p>Jenkins之所以流行，是因为它的高灵活性和高易用性。这得益于它的插件机制，只需安装对应功能的插件，即可使它适应各种业务场景。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

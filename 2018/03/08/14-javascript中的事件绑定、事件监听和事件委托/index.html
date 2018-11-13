@@ -1,0 +1,173 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>14.JavaScript中的事件绑定、事件监听和事件委托 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="【转自】https://www.cnblogs.com/Tacklingpioneer/p/6433959.html
+在JavaScript的学习中，我们经常会遇到JavaScript的事件机制，例如，事件绑定、事件监听、事件委托（事件代理）等。这些名词是什么意思呢，有什么作用？
+事件绑定要想让Ja">
+  
+
+  
+  
+  <meta name="keywords" content="javascript">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="14.JavaScript中的事件绑定、事件监听和事件委托"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>14.JavaScript中的事件绑定、事件监听和事件委托</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/03/08/14-javascript中的事件绑定、事件监听和事件委托/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-03-08T11:23:55.000Z">
+          2018-03-08
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>【转自】<a href="https://www.cnblogs.com/Tacklingpioneer/p/6433959.html" target="_blank" rel="noopener">https://www.cnblogs.com/Tacklingpioneer/p/6433959.html</a></p>
+<p>在JavaScript的学习中，我们经常会遇到JavaScript的事件机制，例如，事件绑定、事件监听、事件委托（事件代理）等。这些名词是什么意思呢，有什么作用？</p>
+<h2 id="事件绑定"><a href="#事件绑定" class="headerlink" title="事件绑定"></a>事件绑定</h2><p>要想让JavaScript对用户的操作作出响应，首先要对 DOM 元素绑定事件处理函数。所谓事件处理函数，就是处理用户操作的函数，不同操作对应不同的名称。</p>
+<p>在JavaScript中，有三种常用的绑定事件的方法：</p>
+<ul>
+<li>在 DOM 元素中直接绑定</li>
+<li>在JavaScript代码中绑定</li>
+<li>绑定事件监听函数</li>
+</ul>
+<h3 id="在-DOM-中直接绑定事件"><a href="#在-DOM-中直接绑定事件" class="headerlink" title="在 DOM 中直接绑定事件"></a>在 DOM 中直接绑定事件</h3><p>我们可以在 DOM 元素上绑定 onclick、onmouseover、onmouseout、onmousedown、onmouseup、onkeydown、onkeypress等。更多事件类型请查看<a href="http://www.runoob.com/jsref/dom-obj-event.html" target="_blank" rel="noopener">DOM事件</a>。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"click me"</span> <span class="attr">onclick</span>=<span class="string">"hello()"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  function hello() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello world!");</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="在JavaScript代码中绑定事件"><a href="#在JavaScript代码中绑定事件" class="headerlink" title="在JavaScript代码中绑定事件"></a>在JavaScript代码中绑定事件</h3><p>在JavaScript代码中（即 script 标签内）绑定事件可以使JavaScript代码与HTML标签分离，文档结构清晰，便于管理和开发。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"click me"</span> <span class="attr">id</span>=<span class="string">"btn"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  document.getElementById("btn").onclick = function() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello world!");</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="使用事件监听绑定事件"><a href="#使用事件监听绑定事件" class="headerlink" title="使用事件监听绑定事件"></a>使用事件监听绑定事件</h3><p>绑定事件的另一种方法是用 addEventListener() 或 attachEvent() 来绑定事件监听函数。下面详细介绍，事件监听。</p>
+<h2 id="事件监听"><a href="#事件监听" class="headerlink" title="事件监听"></a>事件监听</h2><p>关于事件监听，W3C规范中定义了3个事件阶段，依次是捕获阶段、目标阶段、冒泡阶段。</p>
+<p>起初NetScape制定了JavaScript的一套事件驱动机制（即事件捕获）。随机IE也推出了自己的一套事件驱动机制（即事件冒泡）。最后W3C规范了两种事件机制，分为捕获阶段、目标阶段、冒泡阶段。IE8以前IE一直坚持自己的事件机制（前端人员一直头疼的兼容问题），IE9以后IE也支持了W3C规范。</p>
+<h3 id="W3C规范"><a href="#W3C规范" class="headerlink" title="W3C规范"></a>W3C规范</h3><p>语法：  </p>
+<p>element.addEventListener(event, function, useCapture)</p>
+<ul>
+<li>event：（必需）事件名，支持所有<a href="http://www.runoob.com/jsref/dom-obj-event.html" target="_blank" rel="noopener">DOM事件</a></li>
+<li>function：（必需）指定要事件触发时执行的函数</li>
+<li>useCapture：（可选）指定事件是否在捕获或冒泡阶段执行。true，捕获。false，冒泡。默认false。</li>
+</ul>
+<p>注：IE8以下不支持。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"click me"</span> <span class="attr">id</span>=<span class="string">"btn1"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  document.getElementById("btn1").addEventListener("click", hello);</span></span><br><span class="line"><span class="undefined">  function hello() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello world!");</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="IE标准"><a href="#IE标准" class="headerlink" title="IE标准"></a>IE标准</h3><p>语法：</p>
+<p>element.attachEvent(event, function)</p>
+<ul>
+<li>event：（必需）事件类型。需加”on”，例如：onclick。</li>
+<li>function：（必需）指定要事件触发时执行的函数。</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"click me"</span> <span class="attr">id</span>=<span class="string">"btn2"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  document.getElementById("btn2").attachEvent("onclick", hello);</span></span><br><span class="line"><span class="undefined">  function hello() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello world!");</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="事件监听的优点"><a href="#事件监听的优点" class="headerlink" title="事件监听的优点"></a>事件监听的优点</h2><ol>
+<li>可以绑定多个事件。</li>
+</ol>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"click me"</span> <span class="attr">id</span>=<span class="string">"btn3"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  var btn3 = document.getElementById("btn3");</span></span><br><span class="line"><span class="undefined">  btn3.onclick = function() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello 1"); // 不执行</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  btn3.onclick = function() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello 2"); // 执行</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>常规的事件绑定只执行最后绑定的事件。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"click me"</span> <span class="attr">id</span>=<span class="string">"btn4"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  var btn4 = document.getElementById("btn4");</span></span><br><span class="line"><span class="undefined">  btn4.addEventListener("click", hello1);</span></span><br><span class="line"><span class="undefined">  btn4.addEventListener("click", hello2);</span></span><br><span class="line"><span class="undefined">  </span></span><br><span class="line"><span class="undefined">  function hello1() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello 1");</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  function hello2() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello 2");</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>两个事件都执行了。</p>
+<ol start="2">
+<li>可以解绑响应的事件</li>
+</ol>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"click me"</span> <span class="attr">id</span>=<span class="string">"btn5"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  var btn5 = document.getElementById("btn5");</span></span><br><span class="line"><span class="undefined">  btn5.addEventListener("click", hello1); // 执行</span></span><br><span class="line"><span class="undefined">  btn5.addEventListener("click", hello2); // 不执行</span></span><br><span class="line"><span class="undefined">  btn5.removeEventListener("click", hello2);</span></span><br><span class="line"><span class="undefined">  </span></span><br><span class="line"><span class="undefined">  function hello1() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello 1");</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  function hello2() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello 2");</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="封装事件监听"><a href="#封装事件监听" class="headerlink" title="封装事件监听"></a>封装事件监听</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"click me"</span> <span class="attr">id</span>=<span class="string">"btn5"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">// 绑定监听事件</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/javascript/">javascript</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

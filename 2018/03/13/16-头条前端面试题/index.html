@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>16.头条前端面试题 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="头条面试是用牛客网的视频链接，面试官在网页上出题，候选人通过网页编辑器写出解题代码。
+面试题一共有7道。
+
+用reduce重写map方法
+
+请实现一个range函数，range功能：
+  12range(1, 10, 3) =&amp;gt; [1, 4, 7, 10]range(&amp;apos;A&amp;apos;">
+  
+
+  
+  
+  <meta name="keywords" content="前端,面试">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="16.头条前端面试题"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>16.头条前端面试题</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/03/13/16-头条前端面试题/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-03-13T08:05:03.000Z">
+          2018-03-13
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>头条面试是用牛客网的视频链接，面试官在网页上出题，候选人通过网页编辑器写出解题代码。</p>
+<p>面试题一共有7道。</p>
+<ol>
+<li><p>用reduce重写map方法</p>
+</li>
+<li><p>请实现一个range函数，range功能：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">range(1, 10, 3) =&gt; [1, 4, 7, 10]</span><br><span class="line">range(&apos;A&apos;, &apos;F&apos;, 2) =&gt; [&apos;A&apos;, &apos;C&apos;, &apos;E&apos;]</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="3">
+<li><p>求二叉树所有根节点带叶子节点的路径组成数字的和，比如</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">		1</span><br><span class="line">	2		3</span><br><span class="line">4		5</span><br></pre></td></tr></table></figure>
+<p>  上面二叉树有124，125，13这三个数字，所有答案为124 + 125 + 13 = 362。</p>
+<p>  现有 <code>Node: { val, left, right }</code>, 请实现</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function sumTree(tree) &#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>实现一个Event类，要求具有 on\off\trigger\once 方法。</p>
+<p>  on/once都是绑定事件，其中once只执行一次；<br>  off 解除事件；<br>  trigger 触发事件；</p>
+</li>
+<li><p>请用css实现一个自适应正方形，要求宽度时屏幕宽度的一半。</p>
+</li>
+<li><p>以下html分别输出的结果是什么</p>
+ <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">	1</span><br><span class="line">	<span class="tag">&lt;<span class="name">scirpt</span>&gt;</span></span><br><span class="line">		document.write(2);</span><br><span class="line">	<span class="tag">&lt;/<span class="name">scirpt</span>&gt;</span></span><br><span class="line">	3</span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">	1</span><br><span class="line">	<span class="tag">&lt;<span class="name">scirpt</span>&gt;</span></span><br><span class="line">		window.onload = () =&gt; &#123;</span><br><span class="line">			document.write(2);</span><br><span class="line">		&#125;;	</span><br><span class="line">	<span class="tag">&lt;/<span class="name">scirpt</span>&gt;</span></span><br><span class="line">	3</span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>实现一个concat函数</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">concat(readable, (buf) =&gt; &#123;</span><br><span class="line">  console.log(buf);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/前端/">前端</a><a href="/tags/面试/">面试</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

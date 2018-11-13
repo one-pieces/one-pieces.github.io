@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>理解时间复杂度概念 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="以下内容转自算法时间复杂度的表示法O(n²)、O(n)、O(1)、O(nlogn)等是什么意思？ - 缪志威的回答 - 知乎
+在数学上定义：存在常数 c, 使得当 N &amp;gt;= c 时 T(N) &amp;lt;= f(N)，表示为T(n) = O(f(n))。
+我们先从头开始看：
+1234int aFu">
+  
+
+  
+  
+  <meta name="keywords" content="算法">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="理解时间复杂度概念"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>理解时间复杂度概念</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/03/06/12.理解时间复杂度概念/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-03-06T09:32:39.000Z">
+          2018-03-06
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>以下内容转自<br><a href="https://www.zhihu.com/question/21387264/answer/253704111" target="_blank" rel="noopener">算法时间复杂度的表示法O(n²)、O(n)、O(1)、O(nlogn)等是什么意思？ - 缪志威的回答 - 知乎</a></p>
+<p>在数学上定义：存在常数 c, 使得当 N &gt;= c 时 T(N) &lt;= f(N)，表示为T(n) = O(f(n))。</p>
+<p>我们先从头开始看：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int aFunc(void) &#123;</span><br><span class="line">   printf(&quot;Hello, World!\n&quot;);      //  需要执行 1 次</span><br><span class="line">   return 0;       // 需要执行 1 次</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么上面这个方法需要执行2次运算</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int aFunc(int n) &#123;</span><br><span class="line">   for(int i = 0; i &lt; n; i++) &#123;         // 需要执行 (n + 1) 次</span><br><span class="line">       printf(&quot;Hello, World!\n&quot;);      // 需要执行 n 次</span><br><span class="line">   &#125;</span><br><span class="line">   return 0;       // 需要执行 1 次</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法需要 (n + 1 + n + 1) = 2n + 2 次运算。</p>
+<p>我们把算法需要执行的运算次数用输入大小 n 的函数表示，即 T(n)。<br>此时为了估算算法需要的运行时间和简化算法分析，我们引入时间复杂度的概念。</p>
+<p><strong>数学上定义：存在常数 c，使得当 N &gt;= c 时 T(N) &lt;= f(N)，表示为 T(n) = O(f(n))。</strong></p>
+<p>怎么理解呢？</p>
+<p>如图：<br><img src="../images/12/1.jpg" alt="image"></p>
+<p><strong>当 N &gt;= 2 的时候，f(n) = n^2 总是大于 T(n) = n + 2 的，于是我们说 f(n) 的增长速度是大于或者等于 T(n) 的，也说 f(n) 是 T(n) 的上界，可以表示为 T(n) = O(f(n))。</strong></p>
+<p>因为 f(n) 的增长速度是大于或者等于 T(n) 的，即T(n) = O(f(n))，所以我们可以用 f(n) 的增长速度来度量 T(n) 的增长速度，所以我们说这个算法的时间复杂度是 O(f(n))。</p>
+<p><strong>所以就有了我们现在理解的时间复杂度，记作: T(n) = O(f(n))，用来度量算法的运行时间。它表示随着 输入大小n 的增大，算法执行需要的时间的增长速度可以用 f(n) 来描述。</strong></p>
+<p>显然如果 T(n) = n^2，那么 T(n) = O(n^2)，T(n) = O(n^3)，T(n) = O(n^4) 都是成立的，但是因为第一个 f(n) 的增长速度与 T(n) 是最接近的，所以第一个是最好的选择，所以我们说这个算法的复杂度是 O(n^2) 。</p>
+<p>可以参考<a href="https://www.jianshu.com/p/f4cca5ce055a" target="_blank" rel="noopener">十分钟从零搞定时间复杂度</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/算法/">算法</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>
