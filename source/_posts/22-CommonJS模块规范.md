@@ -1,7 +1,7 @@
 ---
-title: 22.CommonJS模块规范
+title: (WIP)22.CommonJS模块规范
 date: 2018-09-21 19:35:17
-tags:
+tags: [WIP]
 ---
 对于JavaScript自身而言，它的规范是薄弱的。
 
