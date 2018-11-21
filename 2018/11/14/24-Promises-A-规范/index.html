@@ -1,0 +1,254 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>24.Promises/A+ 规范 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="(原文 Promises/A+)
+一个具有互操作性的 JavaScript promises 的开源标准。
+一个 promise 代表着异步操作的最终结果。与 promise 进行交互的主要方式是通过then方法，该方法注册回调来接收 promise 的最终值或 promise 无法完成（失败）的原">
+  
+
+  
+  
+  <meta name="keywords" content="Promise,规范">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="24.Promises/A+ 规范"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>24.Promises/A+ 规范</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/11/14/24-Promises-A-规范/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-11-14T09:13:13.000Z">
+          2018-11-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>(原文 <a href="https://promisesaplus.com/" target="_blank" rel="noopener">Promises/A+</a>)</p>
+<p>一个具有互操作性的 JavaScript promises 的开源标准。</p>
+<p>一个 promise 代表着异步操作的最终结果。与 promise 进行交互的主要方式是通过then方法，该方法注册回调来接收 promise 的最终值或 promise 无法完成（失败）的原因。</p>
+<p>该规范详细说明了then方法的行为，它提供了一个可互操作的标准，使所有符合 Promises/A+ 规范的 promise 依据该标准来实现。因此，该规范应该被认为是非常稳定（stable）的。即使 Promises/A+ 组织偶尔会修改该规范，只是为了解决新发现的极端问题而加入一些比较小的向后兼容的更改，但只有经过仔细考虑，讨论和测试后，我们才会整合大的或向后不兼容的改动。</p>
+<p>Promises/A+ 阐明了早期的 Promises/A 提案的行为条款，并将其扩展，使其覆盖到现实中的例子，且忽略了未确定和有问题的部分。</p>
+<p>最后，该 Promises/A+ 规范的核心并不是规定如何新建（create），完成（fulfill），拒绝（reject） promises，而是专注于提供一个可互操作的then方法。相关规范的后续工作可能会涉及到这些主题。</p>
+<h3 id="1-术语"><a href="#1-术语" class="headerlink" title="1. 术语"></a>1. 术语</h3><p>1.1 “promise” 是一个具有符合该规范规定行为的then方法的对象或函数</p>
+<p>1.2 “thenable” 是一个定义了then方法的对象或函数。</p>
+<p>1.3 <code>值</code>（”value”） 是任意合法的JavaScript的值（包括<code>undefined</code>，一个 thenable，或者一个 promise）。</p>
+<p>1.4 <code>异常</code>（”exception”） 是 一个使用了<code>throw</code>语法抛出的值</p>
+<p>1.5 <code>原因</code>（”reason”） 是一个表示为什么 promise 被拒绝的原因。</p>
+<h3 id="2-要求"><a href="#2-要求" class="headerlink" title="2. 要求"></a>2. 要求</h3><h4 id="2-1-Promise状态"><a href="#2-1-Promise状态" class="headerlink" title="2.1 Promise状态"></a>2.1 Promise状态</h4><p>一个 Promise 必须处在以下三种状态中的一个：<code>pending</code>，<code>fulfilled</code>，<code>rejected</code>。</p>
+<ul>
+<li><p>2.1.1 当状态为<code>pending</code>时：  </p>
+<ul>
+<li>2.1.1.1 可以转换到<code>fulfilled</code>或者<code>rejected</code>。</li>
+</ul>
+</li>
+<li><p>2.1.2 当状态为<code>fulfilled</code>时：</p>
+<ul>
+<li>2.1.2.1 不能转换为其它状态。</li>
+<li>2.1.2.2 必须有一个不可修改的<code>值(value)</code>。</li>
+</ul>
+</li>
+<li><p>2.1.3 当状态为<code>rejected</code>时：</p>
+<ul>
+<li>2.1.3.1 不能转换为其它状态。</li>
+<li>2.1.3.2 必须有一个不可修改的<code>原因(reason)</code>。</li>
+</ul>
+</li>
+</ul>
+<p>上文的“不可修改”的含义是一旦创建就不能被修改（类似<code>===</code>），但并不意味着这个不可变性是深嵌套的。</p>
+<h4 id="2-2-then方法"><a href="#2-2-then方法" class="headerlink" title="2.2 then方法"></a>2.2 <code>then</code>方法</h4><p>一个 promise 必须提供一个<code>then</code>方法去获取它当前或最终的<code>值</code>或<code>原因</code>。</p>
+<p>一个 promise 的<code>then</code>方法接收两个参数：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">promise.then(onFulfilled, onRejected)</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><p>2.2.1 <code>onFulfilled</code>和<code>onRejected</code>都是可选参数：</p>
+<ul>
+<li>2.2.1.1 如果<code>onFulfilled</code>不是函数，则必须忽略它。</li>
+<li>2.2.1.1 如果<code>onRejected</code>不是函数，则必须忽略它。</li>
+</ul>
+</li>
+<li><p>2.2.2 如果<code>onFulfilled</code>是函数：</p>
+<ul>
+<li>2.2.2.1 则必须在 promise 状态转换为<code>fulfilled</code>之后调用它，且它的第一个参数为 promise 的<code>值</code>。</li>
+<li>2.2.2.2 不能在 promise 状态转换为<code>fulfilled</code>之前调用它。</li>
+<li>2.2.2.2 不能多次调用它。</li>
+</ul>
+</li>
+<li><p>2.2.3 如果<code>onRejected</code>是函数：</p>
+<ul>
+<li>2.2.3.1 则必须在 promise 状态转换为<code>rejected</code>之后调用它，且它的第一个参数为 promise 的<code>原因</code>。</li>
+<li>2.2.3.2 不能在 promise 状态转换为<code>rejected</code>之前调用它。</li>
+<li>2.2.3.2 不能多次调用它。</li>
+</ul>
+</li>
+<li><p>2.2.4 在执行上下文堆栈中仅包含平台代码<a href="#3-注释">[3.1]</a>之前，不能调用<code>onFulfilled</code>或<code>onRejected</code>。</p>
+</li>
+<li><p>2.2.5 <code>onFulfilled</code>和<code>onRejected</code>必须作为函数被调用（即没有<code>this</code>值）。<a href="#3-注释">[3.2]</a></p>
+</li>
+<li><p>2.2.6 同一个 promise 上的<code>then</code>可以被多次调用。</p>
+<ul>
+<li>2.2.6.1 如果/当 promise 为<code>fulfilled</code>时，所有相应的<code>onFulfilled</code>回调必须按其原本的调用顺序执行。</li>
+<li>2.2.6.1 如果/当 promise 为<code>onRejected</code>时，所有相应的<code>onRejected</code>回调必须按其原本的调用顺序执行。</li>
+</ul>
+</li>
+<li><p>2.2.7 <code>then</code>必须返回一个 promise。<a href="#3-注释">[3.3]</a></p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">promise2 = promise1.then(onFulfilled, onRejected);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>2.2.7.1 如果<code>onFulfilled</code>或<code>onRejected</code>返回一个<code>值</code>x，则运行 Promise 解析器（Promise Resolution Procedure）<code>[[Resolve]](promise2, x)</code>。</li>
+<li>2.2.7.2 如果<code>onFulfilled</code>或<code>onRejected</code>返回一个<code>异常（exception）</code>e，则 promise2 必须以e为<code>原因</code>被拒绝。</li>
+<li>2.2.7.3 如果<code>onFulfilled</code>不是函数且 promise1 为<code>fulfilled</code>，promise2 必须以与 promise1 相同的<code>值</code>被完成。</li>
+<li>2.2.7.3 如果<code>onRejected</code>不是函数且 promise1 为<code>rejected</code>，promise2 必须以与 promise1 相同的<code>原因</code>被拒绝。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-3-Promise解析器"><a href="#2-3-Promise解析器" class="headerlink" title="2.3 Promise解析器"></a>2.3 Promise解析器</h4><p>Promise 解析器（promise resolution procedure）是一个抽象操作，它将 promise 和<code>值</code>作为输入，我们将其表示为<code>[[Resolve]](promise, x)</code>。如果<code>x</code>是<code>thenable</code>，它会使 promise 采用<code>x</code>的状态，假设<code>x</code>的行为至少有点像 promise。否则，它将以<code>x</code>为<code>值</code>完成 promise。</p>
+<p>对<code>thenable</code>的这种处理使得 promise 具有互操作性，只要它们暴露出一个符合 Promises/A+ 规范的<code>then</code>方法。它还允许符合 Promises/A+ 规范的实现使用合理的<code>then</code>方法与“同化”不一致的实现。</p>
+<p>为了运行<code>[[Resolve]](promise, x)</code>，需要实现以下几点：</p>
+<ul>
+<li>2.3.1 如果 promise 和<code>x</code>引用了同个对象，则用<code>TypeError</code>作为<code>原因</code>去拒绝 promise。</li>
+<li><p>2.3.2 如果<code>x</code>是 promise，则采用它的状态：<a href="#3-注释">[3.4]</a></p>
+<ul>
+<li>2.3.2.1 如果<code>x</code>状态为<code>pending</code>，promise 必须保持<code>pending</code>直到<code>x</code>被完成或被拒绝。</li>
+<li>2.3.2.2 如果/当<code>x</code>为<code>fulfilled</code>，用相同的<code>值</code>去完成 promise。</li>
+<li>2.3.2.3 如果/当<code>x</code>为<code>rejected</code>，用相同的<code>原因</code>去拒绝 promise。</li>
+</ul>
+</li>
+<li><p>2.3.3 否则，如果<code>x</code>是一个对象或函数，</p>
+<ul>
+<li>2.3.3.1 让<code>then</code>等于<code>x.then</code>。<a href="#3-注释">[3.5]</a></li>
+<li>2.3.3.2 如果检测到属性<code>x.then</code>会导致抛出异常<code>e</code>，则用<code>e</code>作为<code>原因</code>去拒绝 promise。</li>
+<li>2.3.3.3 如果<code>then</code>是函数（译者注，也就是<code>x</code>为<code>thenable</code>），则将<code>x</code>作为<code>this</code>调用它，第一个参数为<code>resolvePromise</code>，第二个参数为<code>rejectPromise</code>，其中：<ul>
+<li>2.3.3.3.1 如果/当<code>resolvePromise</code>被调用且参数为<code>y</code>时，执行<code>[[Resolve]](promise, y)</code>。</li>
+<li>2.3.3.3.2 如果/当<code>rejectPromise</code>被调用且参数为<code>r</code>时，则以<code>r</code>为<code>原因</code>拒绝 promise。</li>
+<li>2.3.3.3.3 如果<code>resolvePromise</code>和<code>rejectPromise</code>都被调用，或者对同一个参数进行多次调用时，则处理第一次调用，且忽略后续调用。</li>
+<li>2.3.3.3.4 如果调用<code>then</code>时抛出一个异常<code>e</code>，<ul>
+<li>2.3.3.3.4.1 如果已调用<code>resolvePromise</code>或<code>rejectPromise</code>，请忽略它。</li>
+<li>2.3.3.3.4.2 否则，以<code>e</code>作为<code>原因</code>拒绝 promise。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>2.3.3.4 如果<code>then</code>不是函数，则以<code>x</code>作为<code>值</code>完成 promise。</li>
+</ul>
+</li>
+<li>2.3.4 如果<code>x</code>不是一个对象或函数，则以<code>x</code>作为<code>值</code>完成 promise。</li>
+</ul>
+<p>如果使用了在<code>thenable</code>循环链（<code>thenable</code>的<code>then</code>是<code>thenable</code>）上的<code>thenable</code>去解决 promise，那么<code>[[Resolve]](promise, thenable)</code>的递归性质最终会导致<code>[[Resolve]](promise, thenable)</code>再次被调用，上述算法将导致无限递归。我们鼓励（但不是必需）对此类递归逻辑进行检测，如果有，则以一个信息性的<code>TypeError</code>作为<code>原因</code>去拒绝 promise。<a href="#3-注释">[3.6]</a></p>
+<h3 id="3-注释"><a href="#3-注释" class="headerlink" title="3. 注释"></a>3. 注释</h3><ul>
+<li><p>3.1 这里的<code>平台代码</code>特指执行引擎，运行环境和 promise 实现的代码。在实践中，这个要求确保了<code>onFulfilled</code>和<code>onRejected</code>的异步执行，是在调用<code>then</code>的事件轮训时间片之后，且调用栈为空。这可以使用诸如 <a href="https://html.spec.whatwg.org/multipage/webappapis.html#timers" target="_blank" rel="noopener">setTimeout</a> 或 <a href="https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/setImmediate/Overview.html#processingmodel" target="_blank" rel="noopener">setImmediate</a> 之类的<code>宏任务</code>机制，或者 <a href="https://dom.spec.whatwg.org/#interface-mutationobserver" target="_blank" rel="noopener">MutationObserver</a> 或 <a href="https://nodejs.org/api/process.html#process_process_nexttick_callback" target="_blank" rel="noopener">process.nextTick</a> 之类的<code>微任务</code>机制来实现。由于 promise 的实现代码被认为是平台代码，因此它本身可能包含一个任务调度队列或<code>trampoline（跳板）</code>来调用处理程序。</p>
+</li>
+<li><p>3.2 也就是说，在严格模式（<code>use strict</code>）下，<code>this</code>将是<code>undefined</code>；在松散模式（<code>sloppy mode</code>）下，<code>this</code>将会是全局对象。</p>
+</li>
+<li><p>3.3 如果具体实现满足所有要求，我们可以允许<code>promise2 === promise1</code>。每个具体实现都应该说明它是否可以支持<code>promise2 === promise1</code>，以及在什么条件下支持。</p>
+</li>
+<li><p>3.4 一般来说，如果它来自于当前的具体实现，那<code>x</code>可以被认为是一个真正的 promise。这个条款允许我们使用特定的实现手段，让我们可以去获取被认为符合规范（译者注，比如一个自行实现了<code>then</code>方法的对象）的 promises 的状态。</p>
+</li>
+<li><p>3.5 该步骤需先存储<code>x.then</code>的引用，后续测试和调用的都是该引用，这样可以避免多次访问<code>x.then</code>属性。这些预防措施对于保证可访问属性的一致性非常重要。可访问属性的值可能会在检索之间发生变化。</p>
+</li>
+<li><p>3.6 该实现不应该对<code>thenable</code>链的深度设置某个限制值，假设超过这个限制值之后会发生无限递归。只有真正的循环才会引起一个<code>TypeError</code>错误；如果是不同的<code>thenable</code>组成一个无穷的调用链，那么一直递归其实是正确的行为。</p>
+</li>
+</ul>
+<p>在法律允许的范围内，Promises/A+ 组织已放弃 Promises/A+ Promise 规范的所有版权，以及相关或相近的权利。该声明发表于：美国。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Promise/">Promise</a><a href="/tags/规范/">规范</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

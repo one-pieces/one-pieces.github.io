@@ -59,6 +59,70 @@
 
   
     
+    <h3 class="article-title"><a href="/2018/03/23/17-腾讯云前端面试题/"><span>17.腾讯云前端面试题</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/03/23/17-腾讯云前端面试题/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-03-23T03:30:52.000Z">
+          2018-03-23
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ol>
+<li>概念题</li>
+</ol>
+<ul>
+<li>跨域方法</li>
+<li>浏览器渲染机制  </li>
+<li>CSRF防范  </li>
+<li>https加密过程  </li>
+<li>双向绑定机制  </li>
+<li>nodejs的好处  </li>
+<li>OAuth机制</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/前端/">前端</a><a href="/tags/面试/">面试</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2018/03/13/16-头条前端面试题/"><span>16.头条前端面试题</span></a></h3>
     
   
@@ -648,162 +712,6 @@
     <span class="post-tags">
       <i class="icon-tags"></i>
         <a href="/tags/比特币/">比特币</a><a href="/tags/币圈/">币圈</a><a href="/tags/虚拟货币/">虚拟货币</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2017/09/06/【转】前端扫盲之打造一个Node命令行工具/"><span>【转】前端扫盲之打造一个Node命令行工具</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2017/09/06/【转】前端扫盲之打造一个Node命令行工具/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-09-06T06:30:28.000Z">
-          2017-09-06
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p><a href="http://www.imooc.com/article/3384" target="_blank" rel="noopener">原文链接</a></p>
-<p>Node 给前端开发带来了很大的改变，促进了前端开发的自动化，我们可以简化开发工作，然后利用各种工具包生成生产环境。如运行 <code>sass src/sass/main.scss dist/css/main.css</code> 即可编译Sass文件。在实际的开发过程中，我们可能会有自己的特定需求，那么我们得学会如何创建一个Node命令行工具。</p>
-<p>命令行接口：Command Line Interface，简称CLI，是Node提供的一个用于命令行交互的工具，本质是基于Node引擎运行的。</p>
-<p>在前面的文章<a href="https://www.awesomes.cn/source/9" target="_blank" rel="noopener">前端扫盲-之打造一个自动化的前端项目</a>中，给大家留了一个问题，就是如何通过执行一条命令就生成我们需要的项目结构。今天我就带着大家一步一步解答这个问题。</p>
-<p>我们的初步设想是，在指定目录下执行一个命令（假设为autogo）<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">autogo demo</span><br></pre></td></tr></table></figure></p>
-<p>就会生成一个目录名为<code>demo</code>的项目，里面包含有我们所需的基础文件结构。</p>
-<h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>1.首先我们创建一个程序包清单（<code>package.json</code>文件）包含了该命令包的相关信息：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm init</span><br></pre></td></tr></table></figure></p>
-<p>然后根据提示输入对应的信息，也可以一路回车，待生成好<code>package.json</code>文件后再作修改。</p>
-<p>2.创建一个用于运行命令的脚本<code>bin/autogo.js</code>：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#! /usr/bin/env node</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'hello'</span>)</span><br></pre></td></tr></table></figure></p>
-<p>然后我们执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node bin/autogo.js</span><br></pre></td></tr></table></figure></p>
-<p>能够看到输出了<code>hello</code>，当然这不是我们想要的结果， 我们是要直接运行<code>autogo</code>命令就能输出<code>hello</code>。</p>
-<p>3.告诉<code>npm</code>你的命令脚本文件是哪一个，这里我们需要给<code>package.json</code>添加一个<code>bin</code>字段：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"bin"</span>: &#123;</span><br><span class="line">    <span class="attr">"autogo"</span>: <span class="string">"./bin/autogo.js"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这里我们指定<code>autogo</code>命令的执行文件为<code>./bin/autogo.js</code>.</p>
-<p>4.启用命令行：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm link</span><br></pre></td></tr></table></figure></p>
-<p>这里我们通过<code>npm link</code>在本地安装了这个包用于测试，然后就可以通过<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">autogo</span><br></pre></td></tr></table></figure></p>
-<p>来运行命令了。</p>
-<h3 id="可能遇到的问题"><a href="#可能遇到的问题" class="headerlink" title="可能遇到的问题"></a>可能遇到的问题</h3><p>1.有的同学可能在执行<code>autogo</code>命令后报下面的错误：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-bash: /usr/<span class="built_in">local</span>/bin/autogo: /usr/<span class="built_in">local</span>/bin/node^M: bad interpreter: No such file or directory</span><br></pre></td></tr></table></figure></p>
-<p>之所以出现这个错误是因为<code>bin/autogo.js</code>文件是在windows下做的编辑，windows下默认的换行是<code>\n\r</code>，而linux下默认的换行是<code>\n</code>，所以文件后的<code>\r</code>在linux下是不会被识别的，显示成了^M。</p>
-<p>要解决这个问题的办法就是改变文件的编码，这里我们需要用到<code>dos2unix</code>这个包。</p>
-<p>首先安装<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install dos2unix</span><br></pre></td></tr></table></figure></p>
-<p>然后<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dos2unix bin.autogo.js</span><br></pre></td></tr></table></figure></p>
-<p>问题就解决了。</p>
-<p>2.还有的同学可能会遇到下面这个报错<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">: No such file or directory</span><br></pre></td></tr></table></figure></p>
-<p>报这个错是因为<code>#! /usr/bin/env/node</code>没能识别出你的<code>node</code>的路径，需要将你的<code>node</code>安装路径（如<code>/usr/local/bin/</code>）加入到系统的PATH中。</p>
-<p>其实你可以在测试环境中将这个标识换成<code>#! /usr/local/bin/node</code>（这里的<code>which node</code>找到你自己的<code>node</code>路径），再运行就没问题了。但是我们之所以用<code>#! /usr/bin/env/node</code>是因为这可以动态检测出不同用户各自的<code>node</code>路径，而不是写死的，毕竟不是所有用户的<code>node</code>命令都是在<code>/usr/local/bin/</code>下。得确保在发布之前将其改回成<code>#! /usr/bin/env/node</code>。</p>
-<p>到此，一个本地的<code>npm</code>命令行工具就已经成功完成了，（可参见<a href="http://blog.npmjs.org/post/118810260230/building-a-simple-command-line-tool-with-npm" target="_blank" rel="noopener">官方文档</a>）接下来我们就来完善具体的功能。</p>
-<h2 id="创建项目结构"><a href="#创建项目结构" class="headerlink" title="创建项目结构"></a>创建项目结构</h2><p>我们需要的项目结构大致如下，包含了所需的文件和文件夹（<a href="https://github.com/bimohxh/autogo/tree/master/structure" target="_blank" rel="noopener">详见</a>）。</p>
-<p>要创建上面的结构，我们可以通过程序来创建多个文件和文件夹，但是对于这么多文件，而且每个文件里或许还有更多内容，所以我们应该用一个更简便的方法。</p>
-<p>实际上我们可以先创建一个完整的结构，然后在执行命令时，通过程序把这些文件和文件夹整个复制到目标项目文件夹中去，最后再对某些文件做一些修改即可。</p>
-<p>按照这个思路，我们根据上面的结构，将这些文件和文件夹创建到<code>structure</code>下，然后我们创建一个生成结构的方法<code>lib/generateStructure.js</code>（这里我们将功能模块放在<code>lib/</code>目录下）</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="built_in">Promise</span> = <span class="built_in">require</span>(<span class="string">'bluebird'</span>),</span><br><span class="line">    fs = <span class="built_in">Promise</span>.promisifyAll(<span class="built_in">require</span>(<span class="string">'fs-extra'</span>));</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">generateStructure</span>(<span class="params">project</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> fs.copyAsync(<span class="string">'structure'</span>, project, &#123; <span class="attr">clobber</span>: <span class="literal">true</span> &#125;)</span><br><span class="line">  .then(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = generateStructure;</span><br></pre></td></tr></table></figure>
-<p>上面的代码就是通过<code>fs-extra</code>这个包（<a href="https://www.npmjs.com/package/fs-extra" target="_blank" rel="noopener">查看文档</a>）将<code>structure</code>目录下的内容复制到<code>project</code>参数的目标文件夹中。<code>fs-extra</code>是对<code>fs</code>包的一个扩展，方便我们对文件的操作。</p>
-<p>这里我们用到了<code>bluebrid</code>（<a href="https://www.npmjs.com/package/bluebird" target="_blank" rel="noopener">查看文档</a>），这是一个实现Promise的库，因为这里牵涉到了对文件的操作，所以会有异步方法，而Promise就是专门解决这些异步操作嵌套回调的，能将其扁平化。</p>
-<p>自然，我们应该安装这两个包：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install bluebird --save</span><br><span class="line">npm install fs-extra --save</span><br></pre></td></tr></table></figure></p>
-<p>这里加上<code>--save</code>参数是为了在安装后自动将该依赖加入到<code>package.json</code>中。然后我们改造一下<code>bin/autogo.js</code>。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#! /usr/bin/env node</span></span><br><span class="line"><span class="keyword">var</span> gs = <span class="built_in">require</span>(<span class="string">'../lib/generateStructure'</span>);</span><br><span class="line"></span><br><span class="line">gs(<span class="string">"demo"</span>);</span><br></pre></td></tr></table></figure></p>
-<p>然后执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">autogo</span><br></pre></td></tr></table></figure></p>
-<p>可以看到当前目录下生成了一个<code>demo</code>文件夹，里面包含了和<code>structure</code>相同的文件结构。</p>
-<p>我们的目标已经初步达成了，接下来我们就来细化该命令。</p>
-<h2 id="命令参数"><a href="#命令参数" class="headerlink" title="命令参数"></a>命令参数</h2><p>上面的命令中，我们执行<code>autogo</code>时，是生成了一个固定的<code>demo</code>项目，实际上这个名字是不能写死的，而是应该通过命令中的参数传进去。像下面这样：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">autogo demo</span><br></pre></td></tr></table></figure></p>
-<p>因此，我们得在<code>bin/autogo.js</code>中去接收参数。为了方便起见，我们这里直接使用一个专门用于处理命令行工具的包<code>commander</code>（<a href="https://www.npmjs.com/package/commander" target="_blank" rel="noopener">文档</a>）。</p>
-<p>同样，首先安装<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install commander --save</span><br></pre></td></tr></table></figure></p>
-<p>然后改造<code>bin/autogo.js</code>为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#! /usr/bin/env node</span></span><br><span class="line"><span class="keyword">var</span> program = <span class="built_in">require</span>(<span class="string">'commander'</span>),</span><br><span class="line">    gs = <span class="built_in">require</span>(<span class="string">'../lib/generateStructure'</span>);</span><br><span class="line"></span><br><span class="line">program</span><br><span class="line">  .version(<span class="built_in">require</span>(<span class="string">'../package.json'</span>).version)</span><br><span class="line">  .usage(<span class="string">'[options] [project name]'</span>)</span><br><span class="line">  .parse(process.argv);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> pname = program.args[<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line">gs(pname);</span><br></pre></td></tr></table></figure></p>
-<p>这里的<code>.version()</code>意思是返回该命令包的版本号，即运行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">autogo --version //- 返回1.0.0</span><br></pre></td></tr></table></figure></p>
-<p>会返回<code>package.json</code>中定义的版本号。</p>
-<p><code>.usage()</code>显示基本使用方法。执行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">autogo --<span class="built_in">help</span></span><br></pre></td></tr></table></figure>
-<p>会输出：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Usage: autogo [options] [project name]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">    -h, --<span class="built_in">help</span>      output usage information</span><br><span class="line">    -V, --version   output the version number</span><br></pre></td></tr></table></figure></p>
-<p>可以看到<code>Commander</code>帮我们做好了用法（<code>Usage</code>）信息，以及两个参数<code>(Options) -h, --help</code>和<code>-V， --version</code>。</p>
-<p><code>.parse(process.argv);</code>是将接收到的参数加入<code>Commander</code>的处理管道。</p>
-<p><code>program.args</code>是获取到命令后的参数，注意这里是一个数组。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">autogo          //- 返回  []</span><br><span class="line">autogo demo     //- 返回  [<span class="string">'demo'</span>]</span><br><span class="line">autogo demo hello    //- 返回  [<span class="string">'demo'</span>, <span class="string">'hello'</span>]</span><br></pre></td></tr></table></figure></p>
-<p>这里我们取第一个参数作为项目名，然后调用<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> pname = program.args[<span class="number">0</span>];</span><br><span class="line">gs(pname);</span><br></pre></td></tr></table></figure></p>
-<p>现在我们执行：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">autogo demo2</span><br></pre></td></tr></table></figure></p>
-<p>就可以看到新的项目<code>demo2</code>生成了，看上去我们已经完成工作了，只要运行<code>autogo &lt;项目名&gt;</code>就可以生成一个新的项目结构，里面包含了处理<code>Sass</code>、<code>Coffee</code>、<code>jage</code>的<code>gulp</code>构建工具。</p>
-<p>如果我们直接运行<code>autogo</code>是会报错的，因为没有传入项目名，实际上我们在运行一个命令而不传入任何参数时，可以直接返回帮助信息：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> pname = program.args[<span class="number">0</span>];</span><br><span class="line"><span class="keyword">if</span> (!pname) program.help();</span><br></pre></td></tr></table></figure></p>
-<p>上面我们判断是否存在参数，如果不存在就调用<code>program.help()</code>方法，这是<code>commander</code>为我们提供的显示帮助信息的方法，可以直接调用。</p>
-<p>那有同学要说了，我不想用<code>jade</code>，就喜欢写原生<code>HTML</code>，很明显我们做了多余的事，而且整个结构就不那么合理了，我们需要的是一个干净的项目结构。</p>
-<p>这个时候我们需要把与<code>jade</code>相关的文件删除掉（这里不是删<code>structure</code>目录下的文件，而是新项目下的指定文件）。与<code>jade</code>有关的文件有：<br><code>/structure/views/</code>下的<code>index.jade</code>和<code>layouts/layout.jade</code></p>
-<ul>
-<li><code>/structure/gulpfile.js</code>中的<code>templates</code>任务代码</li>
-</ul>
-<p>因此，我们得把上面这些文件和代码干掉。</p>
-<h3 id="移除指定模块"><a href="#移除指定模块" class="headerlink" title="移除指定模块"></a>移除指定模块</h3><p>首先，我们创建一个<code>lib/jadeWithout.js</code>用来移除<code>jade</code>：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="built_in">Promise</span> = <span class="built_in">require</span>(<span class="string">'bluebird'</span>),</span><br><span class="line">    fs = <span class="built_in">Promise</span>.promisifyAll(<span class="built_in">require</span>(<span class="string">'fs-extra'</span>)),</span><br><span class="line">    del = <span class="built_in">require</span>(<span class="string">'../lib/delFile'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> files = [<span class="string">'/views/layouts/layout.jade'</span>, <span class="string">'/views/index.jade'</span>];</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">jadeWithout</span>(<span class="params">project</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Promise</span>.all([del(project, files)])</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">console</span>.log(<span class="string">'remove jade success'</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">module</span>.exports = jadeWithout;</span><br></pre></td></tr></table></figure></p>
-<p>这里我们将指定的files数组中的文件都删除了，这里我们用了一个公共的删除文件模块<code>/lib/delFile.js</code>：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="built_in">Promise</span> = <span class="built_in">require</span>(<span class="string">'bluebird'</span>),</span><br><span class="line">    fs = <span class="built_in">Promise</span>.promisifyAll(<span class="built_in">require</span>(<span class="string">'fs-extra'</span>));</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">del</span>(<span class="params">project, files</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> files.map(<span class="function"><span class="keyword">function</span>(<span class="params">item</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> fs.removeAsync(project + item);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">delFile</span>(<span class="params">project, files</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Promise</span>.all(del[project, files]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">module</span>.exports = delFile;</span><br></pre></td></tr></table></figure></p>
-<p>因为我们这里不光有<code>jade</code>，还有<code>sass</code>和<code>coffee</code>可以被移除，所以我们创建一个公共入口<code>withoutFile.js</code>：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="built_in">Promise</span> = <span class="built_in">require</span>(<span class="string">'bluebird'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">deal</span>(<span class="params">project, outs</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> outs.map(<span class="function"><span class="keyword">function</span>(<span class="params">item</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> action = <span class="built_in">require</span>(<span class="string">'../lib/'</span> + item + <span class="string">'Without'</span>);</span><br><span class="line">    <span class="keyword">return</span> action(project);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">withoutFile</span>(<span class="params">project, outs</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Promise</span>.all([deal(project, outs)]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">module</span>.exports = withoutFile;</span><br></pre></td></tr></table></figure></p>
-<p>这里我们需要传入一个要移除的列表(如<code>[&#39;sass&#39;, &#39;jade&#39;]</code>)，然后对每个模块进行删除。<br>最后，我们将<code>withoutFile</code>引入到<code>bin/autogo.js</code>中：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> gs = reuqire(<span class="string">'../lib/generateStructure'</span>),</span><br><span class="line">    wf = <span class="built_in">require</span>(<span class="string">'../lib/withoutFile'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.all([gs(pname)])</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> wf(pname, [<span class="string">'jade'</span>, <span class="string">'sass'</span>]);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure></p>
-<p>然后我们再次执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">autogo demo</span><br></pre></td></tr></table></figure></p>
-<p>可看到控制台依次输出了<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">generate project success</span><br><span class="line">remove jade success</span><br><span class="line">remove sass success</span><br></pre></td></tr></table></figure></p>
-<p>而且目标项目中相关文件已经被删除了。</p>
-<p>这里我们是<code>wf(pname, [&#39;jade&#39;, &#39;sass&#39;])</code>写死了<code>outs</code>参数作为测试，实际上是要再传入一个数组，那么这个数组从哪里来呢？很明显，得从命令行参数中获取。</p>
-<p>我们希望的是这样：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">autogo --without jade demo</span><br></pre></td></tr></table></figure></p>
-<h3 id="option"><a href="#option" class="headerlink" title="option"></a>option</h3><p>commander为我们提供了一个option管道来配置命令参数，修改<code>bin/autogo.js</code>:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">program</span><br><span class="line">    .version(<span class="built_in">require</span>(<span class="string">'../package.json'</span>).version)</span><br><span class="line">    .usage(<span class="string">'[options] [project name]'</span>)</span><br><span class="line">    .option(<span class="string">'-W, --without &lt;str | array&gt;'</span>, <span class="string">'generate project without some models(value can be `sass`, `coffee`, `jade`)'</span>)</span><br><span class="line">    .parse(process.argv);</span><br></pre></td></tr></table></figure></p>
-<p>这里我们添加了<code>option</code>，其格式为<code>.option(&#39;-&lt;大写标识&gt;, --&lt;小写全称&gt; &lt;可取参数类型&gt;&#39;, &#39;功能描述&#39;)</code>。</p>
-<p>接着处理<code>without</code>参数：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> outs = program.without ? [program.without] : [];</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.all([gs(pname)])</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> wf(pname, outs);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure></p>
-<p>然后我们再运行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">autogo --without jade demo</span><br></pre></td></tr></table></figure></p>
-<p>可以看到这里只移除了jade模块，那如果我想移除多个呢？是不是可以这样：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">autogo --without [jade, sass] demo</span><br></pre></td></tr></table></figure></p>
-<p>注意，这样是会报错的，因为获取到的<code>program.without</code>是一个字符串<code>[jade, sass]</code>而不是数组，所以我们可以这样：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">autogo --without jade,sass demo</span><br></pre></td></tr></table></figure></p>
-<p><code>program.without</code>则为<code>jade,sass</code> 然后再<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">program.without.split(<span class="string">','</span>)</span><br></pre></td></tr></table></figure></p>
-<p>既可以获取到一个数组了，因此我们的代码就变成了：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> outs = program.without ? program.without.split(<span class="string">','</span>) : [];</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.all([gs(pname)])</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> wf(pname, outs);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure></p>
-<p>这下我们就可以这样运行了：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">autogo demo --without sass,jade</span><br></pre></td></tr></table></figure></p>
-<h2 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h2><p>到目前为止，我们开发的autogo还是在本地的，现在就该将其发布到<a href="https://www.npmjs.com/" target="_blank" rel="noopener">npm</a>上。</p>
-<p>1.首先我们得<a href="https://www.npmjs.com/signup" target="_blank" rel="noopener">注册一个账号</a>。</p>
-<p>2.回到项目中，执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm login</span><br></pre></td></tr></table></figure></p>
-<p>输入用户名、密码和邮箱便可将本地机器与npm连接起来了。</p>
-<p>3.执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm publish</span><br></pre></td></tr></table></figure></p>
-<p>然后回到你的npm个人主页，就可以看到我们发布成功了。<br><a href="https://www.npmjs.com/package/autogo" target="_blank" rel="noopener">https://www.npmjs.com/package/autogo</a></p>
-<p>从包的路径规则来看，是没有包含用户名的，由此可知，同名的包是不会被允许的，所以大家在跟着做的时候要给项目取一个不同的名字。</p>
-<p>然后我们来测试一下刚刚发布的包</p>
-<p>首先删除本地开发做的autogo链接<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo npm unlink</span><br></pre></td></tr></table></figure></p>
-<p>然后<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install autogo -g</span><br></pre></td></tr></table></figure></p>
-<p>注意这里需要带上<code>-g</code>参数，因为命令行是应该安装在全局环境中。安装成功后，我们切换到另外一个目录下，执行：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">autogo demo</span><br></pre></td></tr></table></figure></p>
-<p>然后结果并非我们想象的那样：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Unhandled rejection Error: ENOENT, lstat <span class="string">'structure'</span></span><br><span class="line">    at Error (native)</span><br></pre></td></tr></table></figure></p>
-<p>意思是找不到<code>structure</code>，这是怎么回事呢？</p>
-<p>实际上当我们执行<code>npm install autogo -g</code>的时候，实际上是将命令包安装在了<code>/usr/local/lib/node_modules/autogo</code>下面，所以在执行命令的目录下是找不到<code>structure</code>文件夹的。</p>
-<p>那该怎么办呢？我们能想到的就是，得在程序中去获取这个包安装的实际路径。</p>
-<p>幸运的是Node给我们提供了<code>__dirname</code>这个变量用于获取当前执行文件的路径。我们在<code>lib/generateStructure.js</code>下<code>console.log(__dirname)</code>会输出<code>/usr/local/lib/node_modules/autogo/lib</code>，然后我们把后面的<code>lib</code>去掉就是根目录了：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> root = __dirname.replace(<span class="regexp">/autogo\/lib/</span>, <span class="string">'autogo/'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">generateStructure</span>(<span class="params">project, outs</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> fs.copyAsync(root + <span class="string">'structure'</span>, project)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> err ? <span class="built_in">console</span>.error(err) : <span class="built_in">console</span>.log(<span class="string">'generate project'</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>修改后，我们按照下面的方式更新，重新安装，然后<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">autogo demo</span><br><span class="line"><span class="built_in">cd</span> demo</span><br><span class="line">npm install</span><br><span class="line">gulp watch</span><br></pre></td></tr></table></figure></p>
-<p>OK，一个新的项目诞生了，准备开发吧…</p>
-<h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><p>首先修改<code>package.json</code>配置文件中的<code>version</code>字段，比如这里我从<code>0.1.0</code>改成<code>0.1.1</code>（只能大于当前版本），然后再次<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm publish</span><br></pre></td></tr></table></figure></p>
-<p>即可成功发布新版本。</p>
-<p>想将该项目从<code>npm</code>中移除吗？执行：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm unpublish autogo --force</span><br></pre></td></tr></table></figure></p>
-<p>附：<a href="https://github.com/bimohxh/autogo" target="_blank" rel="noopener">项目代码</a></p>
-<blockquote>
-<p>原文出处：<a href="https://www.awesomes.cn/source/12" target="_blank" rel="noopener">https://www.awesomes.cn/source/12</a><br>代码源自：<a href="https://github.com/bimohxh/autogo/blob/master/bin/autogo.js#L1" target="_blank" rel="noopener">autogo.js</a></p>
-</blockquote>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/前端/">前端</a><a href="/tags/Node/">Node</a><a href="/tags/命令行工具/">命令行工具</a>
     </span>
     
 
