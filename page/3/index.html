@@ -59,6 +59,239 @@
 
   
     
+    <h3 class="article-title"><a href="/2018/01/25/使用css时的坑/"><span>使用css时的坑</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/01/25/使用css时的坑/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-01-25T06:30:28.000Z">
+          2018-01-25
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ol>
+<li>height：100%的问题<br>有时我们为了让元素高度占满整屏，会把元素的height设置为100%，这样貌似没问题。<br><img src="../images/shi-yong-css-shi-de-keng/height100.png" alt="image"></li>
+</ol>
+<p>但只是这样会有一个问题。但元素内的内容高度大于元素高度时，超过的部分的背景色就不为元素的背景色。<br><img src="../images/shi-yong-css-shi-de-keng/height100-bug.png" alt="image"></p>
+<p>这是因为元素的overflow为visible(默认值)，这时元素的高度为可视部分的高度。</p>
+<p>我们把overflow设置为auto，即可修复这个问题。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/css/">css</a><a href="/tags/样式/">样式</a><a href="/tags/坑/">坑</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2017/12/05/vue使用jsx时的坑/"><span>vue使用jsx时的坑</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/12/05/vue使用jsx时的坑/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-12-05T12:30:04.000Z">
+          2017-12-05
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ol>
+<li><p>v-model<br>在jsx中无法直接使用v-model，需要借助一个插件babel-plugin-jsx-v-model</p>
+</li>
+<li><p><component><br>在jsx中使用动态组件标签<component>会报无法找到component组件的错<br>解决方法：<br>直接使用判断语句控制该使用哪个组件</component></component></p>
+</li>
+<li><p>v-if<br>v-if在jsx中是没有作用的<br>解决办法：<br>跟<compnent>一样，直接使用判断语句</compnent></p>
+</li>
+<li><p>使用on<br>在jsx中我们要监听一个事件，可以使用on-{eventName}或者on{EventName}的形式，如</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;button on-click=&#123;<span class="keyword">this</span>.myClickListener&#125;&gt;<span class="xml"><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;button onClick=&#123;<span class="keyword">this</span>.myClickListener&#125;&gt;<span class="xml"><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p>同时，我们也可以使用on来让组件获得事件监听的能力，如<br><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;button &#123;...&#123; <span class="attr">on</span>: &#123; <span class="attr">click</span>: <span class="keyword">this</span>.myClickListener &#125;&#125;&#125;&gt;<span class="xml"><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<p>当使用on时，只能像上面一样，用解构的写法才有效，如果像下面这样写是没有效果的。<br><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;button on=&#123;&#123; <span class="attr">click</span>: <span class="keyword">this</span>.myClickListener &#125;&#125;&gt;<span class="xml"><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<p>注意！on-{eventName}或on{EventName}跟on一起写时，on会无效。比如<br><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;input onClick=&#123;<span class="keyword">this</span>.myClickListener&#125; &#123;...&#123; <span class="attr">on</span>: &#123; <span class="attr">input</span>: <span class="keyword">this</span>.myInputListener &#125; &#125;&#125; /&gt;</span><br></pre></td></tr></table></figure></p>
+<p>当触发input事件时会报错。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/坑/">坑</a><a href="/tags/vue/">vue</a><a href="/tags/jsx/">jsx</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2017/10/12/javascript-in-one-pic/"><span>JavaScript in One Pic</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/10/12/javascript-in-one-pic/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-10-12T11:23:28.000Z">
+          2017-10-12
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p><img src="https://raw.githubusercontent.com/coodict/javascript-in-one-pic/master/js%20in%20one%20pic.png" alt="image"></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/javascript/">javascript</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2017/09/09/币圈大事件/"><span>币圈大事件</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/09/09/币圈大事件/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-09-09T06:30:28.000Z">
+          2017-09-09
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p><code>2017-9-8</code><br><a href="http://www.sohu.com/a/190793469_120702?_f=index_pagerecom_3" target="_blank" rel="noopener">消息称中国虚拟货币交易所将被关闭 比特币大跌超20%</a></p>
+<p><code>2017-9-5</code><br><a href="http://www.sohu.com/a/169594064_479736" target="_blank" rel="noopener">【七部委全面叫停ICO 正式定性为非法集资】</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/比特币/">比特币</a><a href="/tags/币圈/">币圈</a><a href="/tags/虚拟货币/">虚拟货币</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2017/09/06/【转】前端扫盲之打造一个Node命令行工具/"><span>【转】前端扫盲之打造一个Node命令行工具</span></a></h3>
     
   
@@ -625,7 +858,7 @@
     Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
     </br>
     
-    &copy; 2018 Xiaolong Lin
+    &copy; 2019 Xiaolong Lin
     
   </p>
 </footer>

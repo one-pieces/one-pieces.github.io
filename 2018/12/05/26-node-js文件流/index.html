@@ -1,0 +1,328 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>26.node.js文件流 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="1.流的基本概念在一个应用程序中，流是一组有序的、有起点和终点的字节数据的传输手段。在应用程序中各种对象之间交换与传输数据时，总是先将该对象中所包含的数据转换为各种形式的流数据（即字节数据），再通过流的传输，到达目标对象后再将数据转换为该对象中可以使用的数据。
+在 Node.js 中，我们可以使用实">
+  
+
+  
+  
+  <meta name="keywords" content="node.js,文件流">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="26.node.js文件流"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>26.node.js文件流</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/12/05/26-node-js文件流/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-12-05T06:06:03.000Z">
+          2018-12-05
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="1-流的基本概念"><a href="#1-流的基本概念" class="headerlink" title="1.流的基本概念"></a>1.流的基本概念</h3><p>在一个应用程序中，流是一组有序的、有起点和终点的字节数据的传输手段。在应用程序中各种对象之间交换与传输数据时，总是先将该对象中所包含的数据转换为各种形式的流数据（即字节数据），再通过流的传输，到达目标对象后再将数据转换为该对象中可以使用的数据。</p>
+<p>在 Node.js 中，我们可以使用实现了 <code>stream.Readable</code> 或 <code>stream.Writeable</code> 接口的对象来将对象数据读取为流数据，或者将流数据写入到对象中。它们都继承了 <code>EventEmitter</code> 类的实例对象，在读取数据或写入数据的过程中，将可能触发各种事件。</p>
+<h5 id="表1-1-Node-js中的各种用于读取数据的对象"><a href="#表1-1-Node-js中的各种用于读取数据的对象" class="headerlink" title="表1-1 Node.js中的各种用于读取数据的对象"></a><center>表1-1 Node.js中的各种用于读取数据的对象</center></h5><table>
+<thead>
+<tr>
+<th>对象</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fs.ReadStream</td>
+<td>用于读取文件</td>
+</tr>
+<tr>
+<td>http.IncomingMessage</td>
+<td>代表客户端请求或服务器端响应</td>
+</tr>
+<tr>
+<td>net.Socket</td>
+<td>代表一个 socket 端口对象</td>
+</tr>
+<tr>
+<td>child.stdout</td>
+<td>用于创建子进程的标准输出流。如果子进程与父进程共享输入输出流，则子进程的标准输出流被废弃</td>
+</tr>
+<tr>
+<td>child.stderr</td>
+<td>用于创建子进程的标准错误输出流。如果子进程与父进程共享输入输出流，则子进程的标准错误输出流被废弃</td>
+</tr>
+<tr>
+<td>process.stdin</td>
+<td>用于创建进程的标准输入流</td>
+</tr>
+<tr>
+<td>Gzip<br> Deflate<br> DeflateRaw</td>
+<td>用于实现数据压缩</td>
+</tr>
+</tbody>
+</table>
+<h5 id="表1-2-读取数据的对象将会触发的事件"><a href="#表1-2-读取数据的对象将会触发的事件" class="headerlink" title="表1-2 读取数据的对象将会触发的事件"></a><center>表1-2 读取数据的对象将会触发的事件</center></h5><table>
+<thead>
+<tr>
+<th>事件名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>readable</td>
+<td>当可以从流中读出数据时触发。在大多数情况下，如果指定了 <code>readable</code> 事件的回调函数，将迫使操作系统将流数据首先读入操作系统缓存区中，然后再从操作系统缓存区中读出数据，当操作系统缓存区中对象被全部读出，且可以继续从流中读取数据时，将触发一个新的 <code>readable</code> 事件</td>
+</tr>
+<tr>
+<td>data</td>
+<td>当读取到来自于文件、客户端、服务器端等对象的新的数据时触发 <code>data</code> 事件。如果指定 <code>data</code> 事件的回调函数，将使用 <code>flowing</code> 模式来读取流数据（在 Node.js 中，可以使用 <code>flowing</code> 模式与 非 <code>flowing</code> 模式来读取数据。当使用 <code>flowing</code> 模式时，将使用操作系统的内部 I/O 机制来读取数据，，这允许你以最快速度读取数据。当使用非 <code>flowing</code> 模式时，你必须显式调用对象的 <code>read</code> 方法来读取数据）。参数值为存放了已读取到的数据的缓存区对象或一个字符串（当对流数据指定编码格式时）</td>
+</tr>
+<tr>
+<td>end</td>
+<td>当读取完所有数据时触发，该事件的触发意味着 <code>data</code> 事件将不再被触发</td>
+</tr>
+<tr>
+<td>error</td>
+<td>当读取数据过程中产生错误时触发</td>
+</tr>
+<tr>
+<td>close</td>
+<td>当用于读取流数据的对象被关闭时触发。并非所有用于读取流数据的对象都会触发该事件</td>
+</tr>
+</tbody>
+</table>
+<h5 id="表1-3-读取数据的对象的方法"><a href="#表1-3-读取数据的对象的方法" class="headerlink" title="表1-3 读取数据的对象的方法"></a><center>表1-3 读取数据的对象的方法</center></h5><table>
+<thead>
+<tr>
+<th>事件名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>read</td>
+<td>用于读取数据</td>
+</tr>
+<tr>
+<td>setEncoding</td>
+<td>用于指定用什么编码方式读取数据</td>
+</tr>
+<tr>
+<td>pause</td>
+<td>用于通知对象停止触发 <code>data</code> 事件</td>
+</tr>
+<tr>
+<td>resume</td>
+<td>用于通知对象恢复触发 <code>data</code> 事件</td>
+</tr>
+<tr>
+<td>pipe</td>
+<td>用于设置一个数据通道，然后取出所有流数据并将其输出到通道另一端所指向的目标对象中</td>
+</tr>
+<tr>
+<td>unpipe</td>
+<td>用于取消在 <code>pipe</code> 方法中设置的通道</td>
+</tr>
+<tr>
+<td>unshift</td>
+<td>当对流数据绑定了一个解析器时，可以使用 <code>unshift</code> 方法来取消该解析器的绑定，使流数据可以通过其他方式解析</td>
+</tr>
+</tbody>
+</table>
+<h5 id="表1-4-Node-js中的各种用于写入数据的对象"><a href="#表1-4-Node-js中的各种用于写入数据的对象" class="headerlink" title="表1-4 Node.js中的各种用于写入数据的对象"></a><center>表1-4 Node.js中的各种用于写入数据的对象</center></h5><table>
+<thead>
+<tr>
+<th>对象</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fs.WriteStream</td>
+<td>用于写入文件</td>
+</tr>
+<tr>
+<td>http.ClientRequest</td>
+<td>用于写入 HTTP 客户端请求数据</td>
+</tr>
+<tr>
+<td>http.ServerResponse</td>
+<td>用于写入 HTTP 服务端响应数据</td>
+</tr>
+<tr>
+<td>net.Socket</td>
+<td>用于读写 TCP 流或 UNIX 流，可被用户创建并作为一个客户端来使用，也可被 Node.js 脚本程序创建并通过服务器的 connection 事件来传递给用户</td>
+</tr>
+<tr>
+<td>child.stdin</td>
+<td>用于创建子进程的标准输入流。使用该对象的 close 方法将终止子进程。如果子进程与父进程共享输入输出流，则子进程的标准输入流数据被废弃</td>
+</tr>
+<tr>
+<td>process.stdout</td>
+<td>用于创建进程的标准输出流</td>
+</tr>
+<tr>
+<td>process.stderr</td>
+<td>用于创建进程的标准错误输出流</td>
+</tr>
+<tr>
+<td>Gunzip<br> Inflate<br> InflateRaw</td>
+<td>用于解压数据</td>
+</tr>
+</tbody>
+</table>
+<h5 id="表1-5-写入数据的对象将会触发的事件"><a href="#表1-5-写入数据的对象将会触发的事件" class="headerlink" title="表1-5 写入数据的对象将会触发的事件"></a><center>表1-5 写入数据的对象将会触发的事件</center></h5><table>
+<thead>
+<tr>
+<th>事件名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>drain</td>
+<td>当用于写入数据的 write 方法返回 false 之后触发，表示操作系统缓存区中的数据已全部输出到目标对象中，可以继续向操作系统缓存区写入数据</td>
+</tr>
+<tr>
+<td>finish</td>
+<td>当 end 方法被调用且数据被全部写入操作系统缓存区时触发</td>
+</tr>
+<tr>
+<td>pipe</td>
+<td>当用于读取数据的对象的 pipe 方法被调用时触发</td>
+</tr>
+<tr>
+<td>unpipe</td>
+<td>当用于读取数据的对象的 unpipe 方法被调用时触发</td>
+</tr>
+<tr>
+<td>error</td>
+<td>当写入数据的过程中产生错误时触发</td>
+</tr>
+</tbody>
+</table>
+<h5 id="表1-6-写入数据的对象的方法"><a href="#表1-6-写入数据的对象的方法" class="headerlink" title="表1-6 写入数据的对象的方法"></a><center>表1-6 写入数据的对象的方法</center></h5><table>
+<thead>
+<tr>
+<th>事件名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>write</td>
+<td>用于写入数据</td>
+</tr>
+<tr>
+<td>end</td>
+<td>当没有数据再被写入流中时调用该方法，这将迫使操作系统缓存区中的剩余数据被立即写入目标对象中。当该方法被调用后，将不能继续在目标对象中写入数据</td>
+</tr>
+</tbody>
+</table>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/node-js/">node.js</a><a href="/tags/文件流/">文件流</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2019 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

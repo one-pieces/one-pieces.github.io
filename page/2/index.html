@@ -59,6 +59,258 @@
 
   
     
+    <h3 class="article-title"><a href="/2018/09/21/22-CommonJS模块规范/"><span>(WIP)22.CommonJS模块规范</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/09/21/22-CommonJS模块规范/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-09-21T11:35:17.000Z">
+          2018-09-21
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>对于JavaScript自身而言，它的规范是薄弱的。</p>
+<ul>
+<li>没有模块系统。</li>
+<li>标准库较少。</li>
+<li>没有标准接口。</li>
+<li>缺乏包管理系统。</li>
+</ul>
+<p>这使得JavaScript难以达到像Python、Ruby和Java一样，具备开发大型应用的基础能力。CommonJS规范的提出，主要是为了弥补JavaScript没有标准的缺陷。</p>
+<h3 id="CommonJS的模块规范"><a href="#CommonJS的模块规范" class="headerlink" title="CommonJS的模块规范"></a>CommonJS的模块规范</h3><p>CommonJS对模块的定义很简单，主要分为模块引用、模块定义和模块标识3个部分。</p>
+<ol>
+<li>模块引用</li>
+</ol>
+<p>我们可以通过<code>require()</code>方法，接受模块标识，来引入一个模块的API到当前上下文中。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> math = <span class="built_in">require</span>(<span class="string">'math'</span>);</span><br></pre></td></tr></table></figure></p>
+<ol start="2">
+<li>模块定义</li>
+</ol>
+<p>在Node中，一个文件就是一个模块。在模块中，上下文提供了exports对象用于到处当前模块的方法或变量，而且它是唯一导出的出口。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/WIP/">WIP</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/08/09/21-贝塞尔曲线原理简介/"><span>(WIP)21-贝塞尔曲线原理简介</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/08/09/21-贝塞尔曲线原理简介/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-08-09T06:08:04.000Z">
+          2018-08-09
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>在CSS动画中，我们会经常听到贝塞尔曲线。</p>
+<p>贝塞尔曲线，是应用于二维图形应用程序的数学曲线，一般的矢量图形软件通过它来精确地画出曲线。<br>最初由法国工程师皮埃尔·贝济埃（Pierre Bézier）于1962年所广泛发表，他运用贝塞尔曲线来为汽车的主体进行设计，因此以他的名字命名。</p>
+<p>我们先来看看下面一条曲线。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/WIP/">WIP</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/03/27/19-http2简介/"><span>19.http2简介</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/03/27/19-http2简介/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-03-27T06:17:48.000Z">
+          2018-03-27
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>转自 <a href="https://developers.google.com/web/fundamentals/performance/http2/" target="_blank" rel="noopener">https://developers.google.com/web/fundamentals/performance/http2/</a></p>
+<p><img src="../images/19/http2.png" alt="image"></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/http/">http</a><a href="/tags/网络/">网络</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/03/27/18-http头部如何对缓存控制/"><span>18.http头部如何对缓存控制</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/03/27/18-http头部如何对缓存控制/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-03-27T05:27:23.000Z">
+          2018-03-27
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>使用缓存的目的就是在于减少计算、IO、网络等时间，可以快速的返回，特别是流量比较大的时候，可以节约很多服务器带宽和压力。</p>
+<p>一个请求从缓存的方面来说，有三个过程。</p>
+<h3 id="本地检查缓存是否过期"><a href="#本地检查缓存是否过期" class="headerlink" title="本地检查缓存是否过期"></a>本地检查缓存是否过期</h3><p><code>Expires</code>，http1.0版本定义的response头部，定义过期时间，如果本地时间发现超过过期时间，就会向服务器请求，进行文件新鲜度检测。<strong>但是会有一个问题，就是本地的操作系统时间可能偏差比较大，导致缓存时间过长或者永远都缓存不了。</strong></p>
+<p><code>Cache-control: max-age=xxx</code>，http1.1版本定义的response头部，就是为了解决操作系统时间与服务器时间相差太大的问题。文件缓存存活时间，请求完毕的时候，会记录本地的时间。再次请求的时候，此时时间减去最初记录时间，如果时间大于max-age，就会进行文件新鲜度检测。</p>
+<ul>
+<li><p>如果浏览器使用本地缓存，通过chrome调试工具，可以看到，状态是200，size是<code>from cache</code>。这个时候是没有http请求的。</p>
+</li>
+<li><p>如果缓存不存在或者没有定义这两个头部，直接进行下一步新鲜度检测。</p>
+</li>
+<li><p>如果两个都定义的话，<code>Expires</code>无效。</p>
+</li>
+<li><p>防止浏览器缓存，我们需要把两个头部都设置为0。</p>
+</li>
+</ul>
+<h3 id="服务器检测文件新鲜度"><a href="#服务器检测文件新鲜度" class="headerlink" title="服务器检测文件新鲜度"></a>服务器检测文件新鲜度</h3><p>本地缓存过期，缓存和服务器文件可能一样，也有可能不一样。如果一样的话，就没有必要返回内容。如果不一样，就返回内容，就相当于一次新的请求。</p>
+<p>怎么判断文件是否一致呢？现在的做法是通过文件生成时间或者文件进行MD5值计算。</p>
+<p><code>Last-Modified</code>，文件生成时间或者最后修改时间。下一次请求的头部，添加<code>If-Modified-Since</code>，值是上次response头部的<code>Last-Modified</code>值，和服务器进行对比，如果一样的话，直接返回304，数据内容为空。<strong>【这里也会存在一个问题，如果文件定期更新，但是文件内容不更新，岂不是白白耗费流量】</strong></p>
+<p><code>Etag</code>，服务器端对文件计算出来的一个值。下一次请求的头部，添加<code>If-None-Match</code>，和服务器进行对比，如果一样的话，直接返回304，数据内容为空。</p>
+<h3 id="服务器返回数字内容"><a href="#服务器返回数字内容" class="headerlink" title="服务器返回数字内容"></a>服务器返回数字内容</h3><p>相当于一次新的请求，状态是200.</p>
+<p>通过输出4个头部，来控制缓存，减少压力，不仅可以节省服务器和宽带资源，对用户的体验提升也是非常有帮助的。</p>
+<p>整体上可以看到可能出现的情况。200（<code>from cache</code>，无请求），304（仅仅是头部交换，没有response body返回），200（一次完整的请求，包含response body）。</p>
+<p><img src="../images/18/flow.png" alt="image"></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/http/">http</a><a href="/tags/缓存/">缓存</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2018/03/23/17-腾讯云前端面试题/"><span>17.腾讯云前端面试题</span></a></h3>
     
   
@@ -107,7 +359,7 @@
 
     <span class="post-tags">
       <i class="icon-tags"></i>
-        <a href="/tags/前端/">前端</a><a href="/tags/面试/">面试</a>
+        <a href="/tags/面试/">面试</a><a href="/tags/前端/">前端</a>
     </span>
     
 
@@ -186,7 +438,7 @@
 
     <span class="post-tags">
       <i class="icon-tags"></i>
-        <a href="/tags/前端/">前端</a><a href="/tags/面试/">面试</a>
+        <a href="/tags/面试/">面试</a><a href="/tags/前端/">前端</a>
     </span>
     
 
@@ -490,239 +742,6 @@
 
 
 
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2018/01/25/使用css时的坑/"><span>使用css时的坑</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2018/01/25/使用css时的坑/" rel="bookmark">
-        <time class="entry-date published" datetime="2018-01-25T06:30:28.000Z">
-          2018-01-25
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <ol>
-<li>height：100%的问题<br>有时我们为了让元素高度占满整屏，会把元素的height设置为100%，这样貌似没问题。<br><img src="../images/shi-yong-css-shi-de-keng/height100.png" alt="image"></li>
-</ol>
-<p>但只是这样会有一个问题。但元素内的内容高度大于元素高度时，超过的部分的背景色就不为元素的背景色。<br><img src="../images/shi-yong-css-shi-de-keng/height100-bug.png" alt="image"></p>
-<p>这是因为元素的overflow为visible(默认值)，这时元素的高度为可视部分的高度。</p>
-<p>我们把overflow设置为auto，即可修复这个问题。</p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/坑/">坑</a><a href="/tags/css/">css</a><a href="/tags/样式/">样式</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2017/12/05/vue使用jsx时的坑/"><span>vue使用jsx时的坑</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2017/12/05/vue使用jsx时的坑/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-12-05T12:30:04.000Z">
-          2017-12-05
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <ol>
-<li><p>v-model<br>在jsx中无法直接使用v-model，需要借助一个插件babel-plugin-jsx-v-model</p>
-</li>
-<li><p><component><br>在jsx中使用动态组件标签<component>会报无法找到component组件的错<br>解决方法：<br>直接使用判断语句控制该使用哪个组件</component></component></p>
-</li>
-<li><p>v-if<br>v-if在jsx中是没有作用的<br>解决办法：<br>跟<compnent>一样，直接使用判断语句</compnent></p>
-</li>
-<li><p>使用on<br>在jsx中我们要监听一个事件，可以使用on-{eventName}或者on{EventName}的形式，如</p>
-<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;button on-click=&#123;<span class="keyword">this</span>.myClickListener&#125;&gt;<span class="xml"><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;button onClick=&#123;<span class="keyword">this</span>.myClickListener&#125;&gt;<span class="xml"><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
-<p>同时，我们也可以使用on来让组件获得事件监听的能力，如<br><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;button &#123;...&#123; <span class="attr">on</span>: &#123; <span class="attr">click</span>: <span class="keyword">this</span>.myClickListener &#125;&#125;&#125;&gt;<span class="xml"><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
-<p>当使用on时，只能像上面一样，用解构的写法才有效，如果像下面这样写是没有效果的。<br><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;button on=&#123;&#123; <span class="attr">click</span>: <span class="keyword">this</span>.myClickListener &#125;&#125;&gt;<span class="xml"><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
-<p>注意！on-{eventName}或on{EventName}跟on一起写时，on会无效。比如<br><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;input onClick=&#123;<span class="keyword">this</span>.myClickListener&#125; &#123;...&#123; <span class="attr">on</span>: &#123; <span class="attr">input</span>: <span class="keyword">this</span>.myInputListener &#125; &#125;&#125; /&gt;</span><br></pre></td></tr></table></figure></p>
-<p>当触发input事件时会报错。</p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/vue/">vue</a><a href="/tags/jsx/">jsx</a><a href="/tags/坑/">坑</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2017/10/12/javascript-in-one-pic/"><span>JavaScript in One Pic</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2017/10/12/javascript-in-one-pic/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-10-12T11:23:28.000Z">
-          2017-10-12
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p><img src="https://raw.githubusercontent.com/coodict/javascript-in-one-pic/master/js%20in%20one%20pic.png" alt="image"></p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/javascript/">javascript</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2017/09/09/币圈大事件/"><span>币圈大事件</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2017/09/09/币圈大事件/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-09-09T06:30:28.000Z">
-          2017-09-09
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p><code>2017-9-8</code><br><a href="http://www.sohu.com/a/190793469_120702?_f=index_pagerecom_3" target="_blank" rel="noopener">消息称中国虚拟货币交易所将被关闭 比特币大跌超20%</a></p>
-<p><code>2017-9-5</code><br><a href="http://www.sohu.com/a/169594064_479736" target="_blank" rel="noopener">【七部委全面叫停ICO 正式定性为非法集资】</a></p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/比特币/">比特币</a><a href="/tags/币圈/">币圈</a><a href="/tags/虚拟货币/">虚拟货币</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
 
 <nav class="pagination">
   
@@ -740,7 +759,7 @@
     Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
     </br>
     
-    &copy; 2018 Xiaolong Lin
+    &copy; 2019 Xiaolong Lin
     
   </p>
 </footer>

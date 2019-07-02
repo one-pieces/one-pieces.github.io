@@ -1,0 +1,128 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>25.Promise原理及实现 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="上一篇文章 24.Promises/A+ 规范 介绍了Promises/A+ 规范，我们来手动实现一个符合 Promises/A+ 规范的自己的Promise。
+根据规范，Promise 共有三种状态 pending，fulfilled，rejected，我们使用 state 来表示 promise">
+  
+
+  
+  
+  <meta name="keywords" content="">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="25.Promise原理及实现"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>25.Promise原理及实现</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/11/21/25-Promise原理及实现/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-11-21T12:42:27.000Z">
+          2018-11-21
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>上一篇文章 <a href="http://one-pieces.me/2018/11/14/24-Promises-A-%E8%A7%84%E8%8C%83/" target="_blank" rel="noopener">24.Promises/A+ 规范</a> 介绍了Promises/A+ 规范，我们来手动实现一个符合 Promises/A+ 规范的自己的Promise。</p>
+<p>根据规范，Promise 共有三种状态 <code>pending</code>，<code>fulfilled</code>，<code>rejected</code>，我们使用 <code>state</code> 来表示 promise 当前的状态，使用 <code>value</code> 来表示当前<code>值</code>或<code>原因</code>。当然还有最重要的 <code>then</code> 方法。同时我们还需要一些辅助函数，比如 <code>isFunction</code>。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 2.1</span></span><br><span class="line"><span class="keyword">const</span> PENDING = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">const</span> FULFILLED = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">const</span> REJECTED = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Promise</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.state = PENDING;</span><br><span class="line">  <span class="comment">// 值或原因</span></span><br><span class="line">  <span class="keyword">this</span>.value = <span class="keyword">void</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.prototype.then = <span class="function"><span class="keyword">function</span> (<span class="params">onFulfilled, onRejected</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 2.2.1</span></span><br><span class="line">  <span class="keyword">if</span> (isFunction(onFulfilled) || isFunction(onRejected)) &#123;</span><br><span class="line">    <span class="keyword">this</span>.onFulfilled = onFulfilled;</span><br><span class="line">    <span class="keyword">this</span>.onRejected = onRejected;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 根据2.2.7，</span></span><br><span class="line">  <span class="comment">// then必须返回一个 promise，但它还有其他的规则，</span></span><br><span class="line">  <span class="comment">// 这里我们先不管，直接返回当前 promise</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isFunction</span> (<span class="params">func</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">typeof</span> func === <span class="string">'function'</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isObject</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">typeof</span> obj === <span class="string">'object'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接着，我们定义两个函数，可以将 promise 转换为 <code>fulfilled</code> 或 <code>rejected</code>。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doResolve</span> (<span class="params">promise, value</span>) </span>&#123;</span><br><span class="line">  promise.state = FULFILLED;</span><br><span class="line">  promise.value = value;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (isFunction(promise.onFulfilled)) &#123;</span><br><span class="line">    <span class="comment">// 2.2.4</span></span><br><span class="line">    <span class="comment">// 需要确保onFulfilled和onRejected的异步执行，</span></span><br><span class="line">    <span class="comment">// 是在调用then的事件轮训时间片之后，且调用栈为空。</span></span><br><span class="line">    <span class="comment">// 更多详情可看http://one-pieces.me/2018/11/14/24-Promises-A-%E8%A7%84%E8%8C%83/#3-%E6%B3%A8%E9%87%8A</span></span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      promise.onFulfilled(promise.value);</span><br><span class="line">    &#125;, <span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> promise;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doReject</span> (<span class="params">promise, reason</span>) </span>&#123;</span><br><span class="line">  promise.state = REJECTED;</span><br><span class="line">  promise.value = reason;</span><br><span class="line">  <span class="keyword">if</span> (isFunction(promise.onRejected)) &#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      promise.onRejected(promise.value);</span><br><span class="line">    &#125;, <span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> promise;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>最后，我们还需要一个 resolver，将刚才定义的 <code>doResolve</code> 和 <code>doReject</code> 暴露给 Promise 的构造函数。想想我们平时是怎么 new 一个 Promise的？<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">safelyResolveThen</span>(<span class="params">promise, then</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    then(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">      doResolve(promise, value);</span><br><span class="line">    &#125;, <span class="function"><span class="keyword">function</span> (<span class="params">reason</span>) </span>&#123;</span><br><span class="line">      doReject(promise, reason);</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    doReject(promise, e);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 然后修改 Promise 构造函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Promise</span> (<span class="params">resolver</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.state = PENDING;</span><br><span class="line">  <span class="comment">// 值或原因</span></span><br><span class="line">  <span class="keyword">this</span>.value = <span class="keyword">void</span> <span class="number">0</span>;</span><br><span class="line">  safelyResolveThen(<span class="keyword">this</span>, resolver);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>到这里，Promise 最核心的功能已经实现。可以很容易地看出，这里 Promise 的底层实现使用了<code>回调（callback）</code></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2019 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

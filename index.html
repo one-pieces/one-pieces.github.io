@@ -59,6 +59,465 @@
 
   
     
+    <h3 class="article-title"><a href="/2019/07/02/Kruskal’s-最小生成树算法-贪婪算法-2/"><span>Kruskal’s 最小生成树算法 | 贪婪算法-2</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2019/07/02/Kruskal’s-最小生成树算法-贪婪算法-2/" rel="bookmark">
+        <time class="entry-date published" datetime="2019-07-02T11:21:56.000Z">
+          2019-07-02
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>原文：<a href="https://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-algorithm-greedy-algo-2/" target="_blank" rel="noopener">Kruskal’s Minimum Spanning Tree Algorithm | Greedy Algo-2</a></p>
+<p><em>什么是最小生成树？</em><br>给定一个连通的无向图，该图的生成树是一个子图，它是一棵将所有顶点连接在一起的树。单个图可以有许多不同的生成树。一个加权连通无向图的最小生成树（MST）或最小权重生成树是指其权重小于或等于所有其他生成树的权重。生成树的权重是树上每条边（edge）的权重的总和。</p>
+<p><em>最小生成树有多少条边？</em><br>有 （V-1）条边，其中 V 是图的顶点的个数。</p>
+<p><em>最小生成树有什么应用？</em><br>请看<a href="https://www.geeksforgeeks.org/applications-of-minimum-spanning-tree/" target="_blank" rel="noopener">这个</a></p>
+<p>下面是使用 Kruskal’s 算法找出 MST 的步骤：</p>
+<ol>
+<li>按权重的非降序对所有边排序。</li>
+<li>选取最小的边。检验当前生成树是否产生环（cycle），如果没有则选择，否则不选取。</li>
+<li>重复步骤2 直到生成树有（V-1）条边。</li>
+</ol>
+<p>步骤2 可以使用联合查找算法（<a href="https://www.geeksforgeeks.org/union-find/" target="_blank" rel="noopener">Union-Find algorithm</a>）检查是否有环。我们建议先查看一下文章：<br><a href="https://www.geeksforgeeks.org/union-find/" target="_blank" rel="noopener">Union-Find Algorithm | Set 1 (Detect Cycle in a Graph)</a><br><a href="https://www.geeksforgeeks.org/union-find-algorithm-set-2-union-by-rank/" target="_blank" rel="noopener">Union-Find Algorithm | Set 2 (Union By Rank and Path Compression)</a></p>
+<p>这个算法是贪婪算法。贪婪选择的策略是选取权重最小的边，且不会使当前构建的 MST 产生环。让我们通过一个例子来理解它：看看下面的输入图。</p>
+<p><img src="https://www.geeksforgeeks.org/wp-content/uploads/Fig-0.jpg" alt=""></p>
+<p>该图包括 9 个顶点和 14 个边。所以最小生成树将有（9-1）= 8 条边。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">After sorting:</span><br><span class="line">Weight   Src    Dest</span><br><span class="line">1         7      6</span><br><span class="line">2         8      2</span><br><span class="line">2         6      5</span><br><span class="line">4         0      1</span><br><span class="line">4         2      5</span><br><span class="line">6         8      6</span><br><span class="line">7         2      3</span><br><span class="line">7         7      8</span><br><span class="line">8         0      7</span><br><span class="line">8         1      2</span><br><span class="line">9         3      4</span><br><span class="line">10        5      4</span><br><span class="line">11        1      7</span><br><span class="line">14        3      5</span><br></pre></td></tr></table></figure></p>
+<p>现在一步步地从排好序的数组里选取所有边。</p>
+<ol>
+<li>选取边 7-6：没有产生环，则包含它。<br><img src="https://www.geeksforgeeks.org/wp-content/uploads/Fig-1.jpg" alt=""></li>
+<li>选取边 8-2：没有产生环，则包含它。<br><img src="https://www.geeksforgeeks.org/wp-content/uploads/Fig-2.jpg" alt=""></li>
+<li>选取边 6-5：没有产生环，则包含它。<br><img src="https://www.geeksforgeeks.org/wp-content/uploads/Fig-3.jpg" alt=""></li>
+<li>选取边 0-1：没有产生环，则包含它。<br><img src="https://www.geeksforgeeks.org/wp-content/uploads/Fig-4.jpg" alt=""></li>
+<li>选取边 2-5：没有产生环，则包含它。<br><img src="https://www.geeksforgeeks.org/wp-content/uploads/Fig-5.jpg" alt=""></li>
+<li>选取边 8-6：由于包含此边会导致环，所以不选取它。</li>
+<li>选取边 2-3：没有产生环，则包含它。<br><img src="https://www.geeksforgeeks.org/wp-content/uploads/Fig-6.jpg" alt=""></li>
+<li>选取边 7-8：由于包含此边会导致环，所以不选取它。</li>
+<li>选取边 0-7：没有产生环，则包含它。<br><img src="https://www.geeksforgeeks.org/wp-content/uploads/Fig-7.jpg" alt=""></li>
+<li>选取边 1-2：由于包含此边会导致环，所以不选取它。</li>
+<li>选取边 3-4：没有产生环，则包含它。<br><img src="https://www.geeksforgeeks.org/wp-content/uploads/fig8new.jpeg" alt=""></li>
+</ol>
+<p>直到包含的变得数目等于（V-1），算法结束。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 有权边</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Edge</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> src, dest, weight;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 连通、无向、有权图</span></span><br><span class="line">sturct Graph</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// V 顶点数目，E 边数目</span></span><br><span class="line">    <span class="keyword">int</span> V, E;</span><br><span class="line">    <span class="comment">// 图中的所有边</span></span><br><span class="line">    <span class="comment">// 当图为无向图时，从 src 到 dest 还是从 dest 到 src 都只算一条边</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Edge</span>* <span class="title">edge</span>;</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 生成一个有 V 个顶点和 E 条边的图</span></span><br><span class="line"><span class="function">struct Graph* <span class="title">createGraph</span><span class="params">(<span class="keyword">int</span> V, <span class="keyword">int</span> E)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Graph</span>* <span class="title">graph</span> = <span class="title">new</span> <span class="title">Graph</span>;</span></span><br><span class="line">    graph-&gt;V = V;</span><br><span class="line">    graph-&gt;E = E;</span><br><span class="line">    </span><br><span class="line">    graph-&gt;edge = <span class="keyword">new</span> Edge[E];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> graph;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 联合查找的 subset</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">subset</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> parent;</span><br><span class="line">    <span class="keyword">int</span> rank;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 查找集合中元素 i</span></span><br><span class="line"><span class="comment">// 使用路径压缩技巧</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(struct subset subsets[], <span class="keyword">int</span> i)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 查找根节点 root，然后使 i 的父节点为 root</span></span><br><span class="line">    <span class="comment">// 路径压缩</span></span><br><span class="line">    <span class="keyword">if</span> (subsets[i].parent != i)</span><br><span class="line">        subsets[i].parent = find(subsets, subsets[i].parent);</span><br><span class="line">    <span class="keyword">return</span> subsets[i].parent;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 组合两个集合 x 和 y</span></span><br><span class="line"><span class="comment">// 根据 rank 进行联合</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Union</span><span class="params">(struct subset subsets[], <span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> xroot = find(subsets, x);</span><br><span class="line">    <span class="keyword">int</span> yroot = find(subsets, y);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 将 rank 较低的树附加到 rank 较高的树下</span></span><br><span class="line">    <span class="keyword">if</span> (subsets[xroot].rank &lt; subsets[yroot].rank)</span><br><span class="line">        subsets[xroot].parent = yroot;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (subsets[xroot].rank &gt; subsets[yroot].rank)</span><br><span class="line">        subsets[yroot].parent = xroot;</span><br><span class="line">        </span><br><span class="line">    <span class="comment">// 如果 rank 相同，则使其中一个为 root，且其 rank 增加 1</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        subsets[yroot].parent = xroot;</span><br><span class="line">        subsets[xroot].rank++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">myComp</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span>* a, <span class="keyword">const</span> <span class="keyword">void</span>* b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Edge</span>* <span class="title">a1</span> = (<span class="title">struct</span> <span class="title">Edge</span>*)<span class="title">a</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Edge</span>* <span class="title">b1</span> = (<span class="title">struct</span> <span class="title">Edge</span>*)<span class="title">b</span>;</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> a1-&gt;weight &gt; b1-&gt;weight;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">KruskalMST</span><span class="params">(struct Graph* graph)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> V = graph-&gt;V;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Edge</span> <span class="title">result</span>[<span class="title">V</span>];</span></span><br><span class="line">    <span class="keyword">int</span> e = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 第一步：根据权值按非降序对所有边进行排序。</span></span><br><span class="line">    <span class="comment">// 排序不能改变原本的图结构</span></span><br><span class="line">    qsort(graph-&gt;edge, graph-&gt;E, <span class="keyword">sizeof</span>(graph-&gt;edge[<span class="number">0</span>]), myComp);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 分配用于创建 V 个元素的 subsets 的内存</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">subset</span> *<span class="title">subsets</span> = </span></span><br><span class="line"><span class="class">        (<span class="title">struct</span> <span class="title">subset</span>*) <span class="title">malloc</span>( <span class="title">V</span> * <span class="title">sizeof</span>(<span class="title">struct</span> <span class="title">subset</span>) );</span></span><br><span class="line">        </span><br><span class="line">    <span class="comment">// 初始化 V subsets 的每个元素</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> v = <span class="number">0</span>; v &lt; V; ++v)</span><br><span class="line">    &#123;</span><br><span class="line">        subsets[v].parent = v;</span><br><span class="line">        subsets[v].rank = <span class="number">0</span>;    </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (e &lt; V <span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 第二步：选取最小的边。</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">Edge</span> <span class="title">next_edge</span> = <span class="title">graph</span>-&gt;<span class="title">edge</span>[<span class="title">i</span>++];</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> x = find(subsets, next_edge.src);</span><br><span class="line">        <span class="keyword">int</span> y = find(subsets, next_edge.dest);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 如果选取这条边不会造成环，</span></span><br><span class="line">        <span class="comment">// 则包含它到结果数组里，然后增加结果数组的下标</span></span><br><span class="line">        <span class="keyword">if</span> (x != y)</span><br><span class="line">        &#123;</span><br><span class="line">            result[e++] = next_edge;</span><br><span class="line">            Union(subsets, x, y);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Following are the edges in the constructed MST\n"</span>);</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; e; ++i)</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%d -- %d == %d\n"</span>, result[i].src, result[i].dest, result[i].weight);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/* 给定如下有权图</span></span><br><span class="line"><span class="comment">        10 </span></span><br><span class="line"><span class="comment">    0--------1 </span></span><br><span class="line"><span class="comment">    |  \     | </span></span><br><span class="line"><span class="comment">   6|   5\   |15 </span></span><br><span class="line"><span class="comment">    |      \ | </span></span><br><span class="line"><span class="comment">    2--------3 </span></span><br><span class="line"><span class="comment">        4       */</span></span><br><span class="line">    <span class="keyword">int</span> V = <span class="number">4</span>;  <span class="comment">// 图的顶点数目</span></span><br><span class="line">    <span class="keyword">int</span> E = <span class="number">5</span>;  <span class="comment">// 图的边数目</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Graph</span>* <span class="title">graph</span> = <span class="title">createGraph</span>(<span class="title">V</span>, <span class="title">E</span>);</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 新增边 0-1</span></span><br><span class="line">    graph-&gt;edge[<span class="number">0</span>].src = <span class="number">0</span>;</span><br><span class="line">    graph-&gt;edge[<span class="number">0</span>].dest = <span class="number">1</span>;</span><br><span class="line">    graph-&gt;edge[<span class="number">0</span>].weight = <span class="number">10</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 新增边 0-2</span></span><br><span class="line">    graph-&gt;edge[<span class="number">1</span>].src = <span class="number">0</span>;</span><br><span class="line">    graph-&gt;edge[<span class="number">1</span>].dest = <span class="number">2</span>;</span><br><span class="line">    graph-&gt;edge[<span class="number">1</span>].weight = <span class="number">6</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 新增边 0-3</span></span><br><span class="line">    graph-&gt;edge[<span class="number">1</span>].src = <span class="number">0</span>;</span><br><span class="line">    graph-&gt;edge[<span class="number">1</span>].dest = <span class="number">3</span>;</span><br><span class="line">    graph-&gt;edge[<span class="number">1</span>].weight = <span class="number">5</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 新增边 1-3</span></span><br><span class="line">    graph-&gt;edge[<span class="number">3</span>].src = <span class="number">1</span>;</span><br><span class="line">    graph-&gt;edge[<span class="number">3</span>].dest = <span class="number">3</span>;</span><br><span class="line">    graph-&gt;edge[<span class="number">3</span>].weight = <span class="number">15</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 新增边 2-3</span></span><br><span class="line">    graph-&gt;edge[<span class="number">4</span>].src = <span class="number">2</span>;</span><br><span class="line">    graph-&gt;edge[<span class="number">4</span>].dest = <span class="number">3</span>;</span><br><span class="line">    graph-&gt;edge[<span class="number">4</span>].weight = <span class="number">4</span>;</span><br><span class="line">    </span><br><span class="line">    KruskalMST(graph);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/12/08/27-Mac安装tensorflow使用环境/"><span>27.Mac安装tensorflow使用环境</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/12/08/27-Mac安装tensorflow使用环境/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-12-08T07:51:34.000Z">
+          2018-12-08
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>要使用 TensorFlow 非常简单。运行 TensorFlow 需要 Python，只需安装好 Python 运行环境，通过 <code>pip</code>包管理器安装即可。</p>
+<blockquote>
+<p>因为最新的 TensorFlow 不支持 Python 3.7，而使用 Homebrew 安装 python 会默认安装最新版本，即3.7，因此这里不使用 Homebrew。</p>
+</blockquote>
+<h3 id="1-安装-Python-开发环境"><a href="#1-安装-Python-开发环境" class="headerlink" title="1. 安装 Python 开发环境"></a>1. 安装 Python 开发环境</h3><p>TensorFlow 支持 Python 2 和 Python 3，这里我们选择 Python3。</p>
+<blockquote>
+<p>要求 Python 3.4，3.5 或者 3.6</p>
+</blockquote>
+<p>先查看是否安装了 python 环境<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python3 --version</span><br><span class="line">pip3 --version</span><br><span class="line">vritualenv --version</span><br></pre></td></tr></table></figure></p>
+<p>如果这些包都已经安装，则可以跳过下面步骤到<a href="#2-创建虚拟环境（推荐）">步骤2</a>。否则需要安装 <a href="https://www.python.org/downloads/mac-osx/" target="_blank" rel="noopener">Python</a>，<a href="https://pip.pypa.io/en/stable/installing/" target="_blank" rel="noopener">pip 包管理器</a>和 <a href="https://virtualenv.pypa.io/en/stable/" target="_blank" rel="noopener">Virtualenv</a>（用来创建隔离的 Python 环境的工具）。</p>
+<p>1.1 安装 Python<br>点击 <a href="https://www.python.org/downloads/mac-osx/" target="_blank" rel="noopener">Python 下载</a>，选择对应的 <code>Python 3.6.7 - 2018-10-20</code> 安装包，下载安装到Mac即可。<br><img src="../images/27/1.png" alt="image"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看是否安装成功</span></span><br><span class="line">python3 --version</span><br><span class="line">pip3 --version</span><br></pre></td></tr></table></figure>
+<p>1.2 安装 vritualenv<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pip3 install -U virtualenv  # system-wide install</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-创建虚拟环境（推荐）"><a href="#2-创建虚拟环境（推荐）" class="headerlink" title="2. 创建虚拟环境（推荐）"></a>2. 创建虚拟环境（推荐）</h3><p>Python 虚拟环境用于将软件包的安装与系统环境进行隔离。</p>
+<p>2.1 首先创建一个新的虚拟环境，这里我们需要选择一个 Python 解析器和创建一个<code>./venv</code>目录。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">virtualenv --system-site-packages -p python3 ./venv</span><br></pre></td></tr></table></figure></p>
+<p>2.2 使用 source 命令激活虚拟环境。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ./venv/bin/activate  <span class="comment"># sh, bash, ksh, or zsh</span></span><br></pre></td></tr></table></figure></p>
+<p>2.3 当虚拟环境被激活时，你的 shell 提示符前缀为<code>(venv)</code>。在虚拟环境中安装软件包，不会影响主机系统设置。<br>首先升级<code>pip</code>：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ pip install --upgrade pip</span><br><span class="line"></span><br><span class="line">(venv) $ pip list  <span class="comment"># show packages installed within the virtual environment</span></span><br></pre></td></tr></table></figure></p>
+<p>接着退出<code>virtualenv</code>：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ deactivate  <span class="comment"># don't exit until you're done using TensorFlow</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="3-安装-TensorFlow-pip包"><a href="#3-安装-TensorFlow-pip包" class="headerlink" title="3. 安装 TensorFlow pip包"></a>3. 安装 TensorFlow pip包</h3><p>选择以下 TensorFlow 软件包的一个进行安装：</p>
+<ul>
+<li><code>tensorflow</code> —— 仅适用于CPU的当前版本（推荐初学者使用）</li>
+<li><code>tensorflow-gpu</code> —— <a href="https://tensorflow.google.cn/install/gpu" target="_blank" rel="noopener">支持GPU</a>的当前版本（<code>Ubuntu</code> 和 <code>Windows</code>）</li>
+<li><code>tf-nightly</code> —— 仅适用于CPU的每晚构建版本（不稳定）</li>
+<li><code>tf-nightly-gpu</code> —— <a href="https://tensorflow.google.cn/install/gpu" target="_blank" rel="noopener">支持GPU</a>的每晚构建版本（不稳定，<code>Ubuntu</code> 和 <code>Windows</code>）</li>
+</ul>
+<blockquote>
+<p>软件包的依赖项都会自动安装。这些列在<code>REQUIRED_PACKAGES</code>下的<a href="https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/pip_package/setup.py" target="_blank" rel="noopener"><code>setup.py</code></a>文件中。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ pip install --upgrade tensorflow</span><br></pre></td></tr></table></figure>
+<p>验证是否安装成功：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ python -c <span class="string">"import tensorflow as tf; tf.enable_eager_execution(); print(tf.reduce_sum(tf.random_normal([1000, 1000])))"</span></span><br></pre></td></tr></table></figure></p>
+<p>如果输出结果，则说明 TensorFlow 安装成功！</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://tensorflow.google.cn/install/pip?lang=python3" target="_blank" rel="noopener">https://tensorflow.google.cn/install/pip?lang=python3</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/TensorFlow/">TensorFlow</a><a href="/tags/Python/">Python</a><a href="/tags/机器学习/">机器学习</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/12/05/26-node-js文件流/"><span>26.node.js文件流</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/12/05/26-node-js文件流/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-12-05T06:06:03.000Z">
+          2018-12-05
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="1-流的基本概念"><a href="#1-流的基本概念" class="headerlink" title="1.流的基本概念"></a>1.流的基本概念</h3><p>在一个应用程序中，流是一组有序的、有起点和终点的字节数据的传输手段。在应用程序中各种对象之间交换与传输数据时，总是先将该对象中所包含的数据转换为各种形式的流数据（即字节数据），再通过流的传输，到达目标对象后再将数据转换为该对象中可以使用的数据。</p>
+<p>在 Node.js 中，我们可以使用实现了 <code>stream.Readable</code> 或 <code>stream.Writeable</code> 接口的对象来将对象数据读取为流数据，或者将流数据写入到对象中。它们都继承了 <code>EventEmitter</code> 类的实例对象，在读取数据或写入数据的过程中，将可能触发各种事件。</p>
+<h5 id="表1-1-Node-js中的各种用于读取数据的对象"><a href="#表1-1-Node-js中的各种用于读取数据的对象" class="headerlink" title="表1-1 Node.js中的各种用于读取数据的对象"></a><center>表1-1 Node.js中的各种用于读取数据的对象</center></h5><table>
+<thead>
+<tr>
+<th>对象</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fs.ReadStream</td>
+<td>用于读取文件</td>
+</tr>
+<tr>
+<td>http.IncomingMessage</td>
+<td>代表客户端请求或服务器端响应</td>
+</tr>
+<tr>
+<td>net.Socket</td>
+<td>代表一个 socket 端口对象</td>
+</tr>
+<tr>
+<td>child.stdout</td>
+<td>用于创建子进程的标准输出流。如果子进程与父进程共享输入输出流，则子进程的标准输出流被废弃</td>
+</tr>
+<tr>
+<td>child.stderr</td>
+<td>用于创建子进程的标准错误输出流。如果子进程与父进程共享输入输出流，则子进程的标准错误输出流被废弃</td>
+</tr>
+<tr>
+<td>process.stdin</td>
+<td>用于创建进程的标准输入流</td>
+</tr>
+<tr>
+<td>Gzip<br> Deflate<br> DeflateRaw</td>
+<td>用于实现数据压缩</td>
+</tr>
+</tbody>
+</table>
+<h5 id="表1-2-读取数据的对象将会触发的事件"><a href="#表1-2-读取数据的对象将会触发的事件" class="headerlink" title="表1-2 读取数据的对象将会触发的事件"></a><center>表1-2 读取数据的对象将会触发的事件</center></h5><table>
+<thead>
+<tr>
+<th>事件名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>readable</td>
+<td>当可以从流中读出数据时触发。在大多数情况下，如果指定了 <code>readable</code> 事件的回调函数，将迫使操作系统将流数据首先读入操作系统缓存区中，然后再从操作系统缓存区中读出数据，当操作系统缓存区中对象被全部读出，且可以继续从流中读取数据时，将触发一个新的 <code>readable</code> 事件</td>
+</tr>
+<tr>
+<td>data</td>
+<td>当读取到来自于文件、客户端、服务器端等对象的新的数据时触发 <code>data</code> 事件。如果指定 <code>data</code> 事件的回调函数，将使用 <code>flowing</code> 模式来读取流数据（在 Node.js 中，可以使用 <code>flowing</code> 模式与 非 <code>flowing</code> 模式来读取数据。当使用 <code>flowing</code> 模式时，将使用操作系统的内部 I/O 机制来读取数据，，这允许你以最快速度读取数据。当使用非 <code>flowing</code> 模式时，你必须显式调用对象的 <code>read</code> 方法来读取数据）。参数值为存放了已读取到的数据的缓存区对象或一个字符串（当对流数据指定编码格式时）</td>
+</tr>
+<tr>
+<td>end</td>
+<td>当读取完所有数据时触发，该事件的触发意味着 <code>data</code> 事件将不再被触发</td>
+</tr>
+<tr>
+<td>error</td>
+<td>当读取数据过程中产生错误时触发</td>
+</tr>
+<tr>
+<td>close</td>
+<td>当用于读取流数据的对象被关闭时触发。并非所有用于读取流数据的对象都会触发该事件</td>
+</tr>
+</tbody>
+</table>
+<h5 id="表1-3-读取数据的对象的方法"><a href="#表1-3-读取数据的对象的方法" class="headerlink" title="表1-3 读取数据的对象的方法"></a><center>表1-3 读取数据的对象的方法</center></h5><table>
+<thead>
+<tr>
+<th>事件名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>read</td>
+<td>用于读取数据</td>
+</tr>
+<tr>
+<td>setEncoding</td>
+<td>用于指定用什么编码方式读取数据</td>
+</tr>
+<tr>
+<td>pause</td>
+<td>用于通知对象停止触发 <code>data</code> 事件</td>
+</tr>
+<tr>
+<td>resume</td>
+<td>用于通知对象恢复触发 <code>data</code> 事件</td>
+</tr>
+<tr>
+<td>pipe</td>
+<td>用于设置一个数据通道，然后取出所有流数据并将其输出到通道另一端所指向的目标对象中</td>
+</tr>
+<tr>
+<td>unpipe</td>
+<td>用于取消在 <code>pipe</code> 方法中设置的通道</td>
+</tr>
+<tr>
+<td>unshift</td>
+<td>当对流数据绑定了一个解析器时，可以使用 <code>unshift</code> 方法来取消该解析器的绑定，使流数据可以通过其他方式解析</td>
+</tr>
+</tbody>
+</table>
+<h5 id="表1-4-Node-js中的各种用于写入数据的对象"><a href="#表1-4-Node-js中的各种用于写入数据的对象" class="headerlink" title="表1-4 Node.js中的各种用于写入数据的对象"></a><center>表1-4 Node.js中的各种用于写入数据的对象</center></h5><table>
+<thead>
+<tr>
+<th>对象</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fs.WriteStream</td>
+<td>用于写入文件</td>
+</tr>
+<tr>
+<td>http.ClientRequest</td>
+<td>用于写入 HTTP 客户端请求数据</td>
+</tr>
+<tr>
+<td>http.ServerResponse</td>
+<td>用于写入 HTTP 服务端响应数据</td>
+</tr>
+<tr>
+<td>net.Socket</td>
+<td>用于读写 TCP 流或 UNIX 流，可被用户创建并作为一个客户端来使用，也可被 Node.js 脚本程序创建并通过服务器的 connection 事件来传递给用户</td>
+</tr>
+<tr>
+<td>child.stdin</td>
+<td>用于创建子进程的标准输入流。使用该对象的 close 方法将终止子进程。如果子进程与父进程共享输入输出流，则子进程的标准输入流数据被废弃</td>
+</tr>
+<tr>
+<td>process.stdout</td>
+<td>用于创建进程的标准输出流</td>
+</tr>
+<tr>
+<td>process.stderr</td>
+<td>用于创建进程的标准错误输出流</td>
+</tr>
+<tr>
+<td>Gunzip<br> Inflate<br> InflateRaw</td>
+<td>用于解压数据</td>
+</tr>
+</tbody>
+</table>
+<h5 id="表1-5-写入数据的对象将会触发的事件"><a href="#表1-5-写入数据的对象将会触发的事件" class="headerlink" title="表1-5 写入数据的对象将会触发的事件"></a><center>表1-5 写入数据的对象将会触发的事件</center></h5><table>
+<thead>
+<tr>
+<th>事件名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>drain</td>
+<td>当用于写入数据的 write 方法返回 false 之后触发，表示操作系统缓存区中的数据已全部输出到目标对象中，可以继续向操作系统缓存区写入数据</td>
+</tr>
+<tr>
+<td>finish</td>
+<td>当 end 方法被调用且数据被全部写入操作系统缓存区时触发</td>
+</tr>
+<tr>
+<td>pipe</td>
+<td>当用于读取数据的对象的 pipe 方法被调用时触发</td>
+</tr>
+<tr>
+<td>unpipe</td>
+<td>当用于读取数据的对象的 unpipe 方法被调用时触发</td>
+</tr>
+<tr>
+<td>error</td>
+<td>当写入数据的过程中产生错误时触发</td>
+</tr>
+</tbody>
+</table>
+<h5 id="表1-6-写入数据的对象的方法"><a href="#表1-6-写入数据的对象的方法" class="headerlink" title="表1-6 写入数据的对象的方法"></a><center>表1-6 写入数据的对象的方法</center></h5><table>
+<thead>
+<tr>
+<th>事件名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>write</td>
+<td>用于写入数据</td>
+</tr>
+<tr>
+<td>end</td>
+<td>当没有数据再被写入流中时调用该方法，这将迫使操作系统缓存区中的剩余数据被立即写入目标对象中。当该方法被调用后，将不能继续在目标对象中写入数据</td>
+</tr>
+</tbody>
+</table>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/node-js/">node.js</a><a href="/tags/文件流/">文件流</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/11/21/25-Promise原理及实现/"><span>25.Promise原理及实现</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/11/21/25-Promise原理及实现/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-11-21T12:42:27.000Z">
+          2018-11-21
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>上一篇文章 <a href="http://one-pieces.me/2018/11/14/24-Promises-A-%E8%A7%84%E8%8C%83/" target="_blank" rel="noopener">24.Promises/A+ 规范</a> 介绍了Promises/A+ 规范，我们来手动实现一个符合 Promises/A+ 规范的自己的Promise。</p>
+<p>根据规范，Promise 共有三种状态 <code>pending</code>，<code>fulfilled</code>，<code>rejected</code>，我们使用 <code>state</code> 来表示 promise 当前的状态，使用 <code>value</code> 来表示当前<code>值</code>或<code>原因</code>。当然还有最重要的 <code>then</code> 方法。同时我们还需要一些辅助函数，比如 <code>isFunction</code>。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 2.1</span></span><br><span class="line"><span class="keyword">const</span> PENDING = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">const</span> FULFILLED = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">const</span> REJECTED = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Promise</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.state = PENDING;</span><br><span class="line">  <span class="comment">// 值或原因</span></span><br><span class="line">  <span class="keyword">this</span>.value = <span class="keyword">void</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.prototype.then = <span class="function"><span class="keyword">function</span> (<span class="params">onFulfilled, onRejected</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 2.2.1</span></span><br><span class="line">  <span class="keyword">if</span> (isFunction(onFulfilled) || isFunction(onRejected)) &#123;</span><br><span class="line">    <span class="keyword">this</span>.onFulfilled = onFulfilled;</span><br><span class="line">    <span class="keyword">this</span>.onRejected = onRejected;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 根据2.2.7，</span></span><br><span class="line">  <span class="comment">// then必须返回一个 promise，但它还有其他的规则，</span></span><br><span class="line">  <span class="comment">// 这里我们先不管，直接返回当前 promise</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isFunction</span> (<span class="params">func</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">typeof</span> func === <span class="string">'function'</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isObject</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">typeof</span> obj === <span class="string">'object'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接着，我们定义两个函数，可以将 promise 转换为 <code>fulfilled</code> 或 <code>rejected</code>。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doResolve</span> (<span class="params">promise, value</span>) </span>&#123;</span><br><span class="line">  promise.state = FULFILLED;</span><br><span class="line">  promise.value = value;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (isFunction(promise.onFulfilled)) &#123;</span><br><span class="line">    <span class="comment">// 2.2.4</span></span><br><span class="line">    <span class="comment">// 需要确保onFulfilled和onRejected的异步执行，</span></span><br><span class="line">    <span class="comment">// 是在调用then的事件轮训时间片之后，且调用栈为空。</span></span><br><span class="line">    <span class="comment">// 更多详情可看http://one-pieces.me/2018/11/14/24-Promises-A-%E8%A7%84%E8%8C%83/#3-%E6%B3%A8%E9%87%8A</span></span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      promise.onFulfilled(promise.value);</span><br><span class="line">    &#125;, <span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> promise;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doReject</span> (<span class="params">promise, reason</span>) </span>&#123;</span><br><span class="line">  promise.state = REJECTED;</span><br><span class="line">  promise.value = reason;</span><br><span class="line">  <span class="keyword">if</span> (isFunction(promise.onRejected)) &#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      promise.onRejected(promise.value);</span><br><span class="line">    &#125;, <span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> promise;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>最后，我们还需要一个 resolver，将刚才定义的 <code>doResolve</code> 和 <code>doReject</code> 暴露给 Promise 的构造函数。想想我们平时是怎么 new 一个 Promise的？<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">safelyResolveThen</span>(<span class="params">promise, then</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    then(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">      doResolve(promise, value);</span><br><span class="line">    &#125;, <span class="function"><span class="keyword">function</span> (<span class="params">reason</span>) </span>&#123;</span><br><span class="line">      doReject(promise, reason);</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    doReject(promise, e);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 然后修改 Promise 构造函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Promise</span> (<span class="params">resolver</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.state = PENDING;</span><br><span class="line">  <span class="comment">// 值或原因</span></span><br><span class="line">  <span class="keyword">this</span>.value = <span class="keyword">void</span> <span class="number">0</span>;</span><br><span class="line">  safelyResolveThen(<span class="keyword">this</span>, resolver);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>到这里，Promise 最核心的功能已经实现。可以很容易地看出，这里 Promise 的底层实现使用了<code>回调（callback）</code></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2018/11/14/24-Promises-A-规范/"><span>24.Promises/A+ 规范</span></a></h3>
     
   
@@ -571,258 +1030,6 @@
 
 
 
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2018/09/21/22-CommonJS模块规范/"><span>(WIP)22.CommonJS模块规范</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2018/09/21/22-CommonJS模块规范/" rel="bookmark">
-        <time class="entry-date published" datetime="2018-09-21T11:35:17.000Z">
-          2018-09-21
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p>对于JavaScript自身而言，它的规范是薄弱的。</p>
-<ul>
-<li>没有模块系统。</li>
-<li>标准库较少。</li>
-<li>没有标准接口。</li>
-<li>缺乏包管理系统。</li>
-</ul>
-<p>这使得JavaScript难以达到像Python、Ruby和Java一样，具备开发大型应用的基础能力。CommonJS规范的提出，主要是为了弥补JavaScript没有标准的缺陷。</p>
-<h3 id="CommonJS的模块规范"><a href="#CommonJS的模块规范" class="headerlink" title="CommonJS的模块规范"></a>CommonJS的模块规范</h3><p>CommonJS对模块的定义很简单，主要分为模块引用、模块定义和模块标识3个部分。</p>
-<ol>
-<li>模块引用</li>
-</ol>
-<p>我们可以通过<code>require()</code>方法，接受模块标识，来引入一个模块的API到当前上下文中。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> math = <span class="built_in">require</span>(<span class="string">'math'</span>);</span><br></pre></td></tr></table></figure></p>
-<ol start="2">
-<li>模块定义</li>
-</ol>
-<p>在Node中，一个文件就是一个模块。在模块中，上下文提供了exports对象用于到处当前模块的方法或变量，而且它是唯一导出的出口。</p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/WIP/">WIP</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2018/08/09/21-贝塞尔曲线原理简介/"><span>(WIP)21-贝塞尔曲线原理简介</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2018/08/09/21-贝塞尔曲线原理简介/" rel="bookmark">
-        <time class="entry-date published" datetime="2018-08-09T06:08:04.000Z">
-          2018-08-09
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p>在CSS动画中，我们会经常听到贝塞尔曲线。</p>
-<p>贝塞尔曲线，是应用于二维图形应用程序的数学曲线，一般的矢量图形软件通过它来精确地画出曲线。<br>最初由法国工程师皮埃尔·贝济埃（Pierre Bézier）于1962年所广泛发表，他运用贝塞尔曲线来为汽车的主体进行设计，因此以他的名字命名。</p>
-<p>我们先来看看下面一条曲线。</p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/WIP/">WIP</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2018/03/27/19-http2简介/"><span>19.http2简介</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2018/03/27/19-http2简介/" rel="bookmark">
-        <time class="entry-date published" datetime="2018-03-27T06:17:48.000Z">
-          2018-03-27
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p>转自 <a href="https://developers.google.com/web/fundamentals/performance/http2/" target="_blank" rel="noopener">https://developers.google.com/web/fundamentals/performance/http2/</a></p>
-<p><img src="../images/19/http2.png" alt="image"></p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/http/">http</a><a href="/tags/网络/">网络</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2018/03/27/18-http头部如何对缓存控制/"><span>18.http头部如何对缓存控制</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2018/03/27/18-http头部如何对缓存控制/" rel="bookmark">
-        <time class="entry-date published" datetime="2018-03-27T05:27:23.000Z">
-          2018-03-27
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p>使用缓存的目的就是在于减少计算、IO、网络等时间，可以快速的返回，特别是流量比较大的时候，可以节约很多服务器带宽和压力。</p>
-<p>一个请求从缓存的方面来说，有三个过程。</p>
-<h3 id="本地检查缓存是否过期"><a href="#本地检查缓存是否过期" class="headerlink" title="本地检查缓存是否过期"></a>本地检查缓存是否过期</h3><p><code>Expires</code>，http1.0版本定义的response头部，定义过期时间，如果本地时间发现超过过期时间，就会向服务器请求，进行文件新鲜度检测。<strong>但是会有一个问题，就是本地的操作系统时间可能偏差比较大，导致缓存时间过长或者永远都缓存不了。</strong></p>
-<p><code>Cache-control: max-age=xxx</code>，http1.1版本定义的response头部，就是为了解决操作系统时间与服务器时间相差太大的问题。文件缓存存活时间，请求完毕的时候，会记录本地的时间。再次请求的时候，此时时间减去最初记录时间，如果时间大于max-age，就会进行文件新鲜度检测。</p>
-<ul>
-<li><p>如果浏览器使用本地缓存，通过chrome调试工具，可以看到，状态是200，size是<code>from cache</code>。这个时候是没有http请求的。</p>
-</li>
-<li><p>如果缓存不存在或者没有定义这两个头部，直接进行下一步新鲜度检测。</p>
-</li>
-<li><p>如果两个都定义的话，<code>Expires</code>无效。</p>
-</li>
-<li><p>防止浏览器缓存，我们需要把两个头部都设置为0。</p>
-</li>
-</ul>
-<h3 id="服务器检测文件新鲜度"><a href="#服务器检测文件新鲜度" class="headerlink" title="服务器检测文件新鲜度"></a>服务器检测文件新鲜度</h3><p>本地缓存过期，缓存和服务器文件可能一样，也有可能不一样。如果一样的话，就没有必要返回内容。如果不一样，就返回内容，就相当于一次新的请求。</p>
-<p>怎么判断文件是否一致呢？现在的做法是通过文件生成时间或者文件进行MD5值计算。</p>
-<p><code>Last-Modified</code>，文件生成时间或者最后修改时间。下一次请求的头部，添加<code>If-Modified-Since</code>，值是上次response头部的<code>Last-Modified</code>值，和服务器进行对比，如果一样的话，直接返回304，数据内容为空。<strong>【这里也会存在一个问题，如果文件定期更新，但是文件内容不更新，岂不是白白耗费流量】</strong></p>
-<p><code>Etag</code>，服务器端对文件计算出来的一个值。下一次请求的头部，添加<code>If-None-Match</code>，和服务器进行对比，如果一样的话，直接返回304，数据内容为空。</p>
-<h3 id="服务器返回数字内容"><a href="#服务器返回数字内容" class="headerlink" title="服务器返回数字内容"></a>服务器返回数字内容</h3><p>相当于一次新的请求，状态是200.</p>
-<p>通过输出4个头部，来控制缓存，减少压力，不仅可以节省服务器和宽带资源，对用户的体验提升也是非常有帮助的。</p>
-<p>整体上可以看到可能出现的情况。200（<code>from cache</code>，无请求），304（仅仅是头部交换，没有response body返回），200（一次完整的请求，包含response body）。</p>
-<p><img src="../images/18/flow.png" alt="image"></p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/http/">http</a><a href="/tags/缓存/">缓存</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
 
 <nav class="pagination">
   
@@ -838,7 +1045,7 @@
     Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
     </br>
     
-    &copy; 2018 Xiaolong Lin
+    &copy; 2019 Xiaolong Lin
     
   </p>
 </footer>

@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>27.Mac安装tensorflow使用环境 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="前言要使用 TensorFlow 非常简单。运行 TensorFlow 需要 Python，只需安装好 Python 运行环境，通过 pip包管理器安装即可。
+
+因为最新的 TensorFlow 不支持 Python 3.7，而使用 Homebrew 安装 python 会默认安装最新版本，即3.7">
+  
+
+  
+  
+  <meta name="keywords" content="TensorFlow,Python,机器学习">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="27.Mac安装tensorflow使用环境"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>27.Mac安装tensorflow使用环境</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/12/08/27-Mac安装tensorflow使用环境/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-12-08T07:51:34.000Z">
+          2018-12-08
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>要使用 TensorFlow 非常简单。运行 TensorFlow 需要 Python，只需安装好 Python 运行环境，通过 <code>pip</code>包管理器安装即可。</p>
+<blockquote>
+<p>因为最新的 TensorFlow 不支持 Python 3.7，而使用 Homebrew 安装 python 会默认安装最新版本，即3.7，因此这里不使用 Homebrew。</p>
+</blockquote>
+<h3 id="1-安装-Python-开发环境"><a href="#1-安装-Python-开发环境" class="headerlink" title="1. 安装 Python 开发环境"></a>1. 安装 Python 开发环境</h3><p>TensorFlow 支持 Python 2 和 Python 3，这里我们选择 Python3。</p>
+<blockquote>
+<p>要求 Python 3.4，3.5 或者 3.6</p>
+</blockquote>
+<p>先查看是否安装了 python 环境<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python3 --version</span><br><span class="line">pip3 --version</span><br><span class="line">vritualenv --version</span><br></pre></td></tr></table></figure></p>
+<p>如果这些包都已经安装，则可以跳过下面步骤到<a href="#2-创建虚拟环境（推荐）">步骤2</a>。否则需要安装 <a href="https://www.python.org/downloads/mac-osx/" target="_blank" rel="noopener">Python</a>，<a href="https://pip.pypa.io/en/stable/installing/" target="_blank" rel="noopener">pip 包管理器</a>和 <a href="https://virtualenv.pypa.io/en/stable/" target="_blank" rel="noopener">Virtualenv</a>（用来创建隔离的 Python 环境的工具）。</p>
+<p>1.1 安装 Python<br>点击 <a href="https://www.python.org/downloads/mac-osx/" target="_blank" rel="noopener">Python 下载</a>，选择对应的 <code>Python 3.6.7 - 2018-10-20</code> 安装包，下载安装到Mac即可。<br><img src="../images/27/1.png" alt="image"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看是否安装成功</span></span><br><span class="line">python3 --version</span><br><span class="line">pip3 --version</span><br></pre></td></tr></table></figure>
+<p>1.2 安装 vritualenv<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pip3 install -U virtualenv  # system-wide install</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-创建虚拟环境（推荐）"><a href="#2-创建虚拟环境（推荐）" class="headerlink" title="2. 创建虚拟环境（推荐）"></a>2. 创建虚拟环境（推荐）</h3><p>Python 虚拟环境用于将软件包的安装与系统环境进行隔离。</p>
+<p>2.1 首先创建一个新的虚拟环境，这里我们需要选择一个 Python 解析器和创建一个<code>./venv</code>目录。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">virtualenv --system-site-packages -p python3 ./venv</span><br></pre></td></tr></table></figure></p>
+<p>2.2 使用 source 命令激活虚拟环境。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ./venv/bin/activate  <span class="comment"># sh, bash, ksh, or zsh</span></span><br></pre></td></tr></table></figure></p>
+<p>2.3 当虚拟环境被激活时，你的 shell 提示符前缀为<code>(venv)</code>。在虚拟环境中安装软件包，不会影响主机系统设置。<br>首先升级<code>pip</code>：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ pip install --upgrade pip</span><br><span class="line"></span><br><span class="line">(venv) $ pip list  <span class="comment"># show packages installed within the virtual environment</span></span><br></pre></td></tr></table></figure></p>
+<p>接着退出<code>virtualenv</code>：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ deactivate  <span class="comment"># don't exit until you're done using TensorFlow</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="3-安装-TensorFlow-pip包"><a href="#3-安装-TensorFlow-pip包" class="headerlink" title="3. 安装 TensorFlow pip包"></a>3. 安装 TensorFlow pip包</h3><p>选择以下 TensorFlow 软件包的一个进行安装：</p>
+<ul>
+<li><code>tensorflow</code> —— 仅适用于CPU的当前版本（推荐初学者使用）</li>
+<li><code>tensorflow-gpu</code> —— <a href="https://tensorflow.google.cn/install/gpu" target="_blank" rel="noopener">支持GPU</a>的当前版本（<code>Ubuntu</code> 和 <code>Windows</code>）</li>
+<li><code>tf-nightly</code> —— 仅适用于CPU的每晚构建版本（不稳定）</li>
+<li><code>tf-nightly-gpu</code> —— <a href="https://tensorflow.google.cn/install/gpu" target="_blank" rel="noopener">支持GPU</a>的每晚构建版本（不稳定，<code>Ubuntu</code> 和 <code>Windows</code>）</li>
+</ul>
+<blockquote>
+<p>软件包的依赖项都会自动安装。这些列在<code>REQUIRED_PACKAGES</code>下的<a href="https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/pip_package/setup.py" target="_blank" rel="noopener"><code>setup.py</code></a>文件中。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ pip install --upgrade tensorflow</span><br></pre></td></tr></table></figure>
+<p>验证是否安装成功：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ python -c <span class="string">"import tensorflow as tf; tf.enable_eager_execution(); print(tf.reduce_sum(tf.random_normal([1000, 1000])))"</span></span><br></pre></td></tr></table></figure></p>
+<p>如果输出结果，则说明 TensorFlow 安装成功！</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://tensorflow.google.cn/install/pip?lang=python3" target="_blank" rel="noopener">https://tensorflow.google.cn/install/pip?lang=python3</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/TensorFlow/">TensorFlow</a><a href="/tags/Python/">Python</a><a href="/tags/机器学习/">机器学习</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2019 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>
