@@ -59,6 +59,212 @@
 
   
     
+    <h3 class="article-title"><a href="/2018/11/08/22-Webpack提示Invalid-Host-Header/"><span>22-Webpack提示Invalid Host Header</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/11/08/22-Webpack提示Invalid-Host-Header/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-11-08T07:49:09.000Z">
+          2018-11-08
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>用<a href="https://cli.vuejs.org/zh/" target="_blank" rel="noopener"><code>vue-cli 3</code></a>新建项目，将自定义域名映射到localhost，这时用自定义域名访问项目，webpack-dev-server返回了Invalid Host Header，而使用localhost或127.0.0.1则没报错。</p>
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>网上查了一些资料，发现这是因为webpack-dev-server在<a href="https://github.com/webpack/webpack-dev-server/releases/tag/v2.4.3" target="_blank" rel="noopener"><code>2.4.3</code></a>和<a href="https://github.com/webpack/webpack-dev-server/releases/tag/v1.16.4" target="_blank" rel="noopener"><code>1.16.4</code></a>这两个版本增加了security fix。这个fix增加了对<code>Host</code> header 的检验，来防止恶意网站访问你的<code>assets</code>。同时<code>webpack-dev-middleware</code>的<code>1.10.2</code>也增加了这个修改。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>考虑到这个fix可能会break项目启动，webpack-dev-server提供了几个解决方案</p>
+<ul>
+<li>新增<code>disableHostCheck</code>参数，为<code>true</code>时host check失效</li>
+<li>执行webpack-dev-server时手动添加<code>--public</code>参数，值为授权的host</li>
+</ul>
+<p>在后续的版本里，webpack-dev-server也增加了相关的一些参数，比如<code>allowedHosts</code>(<a href="https://github.com/webpack/webpack-dev-server/releases/tag/v2.5.0" target="_blank" rel="noopener"><code>2.5.0</code></a>)。</p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://tonghuashuo.github.io/blog/webpack-dev-server-invalid-host-header.html" target="_blank" rel="noopener">解决 Webpack “Invalid Host Header”</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/webpack/">webpack</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/09/25/21-docker-jenkins自动部署/"><span>21.docker+jenkins自动部署前端代码</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/09/25/21-docker-jenkins自动部署/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-09-25T15:12:50.000Z">
+          2018-09-25
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p>服务器为腾讯云Ubuntu</p>
+</blockquote>
+<h3 id="一、安装Docker"><a href="#一、安装Docker" class="headerlink" title="一、安装Docker"></a>一、安装Docker</h3><ol>
+<li><p>更新<code>apt</code>包</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt update</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装最新版本的Docker</p>
+<p> 中文版教程： <a href="https://cloud.tencent.com/developer/article/1167995" target="_blank" rel="noopener">如何在Ubuntu上安装使用Docker</a></p>
+<p> 不过最好还是看英文版：<a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository" target="_blank" rel="noopener">install-using-the-repository</a></p>
+<p> 或者使用官方Ubuntu存储库中提供的Docker安装包，但是可能不是最新的版本。</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用内置安装</span></span><br><span class="line">$ sudo apt-get install docker.io</span><br><span class="line"><span class="comment"># 卸载</span></span><br><span class="line">$ sudo apt-get purge docker.io</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="二、安装Jenkins"><a href="#二、安装Jenkins" class="headerlink" title="二、安装Jenkins"></a>二、安装Jenkins</h3><p>使用docker安装Jenkins非常方便，只需要执行下面命令即可。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name devops-jenkins --user=root -p 8080:8080 -p 50000:50000 -v /opt/data/jenkins_home:/var/jenkins_home -d jenkins/jenkins:lts</span><br></pre></td></tr></table></figure></p>
+<p>更多定制参数可以参考 <a href="https://github.com/jenkinsci/docker" target="_blank" rel="noopener">https://github.com/jenkinsci/docker</a></p>
+<h3 id="三、配置Jenkins"><a href="#三、配置Jenkins" class="headerlink" title="三、配置Jenkins"></a>三、配置Jenkins</h3><p>启动Jenkins之后，在浏览器输入http://部署jenkins主机IP:端口 (8080)<br><img src="../images/21/1.png" alt="image"></p>
+<p>根据提示，从输入administrator password 或者可以通过启动日志<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker logs devops-jenkins</span><br></pre></td></tr></table></figure></p>
+<p>查看这个password<br><img src="../images/21/2.png" alt="image"></p>
+<p>选择安装插件方式，这里默认第一个。<br><!-- ![image](../images/21/3.png) --></p>
+<p>进入插件安装界面，连网等待插件安装。</p>
+<p>安装完插件后，进入创建管理员界面。<br><img src="../images/21/5.png" alt="image"></p>
+<p>输入管理员信息后，点击Continue as admin。</p>
+<p><img src="../images/21/6.png" alt="image"><br>保存Jenkins URL后Jenkins就安装完毕了。</p>
+<h3 id="四、自动化流程"><a href="#四、自动化流程" class="headerlink" title="四、自动化流程"></a>四、自动化流程</h3><p>在正式使用Jenkins前，我们先来看一下自动部署的流程，具体如下：</p>
+<ul>
+<li>编写修改代码，并提交代码到代码仓库（git）</li>
+<li>Jenkins自动检测到仓库代码更新了，从仓库拉去最新代码</li>
+<li>Jenkins自动编译</li>
+<li></li>
+</ul>
+<p>Jenkins之所以流行，是因为它的高灵活性和高易用性。这得益于它的插件机制，只需安装对应功能的插件，即可使它适应各种业务场景。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/09/23/20-使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南/"><span>20.使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/09/23/20-使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-09-23T14:31:07.000Z">
+          2018-09-23
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南"><a href="#使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南" class="headerlink" title="使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南"></a>使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南</h2><h4 id="一、本地调试获取用户失败"><a href="#一、本地调试获取用户失败" class="headerlink" title="一、本地调试获取用户失败"></a>一、本地调试获取用户失败</h4><p>在使用微信官方提供的 <a href="https://github.com/tencentyun/wafer2-quickstart-nodejs" target="_blank" rel="noopener">wafer2-quickstart-nodejs-master</a> 模板开发小程序时，除了可以连接腾讯云提供的开发环境，还可以直接在本地起服务进行调试。具体操作可参考<a href="https://github.com/tencentyun/wafer2-startup/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98#%E6%9C%AC%E5%9C%B0%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83" target="_blank" rel="noopener">本地如何搭建开发环境</a>。</p>
+<p>但按照文档上的步骤操作，会报“ERR_REQUEST_PARAM”的错误。报这个错误的原因是，代码默认使用了腾讯云代理登录小程序。</p>
+<p>打开<code>server/config.js</code>，将<code>useQcloudLogin</code>选项修改为false，同时还需要填上小程序的<code>appSecret</code>。因为<code>useQcloudLogin</code>为<code>true</code>时，<code>SDK</code>会通过与小程序关联的腾讯云账号获取到<code>appSecret</code>，授权通过后，再获取用户信息。否则为<code>false</code>时，则需要填写<code>appSecret</code>。</p>
+<p>这样修改后，再次请求，就能获取到用户信息了。</p>
+<h4 id="二、第一次获取用户信息"><a href="#二、第一次获取用户信息" class="headerlink" title="二、第一次获取用户信息"></a>二、第一次获取用户信息</h4><p>在模板中，<code>wafer2-client-sdk</code>封装了一下方法让我们使用。比如我们可以使用<code>request</code>发送请求。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> qcloud = <span class="built_in">require</span>(<span class="string">'../vendor/wafer2-client-sdk/index'</span>)</span><br><span class="line">...</span><br><span class="line"><span class="comment">// 请求A</span></span><br><span class="line">qcloud.request(&#123;</span><br><span class="line">    url,</span><br><span class="line">   	data,</span><br><span class="line">    method,</span><br><span class="line">    login: <span class="literal">false</span>,</span><br><span class="line">    success(result) &#123;</span><br><span class="line">    &#125;,</span><br><span class="line">    fail(error) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>通过参数<code>login</code>可以控制发送该请求<code>A</code>之前，是否先发送登录请求。如果请求<code>A</code>需要用户信息，则<code>login</code>需为<code>true</code>，否则后端的ctx.state.$wxInfo是没有用户信息的。但是在用户第一次登录之前（<code>cSessioninfo</code>表里没有该用户数据），<code>qcloud.request({ login: true })</code>会报错，返回<code>Cannot read property &#39;user_info&#39; of undefined</code>错误。</p>
+<p>这是因为<code>qcloud.request</code>只使用了<code>loginWithCode</code>来登录。这个方法会在<code>Header</code>加上<code>X-WX-Code</code>（其实就是<code>cSessioninfo</code>表里的<code>skey</code>）。后端通过这个code去获取对应用户的信息。但因为表里根本没有这个用户的记录，所以报了上面的错误。</p>
+<p>要怎么解决这个问题？其实模板中有类似的调用。打开<code>client/page/pages/index/index.js</code>，答案就在<code>bindGetUserInfo</code>里。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="comment">// 先获取session</span></span><br><span class="line"><span class="keyword">const</span> session = qcloud.Session.get()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. 如果session不为空，则说明用户已经登录过，即数据库里有该用户记录，则使用qcloud.loginWithCode</span></span><br><span class="line"><span class="comment">// 2. 如果session为空，则说明用户第一次登录，则调用qcloud.login，将用户信息写入数据库</span></span><br><span class="line"><span class="keyword">if</span> (session) &#123;</span><br><span class="line">    <span class="comment">// 第二次登录</span></span><br><span class="line">    <span class="comment">// 或者本地已经有登录态</span></span><br><span class="line">    <span class="comment">// 可使用本函数更新登录态</span></span><br><span class="line">    qcloud.loginWithCode(&#123;</span><br><span class="line">        success: <span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;,</span><br><span class="line">        fail: <span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 首次登录</span></span><br><span class="line">    qcloud.login(&#123;</span><br><span class="line">        success: <span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;,</span><br><span class="line">        fail: <span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>qcloud.login</code>会在<code>Header</code>增加三个字段，<code>X-WX-Code</code>、<code>X-WX-Encrypted-Data</code>、<code>X-WX-IV</code>，然后后端会在表里插入该用户的信息。</p>
+<p>所以我们需要将这段逻辑加到<code>qcloud.request</code>里。<code>qcloud.request</code>里有个<code>doRequestWithLogin</code>方法，是发送登录逻辑的。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 登录后再请求</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doRequestWithLogin</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    loginLib.loginWithCode(&#123; <span class="attr">success</span>: doRequest, <span class="attr">fail</span>: callFail &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将其修改为</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 登录后再请求</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doRequestWithLogin</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> session = Session.get()</span><br><span class="line">    <span class="keyword">if</span> (session) &#123;</span><br><span class="line">        loginLib.loginWithCode(&#123; <span class="attr">success</span>: doRequest, <span class="attr">fail</span>: callFail &#125;);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        loginLib.login(&#123; <span class="attr">success</span>: doRequest, <span class="attr">fail</span>: callFail &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Done！大功告成，再次发送请求成功！</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/微信小程序/">微信小程序</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2018/09/21/22-CommonJS模块规范/"><span>(WIP)22.CommonJS模块规范</span></a></h3>
     
   
@@ -500,237 +706,6 @@
     <span class="post-tags">
       <i class="icon-tags"></i>
         <a href="/tags/DOM/">DOM</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2018/03/08/14-javascript中的事件绑定、事件监听和事件委托/"><span>14.JavaScript中的事件绑定、事件监听和事件委托</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2018/03/08/14-javascript中的事件绑定、事件监听和事件委托/" rel="bookmark">
-        <time class="entry-date published" datetime="2018-03-08T11:23:55.000Z">
-          2018-03-08
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p>【转自】<a href="https://www.cnblogs.com/Tacklingpioneer/p/6433959.html" target="_blank" rel="noopener">https://www.cnblogs.com/Tacklingpioneer/p/6433959.html</a></p>
-<p>在JavaScript的学习中，我们经常会遇到JavaScript的事件机制，例如，事件绑定、事件监听、事件委托（事件代理）等。这些名词是什么意思呢，有什么作用？</p>
-<h2 id="事件绑定"><a href="#事件绑定" class="headerlink" title="事件绑定"></a>事件绑定</h2><p>要想让JavaScript对用户的操作作出响应，首先要对 DOM 元素绑定事件处理函数。所谓事件处理函数，就是处理用户操作的函数，不同操作对应不同的名称。</p>
-<p>在JavaScript中，有三种常用的绑定事件的方法：</p>
-<ul>
-<li>在 DOM 元素中直接绑定</li>
-<li>在JavaScript代码中绑定</li>
-<li>绑定事件监听函数</li>
-</ul>
-<h3 id="在-DOM-中直接绑定事件"><a href="#在-DOM-中直接绑定事件" class="headerlink" title="在 DOM 中直接绑定事件"></a>在 DOM 中直接绑定事件</h3><p>我们可以在 DOM 元素上绑定 onclick、onmouseover、onmouseout、onmousedown、onmouseup、onkeydown、onkeypress等。更多事件类型请查看<a href="http://www.runoob.com/jsref/dom-obj-event.html" target="_blank" rel="noopener">DOM事件</a>。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"click me"</span> <span class="attr">onclick</span>=<span class="string">"hello()"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  function hello() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello world!");</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="在JavaScript代码中绑定事件"><a href="#在JavaScript代码中绑定事件" class="headerlink" title="在JavaScript代码中绑定事件"></a>在JavaScript代码中绑定事件</h3><p>在JavaScript代码中（即 script 标签内）绑定事件可以使JavaScript代码与HTML标签分离，文档结构清晰，便于管理和开发。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"click me"</span> <span class="attr">id</span>=<span class="string">"btn"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  document.getElementById("btn").onclick = function() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello world!");</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="使用事件监听绑定事件"><a href="#使用事件监听绑定事件" class="headerlink" title="使用事件监听绑定事件"></a>使用事件监听绑定事件</h3><p>绑定事件的另一种方法是用 addEventListener() 或 attachEvent() 来绑定事件监听函数。下面详细介绍，事件监听。</p>
-<h2 id="事件监听"><a href="#事件监听" class="headerlink" title="事件监听"></a>事件监听</h2><p>关于事件监听，W3C规范中定义了3个事件阶段，依次是捕获阶段、目标阶段、冒泡阶段。</p>
-<p>起初NetScape制定了JavaScript的一套事件驱动机制（即事件捕获）。随机IE也推出了自己的一套事件驱动机制（即事件冒泡）。最后W3C规范了两种事件机制，分为捕获阶段、目标阶段、冒泡阶段。IE8以前IE一直坚持自己的事件机制（前端人员一直头疼的兼容问题），IE9以后IE也支持了W3C规范。</p>
-<h3 id="W3C规范"><a href="#W3C规范" class="headerlink" title="W3C规范"></a>W3C规范</h3><p>语法：  </p>
-<p>element.addEventListener(event, function, useCapture)</p>
-<ul>
-<li>event：（必需）事件名，支持所有<a href="http://www.runoob.com/jsref/dom-obj-event.html" target="_blank" rel="noopener">DOM事件</a></li>
-<li>function：（必需）指定要事件触发时执行的函数</li>
-<li>useCapture：（可选）指定事件是否在捕获或冒泡阶段执行。true，捕获。false，冒泡。默认false。</li>
-</ul>
-<p>注：IE8以下不支持。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"click me"</span> <span class="attr">id</span>=<span class="string">"btn1"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  document.getElementById("btn1").addEventListener("click", hello);</span></span><br><span class="line"><span class="undefined">  function hello() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello world!");</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h3 id="IE标准"><a href="#IE标准" class="headerlink" title="IE标准"></a>IE标准</h3><p>语法：</p>
-<p>element.attachEvent(event, function)</p>
-<ul>
-<li>event：（必需）事件类型。需加”on”，例如：onclick。</li>
-<li>function：（必需）指定要事件触发时执行的函数。</li>
-</ul>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"click me"</span> <span class="attr">id</span>=<span class="string">"btn2"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  document.getElementById("btn2").attachEvent("onclick", hello);</span></span><br><span class="line"><span class="undefined">  function hello() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello world!");</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="事件监听的优点"><a href="#事件监听的优点" class="headerlink" title="事件监听的优点"></a>事件监听的优点</h2><ol>
-<li>可以绑定多个事件。</li>
-</ol>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"click me"</span> <span class="attr">id</span>=<span class="string">"btn3"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  var btn3 = document.getElementById("btn3");</span></span><br><span class="line"><span class="undefined">  btn3.onclick = function() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello 1"); // 不执行</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  btn3.onclick = function() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello 2"); // 执行</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>常规的事件绑定只执行最后绑定的事件。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"click me"</span> <span class="attr">id</span>=<span class="string">"btn4"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  var btn4 = document.getElementById("btn4");</span></span><br><span class="line"><span class="undefined">  btn4.addEventListener("click", hello1);</span></span><br><span class="line"><span class="undefined">  btn4.addEventListener("click", hello2);</span></span><br><span class="line"><span class="undefined">  </span></span><br><span class="line"><span class="undefined">  function hello1() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello 1");</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  function hello2() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello 2");</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>两个事件都执行了。</p>
-<ol start="2">
-<li>可以解绑响应的事件</li>
-</ol>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"click me"</span> <span class="attr">id</span>=<span class="string">"btn5"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  var btn5 = document.getElementById("btn5");</span></span><br><span class="line"><span class="undefined">  btn5.addEventListener("click", hello1); // 执行</span></span><br><span class="line"><span class="undefined">  btn5.addEventListener("click", hello2); // 不执行</span></span><br><span class="line"><span class="undefined">  btn5.removeEventListener("click", hello2);</span></span><br><span class="line"><span class="undefined">  </span></span><br><span class="line"><span class="undefined">  function hello1() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello 1");</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">  function hello2() &#123;</span></span><br><span class="line"><span class="undefined">    alert("hello 2");</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="封装事件监听"><a href="#封装事件监听" class="headerlink" title="封装事件监听"></a>封装事件监听</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"click me"</span> <span class="attr">id</span>=<span class="string">"btn5"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">// 绑定监听事件</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/javascript/">javascript</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2018/03/07/13-leetcode刷题记录/"><span>13.leetcode刷题记录</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2018/03/07/13-leetcode刷题记录/" rel="bookmark">
-        <time class="entry-date published" datetime="2018-03-07T04:18:08.000Z">
-          2018-03-07
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p><a href="https://leetcode.com/problemset/all/" target="_blank" rel="noopener">题目（英文版）</a><br><a href="https://cn.leetcode.com/problemset/all/" target="_blank" rel="noopener">题目（中文版）</a></p>
-<p><strong>2018.3.5</strong></p>
-<ol>
-<li><p><a href="https://leetcode.com/problems/two-sum/" target="_blank" rel="noopener">Two Sum</a>(Easy)</p>
-</li>
-<li><p><a href="https://leetcode.com/problems/add-two-numbers/description/" target="_blank" rel="noopener">Add Two Numbers</a>(Medium)</p>
-</li>
-</ol>
-<p><strong>2018.3.6</strong></p>
-<ol start="3">
-<li><a href="https://leetcode.com/problems/longest-substring-without-repeating-characters/description/" target="_blank" rel="noopener">Longest Subtring Without Repeating characters</a>(Medium)</li>
-</ol>
-<p><strong>2018.3.7</strong></p>
-<ol start="5">
-<li><a href="https://leetcode.com/problems/longest-palindromic-substring/description/" target="_blank" rel="noopener">Longest Palindromic Substring</a>(Medium)</li>
-<li><a href="https://leetcode.com/problems/reverse-integer/description/" target="_blank" rel="noopener">Reverse Integer</a>(Easy)</li>
-</ol>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/算法/">算法</a><a href="/tags/面试/">面试</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2018/03/06/12.理解时间复杂度概念/"><span>理解时间复杂度概念</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2018/03/06/12.理解时间复杂度概念/" rel="bookmark">
-        <time class="entry-date published" datetime="2018-03-06T09:32:39.000Z">
-          2018-03-06
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p>以下内容转自<br><a href="https://www.zhihu.com/question/21387264/answer/253704111" target="_blank" rel="noopener">算法时间复杂度的表示法O(n²)、O(n)、O(1)、O(nlogn)等是什么意思？ - 缪志威的回答 - 知乎</a></p>
-<p>在数学上定义：存在常数 c, 使得当 N &gt;= c 时 T(N) &lt;= f(N)，表示为T(n) = O(f(n))。</p>
-<p>我们先从头开始看：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int aFunc(void) &#123;</span><br><span class="line">   printf(&quot;Hello, World!\n&quot;);      //  需要执行 1 次</span><br><span class="line">   return 0;       // 需要执行 1 次</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>那么上面这个方法需要执行2次运算</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int aFunc(int n) &#123;</span><br><span class="line">   for(int i = 0; i &lt; n; i++) &#123;         // 需要执行 (n + 1) 次</span><br><span class="line">       printf(&quot;Hello, World!\n&quot;);      // 需要执行 n 次</span><br><span class="line">   &#125;</span><br><span class="line">   return 0;       // 需要执行 1 次</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个方法需要 (n + 1 + n + 1) = 2n + 2 次运算。</p>
-<p>我们把算法需要执行的运算次数用输入大小 n 的函数表示，即 T(n)。<br>此时为了估算算法需要的运行时间和简化算法分析，我们引入时间复杂度的概念。</p>
-<p><strong>数学上定义：存在常数 c，使得当 N &gt;= c 时 T(N) &lt;= f(N)，表示为 T(n) = O(f(n))。</strong></p>
-<p>怎么理解呢？</p>
-<p>如图：<br><img src="../images/12/1.jpg" alt="image"></p>
-<p><strong>当 N &gt;= 2 的时候，f(n) = n^2 总是大于 T(n) = n + 2 的，于是我们说 f(n) 的增长速度是大于或者等于 T(n) 的，也说 f(n) 是 T(n) 的上界，可以表示为 T(n) = O(f(n))。</strong></p>
-<p>因为 f(n) 的增长速度是大于或者等于 T(n) 的，即T(n) = O(f(n))，所以我们可以用 f(n) 的增长速度来度量 T(n) 的增长速度，所以我们说这个算法的时间复杂度是 O(f(n))。</p>
-<p><strong>所以就有了我们现在理解的时间复杂度，记作: T(n) = O(f(n))，用来度量算法的运行时间。它表示随着 输入大小n 的增大，算法执行需要的时间的增长速度可以用 f(n) 来描述。</strong></p>
-<p>显然如果 T(n) = n^2，那么 T(n) = O(n^2)，T(n) = O(n^3)，T(n) = O(n^4) 都是成立的，但是因为第一个 f(n) 的增长速度与 T(n) 是最接近的，所以第一个是最好的选择，所以我们说这个算法的复杂度是 O(n^2) 。</p>
-<p>可以参考<a href="https://www.jianshu.com/p/f4cca5ce055a" target="_blank" rel="noopener">十分钟从零搞定时间复杂度</a></p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/算法/">算法</a>
     </span>
     
 

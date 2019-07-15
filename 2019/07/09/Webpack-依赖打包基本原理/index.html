@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Webpack 依赖打包基本原理 | One Pieces</title>
+
+  
+  <meta name="author" content="Xiaolong Lin">
+  
+
+  
+  <meta name="description" content="今天通过一个简单的例子来说明一下 Webpack 是怎么解决模块依赖的。
+
+本文使用 webpack 4，mode 为 development，因此其 devtool 为 eval。
+
+一、生成产物首先先来看看下面三个源文件123456789101112// entry.jsimport messa">
+  
+
+  
+  
+  <meta name="keywords" content="webpack,性能优化">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="Webpack 依赖打包基本原理"/>
+
+  <meta property="og:site_name" content="One Pieces"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="One Pieces" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">One Pieces</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>Webpack 依赖打包基本原理</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2019/07/09/Webpack-依赖打包基本原理/" rel="bookmark">
+        <time class="entry-date published" datetime="2019-07-09T08:40:15.000Z">
+          2019-07-09
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>今天通过一个简单的例子来说明一下 Webpack 是怎么解决模块依赖的。</p>
+<blockquote>
+<p>本文使用 webpack 4，<code>mode</code> 为 <code>development</code>，因此其 <code>devtool</code> 为 <code>eval</code>。</p>
+</blockquote>
+<h2 id="一、生成产物"><a href="#一、生成产物" class="headerlink" title="一、生成产物"></a>一、生成产物</h2><p>首先先来看看下面三个源文件<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// entry.js</span></span><br><span class="line"><span class="keyword">import</span> message <span class="keyword">from</span> <span class="string">'./message.js'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(message);</span><br><span class="line"></span><br><span class="line"><span class="comment">// message.js</span></span><br><span class="line"><span class="keyword">import</span> &#123; name &#125; <span class="keyword">from</span> <span class="string">'./name.js'</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="string">`hello <span class="subst">$&#123;name&#125;</span>!`</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// name.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> name = <span class="string">'world'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> text = <span class="string">'text'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>Webpack 配置文件<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  mode: <span class="string">'development'</span>,</span><br><span class="line">  entry: <span class="string">'./entry.js'</span>,</span><br><span class="line">  output: &#123;</span><br><span class="line">    filename: <span class="string">'entry.js'</span>,</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'dist'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>运行 <code>npx webpack</code>，打包的产物在 <code>dist/entry.js</code>。</p>
+<h2 id="二、打包产物分析"><a href="#二、打包产物分析" class="headerlink" title="二、打包产物分析"></a>二、打包产物分析</h2><blockquote>
+<p>这里使用了 <code>development</code> 模式，所以产物没有进行最小化处理。</p>
+</blockquote>
+<p>现在让我们看看产物的整体结构<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/******/</span> (<span class="function"><span class="keyword">function</span>(<span class="params">modules</span>) </span>&#123; <span class="comment">// webpackBootstrap</span></span><br><span class="line"><span class="comment">/******/</span>    <span class="comment">// ...</span></span><br><span class="line"><span class="comment">/******/</span> &#125;)</span><br><span class="line"><span class="comment">/************************************************************************/</span></span><br><span class="line"><span class="comment">/******/</span> (&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">/***/</span> <span class="string">"./entry.js"</span>:</span><br><span class="line"><span class="comment">/*!******************!*\</span></span><br><span class="line"><span class="comment">  !*** ./entry.js ***!</span></span><br><span class="line"><span class="comment">  \******************/</span></span><br><span class="line"><span class="comment">/*! no exports provided */</span></span><br><span class="line"><span class="comment">/***/</span> (<span class="function"><span class="keyword">function</span>(<span class="params">module, __webpack_exports__, __webpack_require__</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"><span class="built_in">eval</span>(<span class="string">"...// 相关代码"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/***/</span> &#125;),</span><br><span class="line"></span><br><span class="line"><span class="comment">/***/</span> <span class="string">"./message.js"</span>:</span><br><span class="line"><span class="comment">/*!********************!*\</span></span><br><span class="line"><span class="comment">  !*** ./message.js ***!</span></span><br><span class="line"><span class="comment">  \********************/</span></span><br><span class="line"><span class="comment">/*! exports provided: default */</span></span><br><span class="line"><span class="comment">/***/</span> (<span class="function"><span class="keyword">function</span>(<span class="params">module, __webpack_exports__, __webpack_require__</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"><span class="built_in">eval</span>(<span class="string">"...// 相关代码"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/***/</span> &#125;),</span><br><span class="line"></span><br><span class="line"><span class="comment">/***/</span> <span class="string">"./name.js"</span>:</span><br><span class="line"><span class="comment">/*!*****************!*\</span></span><br><span class="line"><span class="comment">  !*** ./name.js ***!</span></span><br><span class="line"><span class="comment">  \*****************/</span></span><br><span class="line"><span class="comment">/*! exports provided: name, text */</span></span><br><span class="line"><span class="comment">/***/</span> (<span class="function"><span class="keyword">function</span>(<span class="params">module, __webpack_exports__, __webpack_require__</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"><span class="built_in">eval</span>(<span class="string">"...// 相关代码"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/***/</span> &#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">/******/</span> &#125;);</span><br></pre></td></tr></table></figure></p>
+<p>初看下产物文件很杂乱，但其实它只是一个闭包。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">modules</span>) </span>&#123; <span class="comment">// webpackBootstrap</span></span><br><span class="line">  ...</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">__webpack_require__</span> (<span class="params">moduleId</span>) </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">module</span>.exports;</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">return</span> __webpack_require__(__webpack_require__.s = <span class="string">"./entry.js"</span>);</span><br><span class="line">&#125;)(&#123;</span><br><span class="line">  <span class="string">"./entry.js"</span>: (<span class="function"><span class="keyword">function</span>(<span class="params">module, __webpack_exports__, __webpack_require__</span>) </span>&#123;</span><br><span class="line"><span class="meta">    "use strict"</span>;</span><br><span class="line">    <span class="built_in">eval</span>(<span class="string">"...// 相关代码"</span>);</span><br><span class="line">  &#125;)</span><br><span class="line">  ...</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>闭包的参数是各个依赖的代码，函数体主要定义了一个 require 函数 <code>__webpack_require__</code>。下面我们分两部分来说明。</p>
+<h3 id="1-require-函数-webpack-require"><a href="#1-require-函数-webpack-require" class="headerlink" title="1. require 函数 __webpack_require__"></a>1. require 函数 <code>__webpack_require__</code></h3><p>webpack 最重要的部分就是这个 require 函数。它定义了一个模块变量 module。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">__webpack_require__</span>(<span class="params">moduleId</span>) </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">var</span> <span class="built_in">module</span> = installedModules[moduleId] = &#123;</span><br><span class="line">    i: moduleId, <span class="comment">// 模块 ID</span></span><br><span class="line">    l: <span class="literal">false</span>, <span class="comment">// 该模块是否已被加载</span></span><br><span class="line">    exports: &#123;&#125; <span class="comment">// export 出去的代码</span></span><br><span class="line">  &#125;;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里使用 installedModules 来缓存已加载的模块，如果模块已缓存，则直接返回。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模块缓存</span></span><br><span class="line"><span class="keyword">var</span> installedModules = &#123;&#125;;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">__webpack_require__</span>(<span class="params">moduleId</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 检查模块是否已存在缓存</span></span><br><span class="line">  <span class="keyword">if</span>(installedModules[moduleId]) &#123;</span><br><span class="line">    <span class="keyword">return</span> installedModules[moduleId].exports;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 创建一个新模块（同时把它放入缓存）</span></span><br><span class="line">  <span class="keyword">var</span> <span class="built_in">module</span> = installedModules[moduleId] = &#123;</span><br><span class="line">    i: moduleId, <span class="comment">// 模块 ID</span></span><br><span class="line">    l: <span class="literal">false</span>, <span class="comment">// 该模块是否已被加载</span></span><br><span class="line">    exports: &#123;&#125; <span class="comment">// export 出去的代码</span></span><br><span class="line">  &#125;;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>require 函数接收一个 moduleId 参数，用来从闭包参数 modules 里获取对应的模块代码。模块代码被分别封装到一个匿名函数中，require 函数会执行这个模块函数，因此对应模块的代码也会被执行。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模块缓存</span></span><br><span class="line"><span class="keyword">var</span> installedModules = &#123;&#125;;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">__webpack_require__</span>(<span class="params">moduleId</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 检查模块是否已存在缓存</span></span><br><span class="line">  <span class="keyword">if</span>(installedModules[moduleId]) &#123;</span><br><span class="line">    <span class="keyword">return</span> installedModules[moduleId].exports;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 创建一个新模块（同时把它放入缓存）</span></span><br><span class="line">  <span class="keyword">var</span> <span class="built_in">module</span> = installedModules[moduleId] = &#123;</span><br><span class="line">    i: moduleId, <span class="comment">// 模块 ID</span></span><br><span class="line">    l: <span class="literal">false</span>, <span class="comment">// 该模块是否已被加载</span></span><br><span class="line">    exports: &#123;&#125; <span class="comment">// export 出去的代码</span></span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="comment">// 执行模块函数</span></span><br><span class="line">  modules[moduleId].call(<span class="built_in">module</span>.exports, <span class="built_in">module</span>, <span class="built_in">module</span>.exports, __webpack_require__);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到，模块函数的上下文 this 是 <code>module.exports</code>，因此模块的上下文 this 指向的是它本身。</p>
+<p>然后模块会被标记为已加载，最终返回模块 export 的内容。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模块缓存</span></span><br><span class="line"><span class="keyword">var</span> installedModules = &#123;&#125;;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">__webpack_require__</span>(<span class="params">moduleId</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 检查模块是否已存在缓存</span></span><br><span class="line">  <span class="keyword">if</span>(installedModules[moduleId]) &#123;</span><br><span class="line">    <span class="keyword">return</span> installedModules[moduleId].exports;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 创建一个新模块（同时把它放入缓存）</span></span><br><span class="line">  <span class="keyword">var</span> <span class="built_in">module</span> = installedModules[moduleId] = &#123;</span><br><span class="line">    i: moduleId, <span class="comment">// 模块 ID</span></span><br><span class="line">    l: <span class="literal">false</span>, <span class="comment">// 该模块是否已被加载</span></span><br><span class="line">    exports: &#123;&#125; <span class="comment">// export 出去的代码</span></span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="comment">// 执行模块函数</span></span><br><span class="line">  modules[moduleId].call(<span class="built_in">module</span>.exports, <span class="built_in">module</span>, <span class="built_in">module</span>.exports, __webpack_require__);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 标记模块为已加载</span></span><br><span class="line">  <span class="built_in">module</span>.l = <span class="literal">true</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 返回模块 export 的内容</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">module</span>.exports;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>最后在闭包内加载入口文件即可。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 加载模块入口，并返回 exports</span></span><br><span class="line"><span class="keyword">return</span> __webpack_require__(__webpack_require__.s = <span class="string">"./entry.js"</span>);</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-依赖模块"><a href="#2-依赖模块" class="headerlink" title="2. 依赖模块"></a>2. 依赖模块</h3><p>闭包的参数是一个 Object，存放了各个依赖模块。Object 的 key 是模块的 moduleId，值为 <code>import from</code> 的文件路径。Object 的 value 是模块函数，它接收三个参数，<code>module</code>，<code>__webpack_exports__</code>，<code>__webpack_require__</code>。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(&#123;</span><br><span class="line">    <span class="string">"./message.js"</span>: (<span class="function"><span class="keyword">function</span>(<span class="params">module, __webpack_exports__, __webpack_require__</span>) </span>&#123;</span><br><span class="line"><span class="meta">      "use strict"</span>;</span><br><span class="line">      <span class="built_in">eval</span>(<span class="string">"__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _name_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./name.js */ \"./name.js\");\n\r\n/* harmony default export */ __webpack_exports__[\"default\"] = (`hello $&#123;_name_js__WEBPACK_IMPORTED_MODULE_0__[\"name\"]&#125;!`);\n\n//# sourceURL=webpack:///./message.js?"</span>);</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>我们来看看 <code>message.js</code> 生成的代码。因为使用了 <code>eval</code> 模式，webpack 生成的 <code>generated code</code> 被 <code>eval</code> 包裹。可以分为三个部分。</p>
+<h4 id="2-1-esModule-定义"><a href="#2-1-esModule-定义" class="headerlink" title="2.1. esModule 定义"></a>2.1. esModule 定义</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__webpack_require__.r(__webpack_exports__);</span><br></pre></td></tr></table></figure>
+<p><code>__webpack_require__.r(__webpack_exports__)</code> 会在 exports 里定义了一个 <code>__esModule</code> 字段，其值为 true，表明这是一个 esModule。</p>
+<h4 id="2-2-webpack-require-获取依赖"><a href="#2-2-webpack-require-获取依赖" class="headerlink" title="2.2. __webpack_require__ 获取依赖"></a>2.2. __webpack_require__ 获取依赖</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* harmony import */</span> <span class="keyword">var</span> _name_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(<span class="comment">/*! ./name.js */</span> \<span class="string">"./name.js\");</span></span><br></pre></td></tr></table></figure>
+<p>然后它通过 <code>__webpack_require__</code> 获取其它模块（<code>name.js</code>）的 exports。</p>
+<h4 id="2-3-webpack-exports-暴露依赖"><a href="#2-3-webpack-exports-暴露依赖" class="headerlink" title="2.3. __webpack_exports__ 暴露依赖"></a>2.3. __webpack_exports__ 暴露依赖</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* harmony default export */</span> __webpack_exports__[\<span class="string">"default\"] = (`hello $&#123;_name_js__WEBPACK_IMPORTED_MODULE_0__[\"name\"]&#125;!`);</span></span><br></pre></td></tr></table></figure>
+<p>最后在自己的 exports 定义了一个 <code>default</code> 字段，其值为源代码中 <code>exports default</code> 的值。</p>
+<h2 id="三-总结"><a href="#三-总结" class="headerlink" title="三. 总结"></a>三. 总结</h2><p>可以看出，整个模块依赖是通过 <code>module.exports</code> 进行的。使用 <code>__webpack_require__</code> 函数来获取其它模块的 exports，如果需要向外部提供数据，则使用 <code>__webpack_exports__</code> 将数据暴露到 exports。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/webpack/">webpack</a><a href="/tags/性能优化/">性能优化</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2019 Xiaolong Lin
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

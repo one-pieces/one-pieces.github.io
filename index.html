@@ -59,6 +59,189 @@
 
   
     
+    <h3 class="article-title"><a href="/2019/07/10/什么是云原生/"><span>什么是云原生</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2019/07/10/什么是云原生/" rel="bookmark">
+        <time class="entry-date published" datetime="2019-07-10T07:18:38.000Z">
+          2019-07-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ol>
+<li>采用微服务架构</li>
+<li>应用容器化</li>
+<li>DevOps 管理理念（动态编排）</li>
+</ol>
+<p>CNCF 对云原生</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2019/07/09/Webpack-依赖打包基本原理/"><span>Webpack 依赖打包基本原理</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2019/07/09/Webpack-依赖打包基本原理/" rel="bookmark">
+        <time class="entry-date published" datetime="2019-07-09T08:40:15.000Z">
+          2019-07-09
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>今天通过一个简单的例子来说明一下 Webpack 是怎么解决模块依赖的。</p>
+<blockquote>
+<p>本文使用 webpack 4，<code>mode</code> 为 <code>development</code>，因此其 <code>devtool</code> 为 <code>eval</code>。</p>
+</blockquote>
+<h2 id="一、生成产物"><a href="#一、生成产物" class="headerlink" title="一、生成产物"></a>一、生成产物</h2><p>首先先来看看下面三个源文件<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// entry.js</span></span><br><span class="line"><span class="keyword">import</span> message <span class="keyword">from</span> <span class="string">'./message.js'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(message);</span><br><span class="line"></span><br><span class="line"><span class="comment">// message.js</span></span><br><span class="line"><span class="keyword">import</span> &#123; name &#125; <span class="keyword">from</span> <span class="string">'./name.js'</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="string">`hello <span class="subst">$&#123;name&#125;</span>!`</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// name.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> name = <span class="string">'world'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> text = <span class="string">'text'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>Webpack 配置文件<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  mode: <span class="string">'development'</span>,</span><br><span class="line">  entry: <span class="string">'./entry.js'</span>,</span><br><span class="line">  output: &#123;</span><br><span class="line">    filename: <span class="string">'entry.js'</span>,</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'dist'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>运行 <code>npx webpack</code>，打包的产物在 <code>dist/entry.js</code>。</p>
+<h2 id="二、打包产物分析"><a href="#二、打包产物分析" class="headerlink" title="二、打包产物分析"></a>二、打包产物分析</h2><blockquote>
+<p>这里使用了 <code>development</code> 模式，所以产物没有进行最小化处理。</p>
+</blockquote>
+<p>现在让我们看看产物的整体结构<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/******/</span> (<span class="function"><span class="keyword">function</span>(<span class="params">modules</span>) </span>&#123; <span class="comment">// webpackBootstrap</span></span><br><span class="line"><span class="comment">/******/</span>    <span class="comment">// ...</span></span><br><span class="line"><span class="comment">/******/</span> &#125;)</span><br><span class="line"><span class="comment">/************************************************************************/</span></span><br><span class="line"><span class="comment">/******/</span> (&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">/***/</span> <span class="string">"./entry.js"</span>:</span><br><span class="line"><span class="comment">/*!******************!*\</span></span><br><span class="line"><span class="comment">  !*** ./entry.js ***!</span></span><br><span class="line"><span class="comment">  \******************/</span></span><br><span class="line"><span class="comment">/*! no exports provided */</span></span><br><span class="line"><span class="comment">/***/</span> (<span class="function"><span class="keyword">function</span>(<span class="params">module, __webpack_exports__, __webpack_require__</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"><span class="built_in">eval</span>(<span class="string">"...// 相关代码"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/***/</span> &#125;),</span><br><span class="line"></span><br><span class="line"><span class="comment">/***/</span> <span class="string">"./message.js"</span>:</span><br><span class="line"><span class="comment">/*!********************!*\</span></span><br><span class="line"><span class="comment">  !*** ./message.js ***!</span></span><br><span class="line"><span class="comment">  \********************/</span></span><br><span class="line"><span class="comment">/*! exports provided: default */</span></span><br><span class="line"><span class="comment">/***/</span> (<span class="function"><span class="keyword">function</span>(<span class="params">module, __webpack_exports__, __webpack_require__</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"><span class="built_in">eval</span>(<span class="string">"...// 相关代码"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/***/</span> &#125;),</span><br><span class="line"></span><br><span class="line"><span class="comment">/***/</span> <span class="string">"./name.js"</span>:</span><br><span class="line"><span class="comment">/*!*****************!*\</span></span><br><span class="line"><span class="comment">  !*** ./name.js ***!</span></span><br><span class="line"><span class="comment">  \*****************/</span></span><br><span class="line"><span class="comment">/*! exports provided: name, text */</span></span><br><span class="line"><span class="comment">/***/</span> (<span class="function"><span class="keyword">function</span>(<span class="params">module, __webpack_exports__, __webpack_require__</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"><span class="built_in">eval</span>(<span class="string">"...// 相关代码"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/***/</span> &#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">/******/</span> &#125;);</span><br></pre></td></tr></table></figure></p>
+<p>初看下产物文件很杂乱，但其实它只是一个闭包。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">modules</span>) </span>&#123; <span class="comment">// webpackBootstrap</span></span><br><span class="line">  ...</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">__webpack_require__</span> (<span class="params">moduleId</span>) </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">module</span>.exports;</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">return</span> __webpack_require__(__webpack_require__.s = <span class="string">"./entry.js"</span>);</span><br><span class="line">&#125;)(&#123;</span><br><span class="line">  <span class="string">"./entry.js"</span>: (<span class="function"><span class="keyword">function</span>(<span class="params">module, __webpack_exports__, __webpack_require__</span>) </span>&#123;</span><br><span class="line"><span class="meta">    "use strict"</span>;</span><br><span class="line">    <span class="built_in">eval</span>(<span class="string">"...// 相关代码"</span>);</span><br><span class="line">  &#125;)</span><br><span class="line">  ...</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>闭包的参数是各个依赖的代码，函数体主要定义了一个 require 函数 <code>__webpack_require__</code>。下面我们分两部分来说明。</p>
+<h3 id="1-require-函数-webpack-require"><a href="#1-require-函数-webpack-require" class="headerlink" title="1. require 函数 __webpack_require__"></a>1. require 函数 <code>__webpack_require__</code></h3><p>webpack 最重要的部分就是这个 require 函数。它定义了一个模块变量 module。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">__webpack_require__</span>(<span class="params">moduleId</span>) </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">var</span> <span class="built_in">module</span> = installedModules[moduleId] = &#123;</span><br><span class="line">    i: moduleId, <span class="comment">// 模块 ID</span></span><br><span class="line">    l: <span class="literal">false</span>, <span class="comment">// 该模块是否已被加载</span></span><br><span class="line">    exports: &#123;&#125; <span class="comment">// export 出去的代码</span></span><br><span class="line">  &#125;;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里使用 installedModules 来缓存已加载的模块，如果模块已缓存，则直接返回。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模块缓存</span></span><br><span class="line"><span class="keyword">var</span> installedModules = &#123;&#125;;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">__webpack_require__</span>(<span class="params">moduleId</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 检查模块是否已存在缓存</span></span><br><span class="line">  <span class="keyword">if</span>(installedModules[moduleId]) &#123;</span><br><span class="line">    <span class="keyword">return</span> installedModules[moduleId].exports;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 创建一个新模块（同时把它放入缓存）</span></span><br><span class="line">  <span class="keyword">var</span> <span class="built_in">module</span> = installedModules[moduleId] = &#123;</span><br><span class="line">    i: moduleId, <span class="comment">// 模块 ID</span></span><br><span class="line">    l: <span class="literal">false</span>, <span class="comment">// 该模块是否已被加载</span></span><br><span class="line">    exports: &#123;&#125; <span class="comment">// export 出去的代码</span></span><br><span class="line">  &#125;;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>require 函数接收一个 moduleId 参数，用来从闭包参数 modules 里获取对应的模块代码。模块代码被分别封装到一个匿名函数中，require 函数会执行这个模块函数，因此对应模块的代码也会被执行。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模块缓存</span></span><br><span class="line"><span class="keyword">var</span> installedModules = &#123;&#125;;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">__webpack_require__</span>(<span class="params">moduleId</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 检查模块是否已存在缓存</span></span><br><span class="line">  <span class="keyword">if</span>(installedModules[moduleId]) &#123;</span><br><span class="line">    <span class="keyword">return</span> installedModules[moduleId].exports;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 创建一个新模块（同时把它放入缓存）</span></span><br><span class="line">  <span class="keyword">var</span> <span class="built_in">module</span> = installedModules[moduleId] = &#123;</span><br><span class="line">    i: moduleId, <span class="comment">// 模块 ID</span></span><br><span class="line">    l: <span class="literal">false</span>, <span class="comment">// 该模块是否已被加载</span></span><br><span class="line">    exports: &#123;&#125; <span class="comment">// export 出去的代码</span></span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="comment">// 执行模块函数</span></span><br><span class="line">  modules[moduleId].call(<span class="built_in">module</span>.exports, <span class="built_in">module</span>, <span class="built_in">module</span>.exports, __webpack_require__);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到，模块函数的上下文 this 是 <code>module.exports</code>，因此模块的上下文 this 指向的是它本身。</p>
+<p>然后模块会被标记为已加载，最终返回模块 export 的内容。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模块缓存</span></span><br><span class="line"><span class="keyword">var</span> installedModules = &#123;&#125;;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">__webpack_require__</span>(<span class="params">moduleId</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 检查模块是否已存在缓存</span></span><br><span class="line">  <span class="keyword">if</span>(installedModules[moduleId]) &#123;</span><br><span class="line">    <span class="keyword">return</span> installedModules[moduleId].exports;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 创建一个新模块（同时把它放入缓存）</span></span><br><span class="line">  <span class="keyword">var</span> <span class="built_in">module</span> = installedModules[moduleId] = &#123;</span><br><span class="line">    i: moduleId, <span class="comment">// 模块 ID</span></span><br><span class="line">    l: <span class="literal">false</span>, <span class="comment">// 该模块是否已被加载</span></span><br><span class="line">    exports: &#123;&#125; <span class="comment">// export 出去的代码</span></span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="comment">// 执行模块函数</span></span><br><span class="line">  modules[moduleId].call(<span class="built_in">module</span>.exports, <span class="built_in">module</span>, <span class="built_in">module</span>.exports, __webpack_require__);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 标记模块为已加载</span></span><br><span class="line">  <span class="built_in">module</span>.l = <span class="literal">true</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 返回模块 export 的内容</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">module</span>.exports;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>最后在闭包内加载入口文件即可。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 加载模块入口，并返回 exports</span></span><br><span class="line"><span class="keyword">return</span> __webpack_require__(__webpack_require__.s = <span class="string">"./entry.js"</span>);</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-依赖模块"><a href="#2-依赖模块" class="headerlink" title="2. 依赖模块"></a>2. 依赖模块</h3><p>闭包的参数是一个 Object，存放了各个依赖模块。Object 的 key 是模块的 moduleId，值为 <code>import from</code> 的文件路径。Object 的 value 是模块函数，它接收三个参数，<code>module</code>，<code>__webpack_exports__</code>，<code>__webpack_require__</code>。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(&#123;</span><br><span class="line">    <span class="string">"./message.js"</span>: (<span class="function"><span class="keyword">function</span>(<span class="params">module, __webpack_exports__, __webpack_require__</span>) </span>&#123;</span><br><span class="line"><span class="meta">      "use strict"</span>;</span><br><span class="line">      <span class="built_in">eval</span>(<span class="string">"__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _name_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./name.js */ \"./name.js\");\n\r\n/* harmony default export */ __webpack_exports__[\"default\"] = (`hello $&#123;_name_js__WEBPACK_IMPORTED_MODULE_0__[\"name\"]&#125;!`);\n\n//# sourceURL=webpack:///./message.js?"</span>);</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>我们来看看 <code>message.js</code> 生成的代码。因为使用了 <code>eval</code> 模式，webpack 生成的 <code>generated code</code> 被 <code>eval</code> 包裹。可以分为三个部分。</p>
+<h4 id="2-1-esModule-定义"><a href="#2-1-esModule-定义" class="headerlink" title="2.1. esModule 定义"></a>2.1. esModule 定义</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__webpack_require__.r(__webpack_exports__);</span><br></pre></td></tr></table></figure>
+<p><code>__webpack_require__.r(__webpack_exports__)</code> 会在 exports 里定义了一个 <code>__esModule</code> 字段，其值为 true，表明这是一个 esModule。</p>
+<h4 id="2-2-webpack-require-获取依赖"><a href="#2-2-webpack-require-获取依赖" class="headerlink" title="2.2. __webpack_require__ 获取依赖"></a>2.2. __webpack_require__ 获取依赖</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* harmony import */</span> <span class="keyword">var</span> _name_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(<span class="comment">/*! ./name.js */</span> \<span class="string">"./name.js\");</span></span><br></pre></td></tr></table></figure>
+<p>然后它通过 <code>__webpack_require__</code> 获取其它模块（<code>name.js</code>）的 exports。</p>
+<h4 id="2-3-webpack-exports-暴露依赖"><a href="#2-3-webpack-exports-暴露依赖" class="headerlink" title="2.3. __webpack_exports__ 暴露依赖"></a>2.3. __webpack_exports__ 暴露依赖</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* harmony default export */</span> __webpack_exports__[\<span class="string">"default\"] = (`hello $&#123;_name_js__WEBPACK_IMPORTED_MODULE_0__[\"name\"]&#125;!`);</span></span><br></pre></td></tr></table></figure>
+<p>最后在自己的 exports 定义了一个 <code>default</code> 字段，其值为源代码中 <code>exports default</code> 的值。</p>
+<h2 id="三-总结"><a href="#三-总结" class="headerlink" title="三. 总结"></a>三. 总结</h2><p>可以看出，整个模块依赖是通过 <code>module.exports</code> 进行的。使用 <code>__webpack_require__</code> 函数来获取其它模块的 exports，如果需要向外部提供数据，则使用 <code>__webpack_exports__</code> 将数据暴露到 exports。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/webpack/">webpack</a><a href="/tags/性能优化/">性能优化</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2019/07/03/Chrome-Performance-性能分析/"><span>Chrome Performance 性能分析</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2019/07/03/Chrome-Performance-性能分析/" rel="bookmark">
+        <time class="entry-date published" datetime="2019-07-03T08:53:56.000Z">
+          2019-07-03
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p>Chrome 是 Google 公司推出的一款浏览器，根据 NetMarkerShare 最新发布的数据，Chrome 的市场份额达到 66.29%。</p>
+</blockquote>
+<blockquote>
+<p>性能分析是提供良好的用户体验的前提，今天我们通过一个例子来了解一下，如何通过 Chrome 的 Performance 模块对网页进行性能分析。</p>
+</blockquote>
+<p>一、以用户为中心的性能指标<br>当</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2019/07/02/Kruskal’s-最小生成树算法-贪婪算法-2/"><span>Kruskal’s 最小生成树算法 | 贪婪算法-2</span></a></h3>
     
   
@@ -813,212 +996,6 @@
     <span class="post-tags">
       <i class="icon-tags"></i>
         <a href="/tags/WIP/">WIP</a><a href="/tags/JavaScript/">JavaScript</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2018/11/08/22-Webpack提示Invalid-Host-Header/"><span>22-Webpack提示Invalid Host Header</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2018/11/08/22-Webpack提示Invalid-Host-Header/" rel="bookmark">
-        <time class="entry-date published" datetime="2018-11-08T07:49:09.000Z">
-          2018-11-08
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>用<a href="https://cli.vuejs.org/zh/" target="_blank" rel="noopener"><code>vue-cli 3</code></a>新建项目，将自定义域名映射到localhost，这时用自定义域名访问项目，webpack-dev-server返回了Invalid Host Header，而使用localhost或127.0.0.1则没报错。</p>
-<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>网上查了一些资料，发现这是因为webpack-dev-server在<a href="https://github.com/webpack/webpack-dev-server/releases/tag/v2.4.3" target="_blank" rel="noopener"><code>2.4.3</code></a>和<a href="https://github.com/webpack/webpack-dev-server/releases/tag/v1.16.4" target="_blank" rel="noopener"><code>1.16.4</code></a>这两个版本增加了security fix。这个fix增加了对<code>Host</code> header 的检验，来防止恶意网站访问你的<code>assets</code>。同时<code>webpack-dev-middleware</code>的<code>1.10.2</code>也增加了这个修改。</p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>考虑到这个fix可能会break项目启动，webpack-dev-server提供了几个解决方案</p>
-<ul>
-<li>新增<code>disableHostCheck</code>参数，为<code>true</code>时host check失效</li>
-<li>执行webpack-dev-server时手动添加<code>--public</code>参数，值为授权的host</li>
-</ul>
-<p>在后续的版本里，webpack-dev-server也增加了相关的一些参数，比如<code>allowedHosts</code>(<a href="https://github.com/webpack/webpack-dev-server/releases/tag/v2.5.0" target="_blank" rel="noopener"><code>2.5.0</code></a>)。</p>
-<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://tonghuashuo.github.io/blog/webpack-dev-server-invalid-host-header.html" target="_blank" rel="noopener">解决 Webpack “Invalid Host Header”</a></p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/webpack/">webpack</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2018/09/25/21-docker-jenkins自动部署/"><span>21.docker+jenkins自动部署前端代码</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2018/09/25/21-docker-jenkins自动部署/" rel="bookmark">
-        <time class="entry-date published" datetime="2018-09-25T15:12:50.000Z">
-          2018-09-25
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <blockquote>
-<p>服务器为腾讯云Ubuntu</p>
-</blockquote>
-<h3 id="一、安装Docker"><a href="#一、安装Docker" class="headerlink" title="一、安装Docker"></a>一、安装Docker</h3><ol>
-<li><p>更新<code>apt</code>包</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt update</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>安装最新版本的Docker</p>
-<p> 中文版教程： <a href="https://cloud.tencent.com/developer/article/1167995" target="_blank" rel="noopener">如何在Ubuntu上安装使用Docker</a></p>
-<p> 不过最好还是看英文版：<a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository" target="_blank" rel="noopener">install-using-the-repository</a></p>
-<p> 或者使用官方Ubuntu存储库中提供的Docker安装包，但是可能不是最新的版本。</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用内置安装</span></span><br><span class="line">$ sudo apt-get install docker.io</span><br><span class="line"><span class="comment"># 卸载</span></span><br><span class="line">$ sudo apt-get purge docker.io</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="二、安装Jenkins"><a href="#二、安装Jenkins" class="headerlink" title="二、安装Jenkins"></a>二、安装Jenkins</h3><p>使用docker安装Jenkins非常方便，只需要执行下面命令即可。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name devops-jenkins --user=root -p 8080:8080 -p 50000:50000 -v /opt/data/jenkins_home:/var/jenkins_home -d jenkins/jenkins:lts</span><br></pre></td></tr></table></figure></p>
-<p>更多定制参数可以参考 <a href="https://github.com/jenkinsci/docker" target="_blank" rel="noopener">https://github.com/jenkinsci/docker</a></p>
-<h3 id="三、配置Jenkins"><a href="#三、配置Jenkins" class="headerlink" title="三、配置Jenkins"></a>三、配置Jenkins</h3><p>启动Jenkins之后，在浏览器输入http://部署jenkins主机IP:端口 (8080)<br><img src="../images/21/1.png" alt="image"></p>
-<p>根据提示，从输入administrator password 或者可以通过启动日志<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker logs devops-jenkins</span><br></pre></td></tr></table></figure></p>
-<p>查看这个password<br><img src="../images/21/2.png" alt="image"></p>
-<p>选择安装插件方式，这里默认第一个。<br><!-- ![image](../images/21/3.png) --></p>
-<p>进入插件安装界面，连网等待插件安装。</p>
-<p>安装完插件后，进入创建管理员界面。<br><img src="../images/21/5.png" alt="image"></p>
-<p>输入管理员信息后，点击Continue as admin。</p>
-<p><img src="../images/21/6.png" alt="image"><br>保存Jenkins URL后Jenkins就安装完毕了。</p>
-<h3 id="四、自动化流程"><a href="#四、自动化流程" class="headerlink" title="四、自动化流程"></a>四、自动化流程</h3><p>在正式使用Jenkins前，我们先来看一下自动部署的流程，具体如下：</p>
-<ul>
-<li>编写修改代码，并提交代码到代码仓库（git）</li>
-<li>Jenkins自动检测到仓库代码更新了，从仓库拉去最新代码</li>
-<li>Jenkins自动编译</li>
-<li></li>
-</ul>
-<p>Jenkins之所以流行，是因为它的高灵活性和高易用性。这得益于它的插件机制，只需安装对应功能的插件，即可使它适应各种业务场景。</p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2018/09/23/20-使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南/"><span>20.使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2018/09/23/20-使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南/" rel="bookmark">
-        <time class="entry-date published" datetime="2018-09-23T14:31:07.000Z">
-          2018-09-23
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <h2 id="使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南"><a href="#使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南" class="headerlink" title="使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南"></a>使用wafer2-quickstart-nodejs-master小程序模板本地开发踩坑指南</h2><h4 id="一、本地调试获取用户失败"><a href="#一、本地调试获取用户失败" class="headerlink" title="一、本地调试获取用户失败"></a>一、本地调试获取用户失败</h4><p>在使用微信官方提供的 <a href="https://github.com/tencentyun/wafer2-quickstart-nodejs" target="_blank" rel="noopener">wafer2-quickstart-nodejs-master</a> 模板开发小程序时，除了可以连接腾讯云提供的开发环境，还可以直接在本地起服务进行调试。具体操作可参考<a href="https://github.com/tencentyun/wafer2-startup/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98#%E6%9C%AC%E5%9C%B0%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83" target="_blank" rel="noopener">本地如何搭建开发环境</a>。</p>
-<p>但按照文档上的步骤操作，会报“ERR_REQUEST_PARAM”的错误。报这个错误的原因是，代码默认使用了腾讯云代理登录小程序。</p>
-<p>打开<code>server/config.js</code>，将<code>useQcloudLogin</code>选项修改为false，同时还需要填上小程序的<code>appSecret</code>。因为<code>useQcloudLogin</code>为<code>true</code>时，<code>SDK</code>会通过与小程序关联的腾讯云账号获取到<code>appSecret</code>，授权通过后，再获取用户信息。否则为<code>false</code>时，则需要填写<code>appSecret</code>。</p>
-<p>这样修改后，再次请求，就能获取到用户信息了。</p>
-<h4 id="二、第一次获取用户信息"><a href="#二、第一次获取用户信息" class="headerlink" title="二、第一次获取用户信息"></a>二、第一次获取用户信息</h4><p>在模板中，<code>wafer2-client-sdk</code>封装了一下方法让我们使用。比如我们可以使用<code>request</code>发送请求。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> qcloud = <span class="built_in">require</span>(<span class="string">'../vendor/wafer2-client-sdk/index'</span>)</span><br><span class="line">...</span><br><span class="line"><span class="comment">// 请求A</span></span><br><span class="line">qcloud.request(&#123;</span><br><span class="line">    url,</span><br><span class="line">   	data,</span><br><span class="line">    method,</span><br><span class="line">    login: <span class="literal">false</span>,</span><br><span class="line">    success(result) &#123;</span><br><span class="line">    &#125;,</span><br><span class="line">    fail(error) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>通过参数<code>login</code>可以控制发送该请求<code>A</code>之前，是否先发送登录请求。如果请求<code>A</code>需要用户信息，则<code>login</code>需为<code>true</code>，否则后端的ctx.state.$wxInfo是没有用户信息的。但是在用户第一次登录之前（<code>cSessioninfo</code>表里没有该用户数据），<code>qcloud.request({ login: true })</code>会报错，返回<code>Cannot read property &#39;user_info&#39; of undefined</code>错误。</p>
-<p>这是因为<code>qcloud.request</code>只使用了<code>loginWithCode</code>来登录。这个方法会在<code>Header</code>加上<code>X-WX-Code</code>（其实就是<code>cSessioninfo</code>表里的<code>skey</code>）。后端通过这个code去获取对应用户的信息。但因为表里根本没有这个用户的记录，所以报了上面的错误。</p>
-<p>要怎么解决这个问题？其实模板中有类似的调用。打开<code>client/page/pages/index/index.js</code>，答案就在<code>bindGetUserInfo</code>里。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="comment">// 先获取session</span></span><br><span class="line"><span class="keyword">const</span> session = qcloud.Session.get()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. 如果session不为空，则说明用户已经登录过，即数据库里有该用户记录，则使用qcloud.loginWithCode</span></span><br><span class="line"><span class="comment">// 2. 如果session为空，则说明用户第一次登录，则调用qcloud.login，将用户信息写入数据库</span></span><br><span class="line"><span class="keyword">if</span> (session) &#123;</span><br><span class="line">    <span class="comment">// 第二次登录</span></span><br><span class="line">    <span class="comment">// 或者本地已经有登录态</span></span><br><span class="line">    <span class="comment">// 可使用本函数更新登录态</span></span><br><span class="line">    qcloud.loginWithCode(&#123;</span><br><span class="line">        success: <span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;,</span><br><span class="line">        fail: <span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 首次登录</span></span><br><span class="line">    qcloud.login(&#123;</span><br><span class="line">        success: <span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;,</span><br><span class="line">        fail: <span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><code>qcloud.login</code>会在<code>Header</code>增加三个字段，<code>X-WX-Code</code>、<code>X-WX-Encrypted-Data</code>、<code>X-WX-IV</code>，然后后端会在表里插入该用户的信息。</p>
-<p>所以我们需要将这段逻辑加到<code>qcloud.request</code>里。<code>qcloud.request</code>里有个<code>doRequestWithLogin</code>方法，是发送登录逻辑的。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 登录后再请求</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doRequestWithLogin</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    loginLib.loginWithCode(&#123; <span class="attr">success</span>: doRequest, <span class="attr">fail</span>: callFail &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>将其修改为</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 登录后再请求</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doRequestWithLogin</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> session = Session.get()</span><br><span class="line">    <span class="keyword">if</span> (session) &#123;</span><br><span class="line">        loginLib.loginWithCode(&#123; <span class="attr">success</span>: doRequest, <span class="attr">fail</span>: callFail &#125;);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        loginLib.login(&#123; <span class="attr">success</span>: doRequest, <span class="attr">fail</span>: callFail &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>Done！大功告成，再次发送请求成功！</p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/微信小程序/">微信小程序</a>
     </span>
     
 
